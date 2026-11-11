@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { OsobaPanelu } from "@/lib/dane";
 import { lasGalezi, przodkowieWWidoku, rozwinDoPoziomu, wWidoku, type ParaDrzewa } from "@/lib/drzewo";
+import { naPanelu } from "@/lib/edycje";
 import { ileOsob, pelneImie } from "@/lib/format";
-import { tekstNaKolorze } from "@/lib/kolor";
+import { galezieWidoku, idWidoku, znajdzGalaz } from "@/lib/galezie";
+import { kolorPokolenia, tekstNaKolorze } from "@/lib/kolor";
 import { dekodujRozwiniecie, kodujRozwiniecie, rozwinDo, zbudujWiersze, type WierszListy } from "@/lib/lista";
 import type { Galaz } from "@/lib/schemat";
 import { sciezkaDiagramu, sciezkaGalezi } from "@/lib/sciezki";
 import { ustawObslugeWyboru } from "@/lib/wybor";
 import { PanelOsoby } from "./PanelOsoby";
+import { useEdycje } from "./useEdycje";
 
 const WCIECIE = 22;
 const WYSOKOSC_PC = 30;
@@ -50,10 +53,21 @@ function useWysokosc(el: () => Element | null): number {
 
 const pobierzNaglowek = () => document.querySelector("header");
 
-function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }: Props) {
+function ListaGaleziWnetrze({ slug, osoby: osobyBazowe, pary, galezie, galazId, liczbaOsob }: Props) {
   const router = useRouter();
+  const api = useEdycje(slug);
+  const osoby = useMemo(() => naPanelu(osobyBazowe, api.edycje), [osobyBazowe, api.edycje]);
   const mapa = useMemo(() => new Map(osoby.map((o) => [o.id, o])), [osoby]);
-  const galaz = galezie.find((g) => g.id === galazId)!;
+  const galaz = znajdzGalaz(galezie, galazId);
+  const widokOsoby = useCallback(
+    (id: string) => {
+      const g = galezie.find((x) => x.id === mapa.get(id)?.galazId);
+      return g ? idWidoku(g) : galazId;
+    },
+    [galezie, mapa, galazId],
+  );
+  /** Dopiero co dodana osoba: pokazujemy ją, gdy pojawi się w liście. */
+  const [oczekujaca, setOczekujaca] = useState<string | null>(null);
   const { las, korzenie, maxPoziomow } = useMemo(() => lasGalezi(osoby, pary, galazId), [osoby, pary, galazId]);
   const pokolenieStartu = useMemo(() => Math.min(...korzenie.map((k) => mapa.get(las.jednostki.get(k)!.glowna)!.pokolenie)), [korzenie, las, mapa]);
 
@@ -102,11 +116,11 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
       setAktywnyId(jednostka);
       setCel({ id: jednostka, wyrownanie: "center" });
     } else if (os && mapa.has(os)) {
-      router.replace(sciezkaGalezi(slug, mapa.get(os)!.galazId, os));
+      router.replace(sciezkaGalezi(slug, widokOsoby(os), os));
     } else {
       setWybrana(null);
     }
-  }, [las, korzenie, maxPoziomow, mapa, router, slug]);
+  }, [las, korzenie, maxPoziomow, mapa, router, slug, widokOsoby]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- jednorazowe odczytanie adresu po zamontowaniu (strona jest statyczna)
@@ -190,7 +204,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
       const o = mapa.get(osobaId);
       if (!jednostka || !o) return;
       if (!wWidoku(las, korzenie, jednostka)) {
-        router.push(sciezkaGalezi(slug, o.galazId, osobaId));
+        router.push(sciezkaGalezi(slug, widokOsoby(osobaId), osobaId));
         return;
       }
       setWybrana(osobaId);
@@ -202,8 +216,16 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
         setCel({ id: jednostka, wyrownanie: przewin });
       }
     },
-    [las, korzenie, mapa, router, slug],
+    [las, korzenie, mapa, router, slug, widokOsoby],
   );
+
+  useEffect(() => {
+    if (oczekujaca && las.jednostkaOsoby.has(oczekujaca)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- zadanie jednorazowe: pokazanie dopiero co dodanej osoby
+      pokazOsobe(oczekujaca);
+      setOczekujaca(null);
+    }
+  }, [oczekujaca, las, pokazOsobe]);
 
   useEffect(() => {
     ustawObslugeWyboru((id) => pokazOsobe(id));
@@ -288,6 +310,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
   const przyciskDiagram = sciezkaDiagramu(slug, galazId, wybrana);
   const wszystkoRozwiniete = gotowe && wiersze.length === liczJednostki(las, korzenie);
   const kolorGalezi = galaz.kolor;
+  const koloryGalezi = new Map(galezie.map((g) => [g.id, g.kolor]));
 
   if (!rozwiniete) {
     return (
@@ -309,7 +332,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
               <span className="znacznik" style={{ ["--kolor" as string]: kolorGalezi }}>
                 <span className="truncate">{galaz.nazwa}</span>
               </span>
-              <span className="ml-2 text-sm font-normal text-tekst-2">{ileOsob(liczbaOsob)}</span>
+              <span className="ml-2 text-sm font-normal text-tekst-2">{ileOsob(liczbaOsob + api.edycje.dodane.filter((n) => galazId === "cale" || n.galazId === galazId).length)}</span>
             </h1>
             <div role="toolbar" aria-label="Sterowanie listą" className="-mx-1 flex w-[calc(100%+0.5rem)] items-center gap-1.5 overflow-x-auto px-1 pb-0.5 sm:ml-auto sm:w-auto sm:flex-wrap sm:overflow-visible sm:pb-0 [&>*]:shrink-0">
               <div className="flex items-center gap-1" role="group" aria-label="Pokaż pokolenia do numeru">
@@ -324,6 +347,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
                     title={`Zwiń do pokolenia ${pokolenieStartu + k - 1}`}
                     onClick={() => ustawPoziomy(k)}
                   >
+                    <span aria-hidden="true" className="mr-1 size-2 rounded-full" style={{ backgroundColor: kolorPokolenia(pokolenieStartu + k - 1) }} />
                     {pokolenieStartu + k - 1}
                   </button>
                 ))}
@@ -340,7 +364,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
             </div>
           </div>
           <nav aria-label="Gałęzie tego drzewa" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
-            {galezie.map((g) => {
+            {galezieWidoku(galezie).map((g) => {
               const aktywna = g.id === galazId;
               return (
                 <Link
@@ -390,7 +414,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
                     onClick={() => pokazOsobe(w.id, { przewin: telefon ? "start" : false })}
                     onFocus={() => setAktywnyId(w.id)}
                     className={`wiersz-listy absolute left-0 top-0 flex w-full cursor-pointer items-center outline-offset-[-2px] ${podswietlona === w.id ? "podswietlona" : ""}`}
-                    style={{ height: wysokoscWiersza, transform: `translateY(${v.start - wirtualizator.options.scrollMargin}px)` }}
+                    style={{ height: wysokoscWiersza, transform: `translateY(${v.start - wirtualizator.options.scrollMargin}px)`, borderLeft: galazId === "cale" ? `3px solid ${koloryGalezi.get(o.galazId) ?? "transparent"}` : undefined }}
                   >
                     <span aria-hidden="true" className="prowadnice pointer-events-none absolute inset-y-0 left-0" style={{ width: w.poziom * WCIECIE + 19, ["--wciecie" as string]: `${WCIECIE}px`, backgroundPosition: "20px 0" }} />
                     <div className="relative flex min-w-0 flex-1 items-center gap-2 pr-3" style={{ paddingLeft: w.poziom * WCIECIE + 8 }}>
@@ -412,7 +436,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
                       ) : (
                         <span aria-hidden="true" className="size-6 shrink-0" />
                       )}
-                      <span aria-hidden="true" className="size-2 shrink-0 rounded-full" style={{ backgroundColor: kolorGalezi }} />
+                      <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: kolorPokolenia(o.pokolenie) }} title={`Pokolenie ${o.pokolenie}`} />
                       <span className="shrink-0 text-[15px] font-semibold">
                         {pelneImie(o)}
                         {o.niepewna && <span className="font-normal text-tekst-2"> ?</span>}
@@ -454,7 +478,7 @@ function ListaGaleziWnetrze({ slug, osoby, pary, galezie, galazId, liczbaOsob }:
             </div>
           </div>
 
-          {wybranaOsoba && <PanelOsoby slug={slug} osoba={wybranaOsoba} osoby={mapa} pary={pary} galezie={galezie} widok="lista" gora={gora + belkaPx + 12} naWybor={(id) => pokazOsobe(id)} naZamkniecie={zamknijPanel} />}
+          {wybranaOsoba && <PanelOsoby slug={slug} osoba={wybranaOsoba} osoby={mapa} pary={pary} galezie={galezie} widok="lista" gora={gora + belkaPx + 12} api={api} naDodane={setOczekujaca} naWybor={(id) => pokazOsobe(id)} naZamkniecie={zamknijPanel} />}
         </div>
       </main>
     </>
@@ -474,7 +498,7 @@ export function ListaGalezi(props: Props) {
   if (!klient) {
     return (
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-6">
-        <h1 className="text-xl">{props.galezie.find((g) => g.id === props.galazId)?.nazwa}</h1>
+        <h1 className="text-xl">{znajdzGalaz(props.galezie, props.galazId).nazwa}</h1>
         <p role="status" className="py-16 text-center text-tekst-2">
           Rozkładanie listy…
         </p>

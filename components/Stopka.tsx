@@ -20,7 +20,7 @@ export function Stopka({ drzewo }: { drzewo?: Pick<DrzewoMeta, "zrodlo" | "autor
       )}
       <p>
         <Link href="/" className="font-semibold text-tekst">
-          Przodkowie
+          Nasi przodkowie
         </Link>{" "}
         · drzewa genealogiczne rodzin · bez ciasteczek i skryptów śledzących
       </p>

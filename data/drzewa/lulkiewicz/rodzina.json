@@ -4,7 +4,8 @@
       "id": "pien",
       "nazwa": "Wspólny pień",
       "kolor": "#64748b",
-      "opis": "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii."
+      "opis": "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii.",
+      "wspolna": true
     },
     {
       "id": "antoni",

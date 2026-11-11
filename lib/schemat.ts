@@ -75,6 +75,8 @@ export const SchematGalezi = z.strictObject({
   nazwa: z.string().min(1),
   kolor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "kolor w formacie #rrggbb"),
   opis: z.string(),
+  /** Pień wspólny dla wszystkich linii: nie jest pokazywany jako osobna gałąź – jego osoby widać w widoku „Całe drzewo”. */
+  wspolna: z.boolean().optional(),
 });
 
 export const SchematRodziny = z.strictObject({

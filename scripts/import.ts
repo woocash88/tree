@@ -37,6 +37,7 @@ const ROK_GRANICZNY_ZYJACYCH = 1925;
 
 const PIEN: Galaz = {
   id: "pien",
+  wspolna: true,
   nazwa: "Wspólny pień",
   kolor: "#64748b",
   opis: "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii.",
@@ -239,6 +240,8 @@ export type WynikImportu = {
 
 type Poprawki = {
   osoby?: Record<string, Partial<Osoba>>;
+  /** Osoby dopisane ręcznie po imporcie (np. dzieci dodane w edytorze). */
+  dodane?: Osoba[];
   scal?: { zostaw: string; usun: string }[];
 };
 
@@ -640,6 +643,10 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
     for (const [k, v] of Object.entries(pola)) if (v === null && k !== "ojciecId" && k !== "matkaId") delete scalona[k];
     wynikOsoby[idx] = scalona as Osoba;
   }
+  for (const nowa of poprawki.dodane ?? []) {
+    if (wynikOsoby.some((o) => o.id === nowa.id)) throw new Error(`poprawki.json → dodane: osoba o id „${nowa.id}” już istnieje.`);
+    wynikOsoby.push(nowa);
+  }
 
   const surowa = {
     galezie,
@@ -705,8 +712,8 @@ export function zbudujRaport(w: WynikImportu, poprawki: Poprawki): string {
 export function wczytajPoprawki(slug: string): Poprawki {
   const plik = sciezkiImportu(slug).poprawki;
   if (!fs.existsSync(plik)) return {};
-  const { osoby, scal } = JSON.parse(fs.readFileSync(plik, "utf8"));
-  return { osoby, scal };
+  const { osoby, scal, dodane } = JSON.parse(fs.readFileSync(plik, "utf8"));
+  return { osoby, scal, dodane };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

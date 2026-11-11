@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ListaGalezi } from "@/components/ListaGalezi";
 import { Stopka } from "@/components/Stopka";
-import { daneWidoku, pobierzDrzewa, pobierzDrzewo } from "@/lib/dane";
+import { daneWidoku, pobierzDrzewa, pobierzDrzewo, statystykaWidoku } from "@/lib/dane";
+import { galezieWidoku } from "@/lib/galezie";
 import { ileOsob } from "@/lib/format";
 
 type Props = { params: Promise<{ drzewo: string; galaz: string }> };
@@ -13,7 +14,7 @@ export async function generateStaticParams() {
   const wynik: { drzewo: string; galaz: string }[] = [];
   for (const { meta } of await pobierzDrzewa()) {
     const d = (await pobierzDrzewo(meta.slug))!;
-    for (const g of d.galezieLista) wynik.push({ drzewo: meta.slug, galaz: g.id });
+    for (const g of galezieWidoku(d.galezieLista)) wynik.push({ drzewo: meta.slug, galaz: g.id });
   }
   return wynik;
 }
@@ -21,7 +22,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { drzewo, galaz } = await params;
   const d = await pobierzDrzewo(drzewo);
-  const s = d?.statystykiGalezi.find((x) => x.galaz.id === galaz);
+  const s = d && statystykaWidoku(d, galaz);
   if (!d || !s) return {};
   const lata = s.od && s.do ? `, lata ${s.od}–${s.do}` : "";
   const opis = `${s.galaz.opis ? s.galaz.opis + " " : ""}Lista gałęzi „${s.galaz.nazwa}” w drzewie „${d.meta.nazwa}”: ${ileOsob(s.osob)}${lata}.`;
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StronaGalezi({ params }: Props) {
   const { drzewo, galaz } = await params;
   const d = await pobierzDrzewo(drzewo);
-  const s = d?.statystykiGalezi.find((x) => x.galaz.id === galaz);
+  const s = d && statystykaWidoku(d, galaz);
   if (!d || !s) notFound();
   return (
     <>

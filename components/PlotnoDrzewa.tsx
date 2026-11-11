@@ -5,7 +5,9 @@ import "@xyflow/react/dist/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { OsobaPanelu } from "@/lib/dane";
+import { naPanelu } from "@/lib/edycje";
+import { galezieWidoku, idWidoku, znajdzGalaz } from "@/lib/galezie";
+import type { OsobaPanelu } from "@/lib/panel";
 import {
   KARTA_SZER,
   KARTA_WYS,
@@ -28,6 +30,7 @@ import type { Galaz } from "@/lib/schemat";
 import { sciezkaDiagramu, sciezkaGalezi } from "@/lib/sciezki";
 import { ustawObslugeWyboru } from "@/lib/wybor";
 import { PanelOsoby } from "./PanelOsoby";
+import { useEdycje } from "./useEdycje";
 
 const DOMYSLNE_POZIOMY = 3;
 /** Najmniejsze powiększenie, przy którym daty na kartach (12 px) są czytelne bez przybliżania. */
@@ -146,9 +149,12 @@ const TYPY_WEZLOW = { jednostka: Jednostka_ };
 
 type Props = { slug: string; osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[]; galazId: string };
 
-function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
+function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
   const router = useRouter();
   const rf = useReactFlow();
+  const api = useEdycje(slug);
+  const osoby = useMemo(() => naPanelu(osobyBazowe, api.edycje), [osobyBazowe, api.edycje]);
+  const [oczekujaca, setOczekujaca] = useState<string | null>(null);
   const mapaOsob = useMemo(() => new Map(osoby.map((o) => [o.id, o])), [osoby]);
   const { las, korzenie, maxPoziomow } = useMemo(() => lasGalezi(osoby, pary, galazId), [osoby, pary, galazId]);
   const kolory = useMemo(() => new Map(galezie.map((g) => [g.id, g.kolor])), [galezie]);
@@ -180,7 +186,7 @@ function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
       const o = mapaOsob.get(osobaId);
       if (!jednostkaId || !o) return;
       if (!wWidoku(las, korzenie, jednostkaId)) {
-        router.push(sciezkaDiagramu(slug, o.galazId, osobaId));
+        router.push(sciezkaDiagramu(slug, idWidoku(galezie.find((g) => g.id === o.galazId) ?? znajdzGalaz(galezie, galazId)), osobaId));
         return;
       }
       setWybrana(osobaId);
@@ -197,8 +203,16 @@ function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
       });
       setLicznikUkladu((n) => n + 1);
     },
-    [las, korzenie, mapaOsob, router, slug, ustawAdres],
+    [las, korzenie, mapaOsob, router, slug, ustawAdres, galezie, galazId],
   );
+
+  useEffect(() => {
+    if (oczekujaca && las.jednostkaOsoby.has(oczekujaca)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- zadanie jednorazowe: pokazanie dopiero co dodanej osoby
+      pokazOsobe(oczekujaca);
+      setOczekujaca(null);
+    }
+  }, [oczekujaca, las, pokazOsobe]);
 
   const zamknijPanel = useCallback(() => {
     const poprzednia = wybrana;
@@ -393,14 +407,14 @@ function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
 
   const widocznychOsob = useMemo(() => pozycje.reduce((s, p) => s + 1 + las.jednostki.get(p.id)!.partnerzy.length, 0), [pozycje, las]);
   const wszystkoRozwiniete = pozycje.length === korzenie.reduce((s, k) => s + 1 + liczJednostki(las, k), 0);
-  const galazAktywna = galezie.find((g) => g.id === galazId)!;
+  const galazAktywna = znajdzGalaz(galezie, galazId);
 
   return (
     <KontekstPlotna.Provider value={kontekst}>
       <div className="absolute inset-0 flex flex-col">
         <div className="z-20 flex flex-col gap-2 border-b border-kreska bg-lita/90 px-3 py-2 2xl:flex-row 2xl:items-center">
           <nav aria-label="Gałęzie – pokaż diagram wybranej" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:flex-wrap md:pb-0">
-            {galezie.map((g) => {
+            {galezieWidoku(galezie).map((g) => {
               const aktywna = g.id === galazId;
               return (
                 <Link
@@ -492,7 +506,7 @@ function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
             </p>
           )}
 
-          {wybrana && <PanelOsoby slug={slug} osoba={mapaOsob.get(wybrana)!} osoby={mapaOsob} pary={pary} galezie={galezie} widok="diagram" naWybor={pokazOsobe} naZamkniecie={zamknijPanel} />}
+          {wybrana && mapaOsob.has(wybrana) && <PanelOsoby slug={slug} osoba={mapaOsob.get(wybrana)!} osoby={mapaOsob} pary={pary} galezie={galezie} widok="diagram" api={api} naDodane={setOczekujaca} naWybor={pokazOsobe} naZamkniecie={zamknijPanel} />}
         </div>
       </div>
     </KontekstPlotna.Provider>

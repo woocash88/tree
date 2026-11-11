@@ -222,6 +222,11 @@ export type LasGalezi = { las: Las; korzenie: string[]; maxPoziomow: number };
 export function lasGalezi(osoby: OsobaDrzewa[], pary: ParaDrzewa[], galazId: string): LasGalezi {
   const poId = new Map(osoby.map((o) => [o.id, o]));
   const pelny = zbudujLas(osoby, pary);
+  if (galazId === "cale") {
+    // „Całe drzewo”: bez filtrowania – korzenie całego lasu.
+    const glebokosc = (id: string): number => 1 + Math.max(0, ...pelny.jednostki.get(id)!.dzieci.map(glebokosc));
+    return { las: pelny, korzenie: pelny.korzenie, maxPoziomow: Math.max(1, ...pelny.korzenie.map(glebokosc)) };
+  }
   const jednostki = new Map([...pelny.jednostki].map(([id, j]) => [id, { ...j, dzieci: j.dzieci.filter((d) => poId.get(d)!.galazId === galazId) }]));
   const las: Las = { ...pelny, jednostki };
   const korzenie = [...jednostki.values()]

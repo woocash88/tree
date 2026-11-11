@@ -27,11 +27,11 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
         Przejdź do treści
       </a>
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2 sm:flex-nowrap">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-tekst" aria-label="Przodkowie – strona główna">
+        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-tekst" aria-label="Nasi przodkowie – strona główna">
           <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6 text-akcent" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 21v-8M12 13c0-3.5-2.5-5-6-5 0 3.5 2 5.5 6 5Zm0-1.5c0-4.5 2.6-7 7-7 0 4.5-2.8 7.6-7 7Z" />
           </svg>
-          <span className="max-[480px]:sr-only">Przodkowie</span>
+          <span className="max-[480px]:sr-only">Nasi przodkowie</span>
         </Link>
         <nav aria-label="Główna nawigacja" className="flex items-center gap-1 text-sm">
           {linki.map((l) => (

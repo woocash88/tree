@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { ADRES_SERWISU } from "@/lib/sciezki";
 import "./globals.css";
 
-const NAZWA = "Przodkowie";
+const NAZWA = "Nasi przodkowie";
 const OPIS = "Drzewa genealogiczne rodzin – przeglądaj pokolenia, szukaj przodków i odkrywaj powiązania.";
 
 export const metadata: Metadata = {

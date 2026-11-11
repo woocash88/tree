@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { pobierzDrzewa, pobierzDrzewo } from "@/lib/dane";
+import { galezieWidoku } from "@/lib/galezie";
 import { ADRES_SERWISU, sciezkaDrzewa, sciezkaGalezi, sciezkaIndeksuDrzew, sciezkaIndeksuOsob, sciezkaOsoby } from "@/lib/sciezki";
 
 export const dynamic = "force-static";
@@ -16,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const zmiana = new Date(meta.zaktualizowano);
     wpisy.push({ url: adres(sciezkaDrzewa(meta.slug)), lastModified: zmiana, priority: 0.8 });
     wpisy.push({ url: adres(sciezkaIndeksuOsob(meta.slug)), lastModified: zmiana, priority: 0.5 });
-    for (const g of d.galezieLista) wpisy.push({ url: adres(sciezkaGalezi(meta.slug, g.id)), lastModified: zmiana, priority: 0.7 });
+    for (const g of galezieWidoku(d.galezieLista)) wpisy.push({ url: adres(sciezkaGalezi(meta.slug, g.id)), lastModified: zmiana, priority: 0.7 });
     for (const o of d.osobyLista) wpisy.push({ url: adres(sciezkaOsoby(meta.slug, o.id)), lastModified: zmiana, priority: 0.4 });
   }
   return wpisy;

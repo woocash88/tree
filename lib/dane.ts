@@ -6,10 +6,12 @@
  * Dane osób żyjących są okrajane tutaj, zgodnie z polityką dat drzewa (drzewo.json),
  * więc do widoków i do przeglądarki nie trafia nic ponad to, co wolno opublikować.
  */
-import { formatDaty, lataZycia, pelneImie, rokZdarzenia, wiek } from "./format";
-import type { DataZdarzenia, Galaz, Malzenstwo, Osoba, Rodzina } from "./schemat";
+import { lataZycia, pelneImie, rokZdarzenia } from "./format";
+import { CALE_DRZEWO, ID_CALEGO } from "./galezie";
+import { osobaPanelu, type OsobaPanelu } from "./panel";
+import type { Galaz, Malzenstwo, Osoba, Rodzina } from "./schemat";
 import type { DrzewoMeta, PolitykaDat } from "./schemat-drzewa";
-import type { OsobaDrzewa, ParaDrzewa } from "./drzewo";
+import type { ParaDrzewa } from "./drzewo";
 import type { WpisSzukania } from "./szukaj";
 
 /** Osoba po zastosowaniu polityki dat. `ukryjDaty` = daty tej osoby nie są publikowane. */
@@ -155,6 +157,12 @@ export function przygotujDrzewo(meta: DrzewoMeta, rodzina: Rodzina): Drzewo {
   };
 }
 
+/** Statystyki widoku gałęzi: zwykła gałąź albo „Całe drzewo”. Pień wspólny nie ma własnego widoku. */
+export function statystykaWidoku(d: Drzewo, id: string): StatystykiGalezi | undefined {
+  if (id === ID_CALEGO) return { galaz: CALE_DRZEWO, osob: d.statystyki.osob, od: d.statystyki.od, do: d.statystyki.do, zalozycielId: d.korzenId };
+  return d.statystykiGalezi.find((x) => x.galaz.id === id && !x.galaz.wspolna);
+}
+
 export function podsumuj(d: Drzewo): PodsumowanieDrzewa {
   const licznik = new Map<string, number>();
   for (const o of d.osobyLista) if (o.nazwisko) licznik.set(o.nazwisko, (licznik.get(o.nazwisko) ?? 0) + 1);
@@ -204,18 +212,7 @@ export async function pobierzOsobe(slug: string, id: string): Promise<OsobaWidoc
 
 // ───────────────────────────── pomocnicze dla widoków ─────────────────────────────
 
-export function opisZdarzenia(d?: DataZdarzenia): string {
-  if (!d) return "";
-  return [formatDaty(d), d.miejsce].filter(Boolean).join(", ");
-}
-
-/** Czy osobę traktujemy jako zmarłą (znana data/miejsce śmierci albo urodzenie ponad 110 lat temu). */
-export function czyZmarla(o: OsobaWidoczna): boolean {
-  if (o.zyjaca) return false;
-  if (o.smierc) return true;
-  const rok = rokZdarzenia(o.urodzenie);
-  return rok !== null && rok < new Date().getFullYear() - 110;
-}
+export { opisZdarzenia, czyZmarla } from "./panel";
 
 /** Wpisy indeksu wyszukiwania osób jednego drzewa (serwowane jako /dane/szukaj-<slug>.json). */
 export async function pobierzIndeksSzukania(slug: string): Promise<WpisSzukania[]> {
@@ -232,36 +229,14 @@ export async function pobierzIndeksSzukania(slug: string): Promise<WpisSzukania[
   }));
 }
 
-export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rodowe?: string; notatka?: string; ukryta: boolean };
+export type { OsobaPanelu } from "./panel";
 
 export type DaneWidoku = { osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[] };
 
 /** Dane przekazywane do komponentów klienckich (lista gałęzi, diagram, panel osoby). */
 export function daneWidoku(d: Drzewo): DaneWidoku {
   return {
-    osoby: d.osobyLista.map((o) => {
-      const zmarla = czyZmarla(o);
-      return {
-        id: o.id,
-        imie: o.imie,
-        nazwisko: o.nazwisko,
-        lata: lataZycia(o),
-        galazId: o.galazId,
-        ojciecId: o.ojciecId,
-        matkaId: o.matkaId,
-        zmarla,
-        niepewna: !!o.niepewne?.length,
-        plec: o.plec,
-        ur: opisZdarzenia(o.urodzenie),
-        // Pustą datę śmierci pokazujemy tylko osobom, które według danych nie żyją.
-        zm: o.smierc ? opisZdarzenia(o.smierc) || "data nieznana" : zmarla ? "data nieznana" : "",
-        wiek: wiek(o),
-        pokolenie: d.pokolenie.get(o.id)!,
-        ...(o.nazwiskoRodowe ? { rodowe: o.nazwiskoRodowe } : {}),
-        ...(o.notatka ? { notatka: o.notatka } : {}),
-        ukryta: !!o.ukryjDaty,
-      };
-    }),
+    osoby: d.osobyLista.map((o) => osobaPanelu(o, d.pokolenie.get(o.id)!)),
     pary: d.malzenstwa.map((m) => ({ a: m.osobaAId, b: m.osobaBId, kolejnosc: m.kolejnosc })),
     galezie: d.galezieLista,
   };

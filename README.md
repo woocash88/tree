@@ -1,4 +1,4 @@
-# Przodkowie – drzewa genealogiczne rodzin
+# Nasi przodkowie – drzewa genealogiczne rodzin
 
 Statyczna strona WWW (Next.js, eksport do plików HTML) z **wieloma drzewami genealogicznymi**.
 Bez backendu, bez bazy danych, bez śledzenia i zewnętrznych skryptów; interfejs w całości po polsku.
@@ -25,8 +25,8 @@ W repozytorium są dwa drzewa:
 | `/` | strona główna: wyszukiwarka drzew, wyróżnione drzewa, krótki opis |
 | `/drzewa/` | indeks drzew: karty (nazwa, opis, lata, osoby, pokolenia, region, aktualizacja), wyszukiwanie po nazwie/nazwisku/regionie, sortowanie (alfabetycznie, największe, ostatnio zaktualizowane) |
 | `/drzewa/<drzewo>/` | strona drzewa: statystyki, kafelki gałęzi, wyszukiwarka osób, źródło i opiekun |
-| `/drzewa/<drzewo>/galaz/<galaz>/` | **lista gałęzi** (widok główny): zwijana lista z wcięciami, panel osoby |
-| `/drzewa/<drzewo>/diagram/<galaz>/` | diagram na płótnie (React Flow) – widok dodatkowy |
+| `/drzewa/<drzewo>/galaz/<galaz>/` | **lista gałęzi** (widok główny): zwijana lista z wcięciami, panel osoby; `cale` = „Całe drzewo” |
+| `/drzewa/<drzewo>/diagram/<galaz>/` | diagram na płótnie (React Flow) – widok dodatkowy (też `cale`) |
 | `/drzewa/<drzewo>/osoba/<id>/` | widok osoby: przodkowie, rodzeństwo, małżonkowie, dzieci |
 | `/drzewa/<drzewo>/osoby/` | alfabetyczny indeks osób z filtrami |
 | `/dane/szukaj-<drzewo>.json` | indeks wyszukiwania osób jednego drzewa (ładowany dopiero na stronie tego drzewa) |
@@ -48,6 +48,7 @@ npm test             # testy: parsowanie, walidacja, polityka dat, wyszukiwarki,
 npm run lint         # eslint + kontrola typów
 npm run waliduj      # walidacja drzew (opcjonalnie: -- <slug>)
 npm run kontrast     # kontrola kontrastu WCAG motywów jasnego i ciemnego
+npm run zastosuj-edycje -- <slug> <plik.json>   # wpisuje do danych zmiany pobrane z serwisu
 ```
 
 ## Struktura danych
@@ -141,7 +142,9 @@ Zasady:
 - Małżeństwo: `kolejnosc` to numer związku (1, 2, …) osoby, która miała ich kilka. Dzieci trafiają pod właściwą
   parę na podstawie swoich `ojciecId` i `matkaId`. Małżonek spoza rodu to zwykła osoba bez rodziców,
   z tą samą `galazId` co partner.
-- Gałąź: każda osoba ma `galazId`. Gałęzie nie muszą być ze sobą połączone. Wybierz żywy kolor `#rrggbb`
+- Gałąź: każda osoba ma `galazId`. Gałęzie nie muszą być ze sobą połączone. Gałąź z `"wspolna": true` (pień wspólny
+  dla wszystkich linii, np. dwa pierwsze pokolenia Lulkiewiczów) nie jest pokazywana jako osobna kategoria:
+  jej osoby widać w widoku **„Całe drzewo”** (`/galaz/cale/`), który jest zawsze pierwszy w wyborze gałęzi. Wybierz żywy kolor `#rrggbb`
   (na stronie koloru używamy zawsze razem z nazwą gałęzi, więc nie jest jedynym nośnikiem informacji).
 
 ## Jak dodać drzewo (krok po kroku)
@@ -190,6 +193,28 @@ dziecko z 1. / 2. związku; `??` i `?` → pole `niepewne`; płeć z listy imion
 imię-nazwisko-rok urodzenia (bez roku u osób żyjących); gałęzie: dzieci Wiktora (pokolenie 3) zaczynają siedem
 linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. i brak informacji o śmierci.
 
+## Edycja osób
+
+Serwis jest statyczny (bez serwera i bazy), więc edycja działa **lokalnie w przeglądarce**: w panelu osoby
+(lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci
+z miejscem, notatka) i „👶 Dodaj dziecko” (z wyborem drugiego rodzica spośród małżonków). Daty wpisuje się jako
+`1891`, `4.03.1891`, `ok. 1891` albo `?` (data nieznana), opcjonalnie z miejscem po przecinku.
+
+- Zmiany zapisują się w `localStorage` (klucz `edycje:<slug>`) i są nakładane na dane z repozytorium na liście
+  i na diagramie; widzisz je tylko Ty, w tej przeglądarce. Strony osób, indeks i wyszukiwarka pokazują dane
+  z repozytorium.
+- Przycisk „Pobierz zmiany (JSON)” zapisuje plik `edycje-<slug>.json`. Żeby zmiany trafiły do serwisu:
+
+  ```bash
+  npm run zastosuj-edycje -- lulkiewicz ~/Pobrane/edycje-lulkiewicz.json
+  npm test && npm run build
+  ```
+
+  Dla drzewa z importem (Lulkiewiczowie) zmiany lądują w `poprawki.json` (`osoby` i `dodane`) i import przelicza
+  `rodzina.json`; dla pozostałych drzew skrypt zmienia `rodzina.json`. Poszerza też zakres lat i datę aktualizacji
+  w `drzewo.json`.
+- Prawdziwa edycja wspólna dla wszystkich odwiedzających wymaga serwera i kont – patrz „Dalsze kroki”.
+
 ## Lista gałęzi i diagram
 
 Główny widok gałęzi to **lista w układzie „outline”**: jeden wiersz na osobę z rodu (małżonkowie w tej samej
@@ -203,6 +228,7 @@ linii), wcięcie według pokolenia z cienką linią prowadzącą, przycisk zwija
   i dzieci oraz przyciskami „Widok osoby” i „Pokaż na diagramie”.
 - Wyszukiwarka z nagłówka rozwija ścieżkę przodków, przewija do wiersza i podświetla go (osoba z innej gałęzi
   otwiera listę jej gałęzi).
+- Kolor kropki przy osobie oznacza **pokolenie** (ta sama paleta przy numerach pokoleń na belce); w widoku „Całe drzewo” cienki pasek z lewej pokazuje gałąź.
 - Lista jest zwirtualizowana (`@tanstack/react-virtual`): w DOM jest tylko kilkadziesiąt wierszy.
 
 Diagram (`@xyflow/react` + `d3-flextree`) jest widokiem dodatkowym. „Dopasuj do ekranu” i widok początkowy

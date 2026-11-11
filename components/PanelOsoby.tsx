@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef } from "react";
-import type { OsobaPanelu } from "@/lib/dane";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { idWidoku } from "@/lib/galezie";
+import type { OsobaPanelu } from "@/lib/panel";
 import type { ParaDrzewa } from "@/lib/drzewo";
 import { pelneImie } from "@/lib/format";
 import type { Galaz } from "@/lib/schemat";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
+import { FormularzDziecka, FormularzEdycji, PasekEdycji } from "./FormularzOsoby";
+import type { ApiEdycji } from "./useEdycje";
 
 type Props = {
   slug: string;
@@ -18,6 +21,10 @@ type Props = {
   widok: "lista" | "diagram";
   /** Lista: odstęp panelu od góry okna (px) – pod nagłówkiem i belką. */
   gora?: number;
+  /** Lokalne edycje osób (zmiana danych, dodawanie dzieci). */
+  api: ApiEdycji;
+  /** Wywoływane po dodaniu dziecka – widok ma je pokazać i zaznaczyć. */
+  naDodane: (id: string) => void;
   naWybor: (id: string) => void;
   naZamkniecie: () => void;
 };
@@ -26,7 +33,11 @@ type Props = {
  * Panel szczegółów osoby: boczny na dużym ekranie, wysuwana szuflada od dołu na telefonie.
  * To jedna z kilku dużych powierzchni ze szkłem (rozmycie tła).
  */
-export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 150, naWybor, naZamkniecie }: Props) {
+export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 150, api, naDodane, naWybor, naZamkniecie }: Props) {
+  const [tryb, ustawTryb] = useState<{ id: string; tryb: "edycja" | "dziecko" } | null>(null);
+  // Tryb edycji dotyczy jednej osoby – po przejściu do innej wracamy do podglądu.
+  const aktywnyTryb = tryb?.id === osoba.id ? tryb.tryb : "podglad";
+  const zamknijFormularz = () => ustawTryb(null);
   const naglowek = useRef<HTMLHeadingElement>(null);
   const galaz = galezie.find((g) => g.id === osoba.galazId)!;
 
@@ -78,7 +89,7 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
       <div className="flex items-start gap-2 px-5 pt-3">
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-tekst-2">
-            Pokolenie {osoba.pokolenie} · {galaz.nazwa}
+            Pokolenie {osoba.pokolenie}{galaz.wspolna ? "" : ` · ${galaz.nazwa}`}
           </p>
           <h2 ref={naglowek} tabIndex={-1} className="mt-0.5 text-2xl leading-tight outline-none">
             {pelneImie(osoba)}
@@ -91,6 +102,12 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4 pt-2">
+        {aktywnyTryb === "edycja" ? (
+          <FormularzEdycji key={osoba.id} osoba={osoba} api={api} naGotowe={zamknijFormularz} />
+        ) : aktywnyTryb === "dziecko" ? (
+          <FormularzDziecka key={osoba.id} osoba={osoba} malzonkowie={malzonkowie} wszystkieId={new Set(osoby.keys())} api={api} naDodane={naDodane} naGotowe={zamknijFormularz} />
+        ) : (
+          <>
         {osoba.ukryta ? (
           <p className="text-sm text-tekst-2">Daty i miejsca osób żyjących nie są publikowane.</p>
         ) : (
@@ -121,21 +138,37 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
         )}
         {osoba.notatka && <p className="mt-2 text-[15px] italic">{osoba.notatka}</p>}
 
+          </>
+        )}
+
         <div className="mt-3 grid grid-cols-2 gap-2">
           <Link href={sciezkaOsoby(slug, osoba.id)} className="przycisk przycisk-glowny">
             Widok osoby
           </Link>
           {widok === "lista" ? (
-            <Link href={sciezkaDiagramu(slug, galaz.id, osoba.id)} className="przycisk">
+            <Link href={sciezkaDiagramu(slug, idWidoku(galaz), osoba.id)} className="przycisk">
               Pokaż na diagramie
             </Link>
           ) : (
-            <Link href={sciezkaGalezi(slug, galaz.id, osoba.id)} className="przycisk">
+            <Link href={sciezkaGalezi(slug, idWidoku(galaz), osoba.id)} className="przycisk">
               Pokaż na liście
             </Link>
           )}
         </div>
 
+        {aktywnyTryb === "podglad" && (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "edycja" })}>
+              ✏️ Edytuj dane
+            </button>
+            <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "dziecko" })}>
+              👶 Dodaj dziecko
+            </button>
+          </div>
+        )}
+
+        {aktywnyTryb === "podglad" && (
+          <>
         {[
           { tytul: "Rodzice", lista: rodzice.map((r) => r.osoba) },
           { tytul: malzonkowie.length > 1 ? "Małżonkowie" : "Małżonek", lista: malzonkowie },
@@ -155,6 +188,9 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
               </section>
             ),
         )}
+          </>
+        )}
+        <PasekEdycji api={api} />
       </div>
     </aside>
   );

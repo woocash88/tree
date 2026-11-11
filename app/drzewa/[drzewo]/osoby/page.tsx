@@ -42,7 +42,7 @@ export default async function StronaIndeksu({ params }: Props) {
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-8 pt-8">
         <h1 className="text-4xl">Indeks osób</h1>
         <p className="mt-1 text-tekst-2">{d.meta.nazwa} – wszystkie osoby alfabetycznie według nazwiska.</p>
-        <IndeksOsob slug={d.meta.slug} wiersze={wiersze} galezie={d.galezieLista.map((g) => ({ id: g.id, nazwa: g.nazwa, kolor: g.kolor }))} stulecia={stulecia} />
+        <IndeksOsob slug={d.meta.slug} wiersze={wiersze} galezie={d.galezieLista.filter((g) => !g.wspolna).map((g) => ({ id: g.id, nazwa: g.nazwa, kolor: g.kolor }))} stulecia={stulecia} />
       </main>
       <Stopka drzewo={d.meta} />
     </>

@@ -5,6 +5,7 @@ import { KartaOsoby } from "@/components/KartaOsoby";
 import { Stopka } from "@/components/Stopka";
 import { czyZmarla, opisZdarzenia, pobierzDrzewa, pobierzDrzewo, sciezkaPochodzenia, type OsobaWidoczna } from "@/lib/dane";
 import { lataZycia, pelneImie, wiek } from "@/lib/format";
+import { idWidoku } from "@/lib/galezie";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
 
 type Props = { params: Promise<{ drzewo: string; id: string }> };
@@ -67,17 +68,17 @@ export default async function StronaOsoby({ params }: Props) {
   const osoba = (x: string | null) => (x ? d.osoby.get(x) : undefined);
   const kolor = (x: OsobaWidoczna) => d.galezie.get(x.galazId)!.kolor;
   const nazwaGalezi = (x: OsobaWidoczna) => d.galezie.get(x.galazId)!.nazwa;
-  const karta = (x: OsobaWidoczna, podpis?: string, mala = false) => <KartaOsoby slug={slug} osoba={x} kolor={kolor(x)} galaz={nazwaGalezi(x)} podpis={podpis} mala={mala} />;
+  const karta = (x: OsobaWidoczna, podpis?: string, mala = false, ikona?: string) => <KartaOsoby slug={slug} osoba={x} kolor={kolor(x)} galaz={nazwaGalezi(x)} podpis={podpis} ikona={ikona} mala={mala} />;
   const galaz = d.galezie.get(o.galazId)!;
   const ojciec = osoba(o.ojciecId);
   const matka = osoba(o.matkaId);
   // Puste sekcje (brak dziadków, rodzeństwa, dzieci…) po prostu się nie pojawiają.
   const dziadkowie = [
-    { osoba: osoba(ojciec?.ojciecId ?? null), podpis: "ojciec ojca" },
-    { osoba: osoba(ojciec?.matkaId ?? null), podpis: "matka ojca" },
-    { osoba: osoba(matka?.ojciecId ?? null), podpis: "ojciec matki" },
-    { osoba: osoba(matka?.matkaId ?? null), podpis: "matka matki" },
-  ].filter((x): x is { osoba: OsobaWidoczna; podpis: string } => !!x.osoba);
+    { osoba: osoba(ojciec?.ojciecId ?? null), podpis: "ojciec ojca", ikona: "👴" },
+    { osoba: osoba(ojciec?.matkaId ?? null), podpis: "matka ojca", ikona: "👵" },
+    { osoba: osoba(matka?.ojciecId ?? null), podpis: "ojciec matki", ikona: "👴" },
+    { osoba: osoba(matka?.matkaId ?? null), podpis: "matka matki", ikona: "👵" },
+  ].filter((x): x is { osoba: OsobaWidoczna; podpis: string; ikona: string } => !!x.osoba);
   const zwiazki = d.malzonkowie.get(o.id) ?? [];
   const dzieci = d.dzieci.get(o.id) ?? [];
   const rodzenstwo = d.osobyLista
@@ -126,7 +127,7 @@ export default async function StronaOsoby({ params }: Props) {
             <Poziom tytul="Dziadkowie">
               <ul className="mx-auto flex max-w-4xl flex-wrap justify-center gap-2">
                 {dziadkowie.map((x) => (
-                  <li key={x.podpis} className="basis-[calc(50%-0.25rem)] lg:basis-56">{karta(x.osoba, x.podpis, true)}</li>
+                  <li key={x.podpis} className="basis-[calc(50%-0.25rem)] lg:basis-56">{karta(x.osoba, x.podpis, true, x.ikona)}</li>
                 ))}
               </ul>
             </Poziom>
@@ -138,8 +139,8 @@ export default async function StronaOsoby({ params }: Props) {
           <>
             <Poziom tytul="Rodzice">
               <ul className={`mx-auto grid max-w-2xl gap-2 ${ojciec && matka ? "grid-cols-2" : "max-w-xs grid-cols-1"}`}>
-                {ojciec && <li>{karta(ojciec, "ojciec")}</li>}
-                {matka && <li>{karta(matka, "matka")}</li>}
+                {ojciec && <li>{karta(ojciec, "ojciec", false, "👨")}</li>}
+                {matka && <li>{karta(matka, "matka", false, "👩")}</li>}
               </ul>
               {o.niepewne?.includes("rodzice") && <p className="mt-1 text-center text-sm text-tekst-2">Przypisanie rodziców jest w źródle niejednoznaczne.</p>}
             </Poziom>
@@ -151,8 +152,8 @@ export default async function StronaOsoby({ params }: Props) {
           <article className="szklo px-6 py-6 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">
               Pokolenie {d.pokolenie.get(o.id)} ·{" "}
-              <Link href={sciezkaGalezi(slug, galaz.id, o.id)} className="link">
-                {galaz.nazwa}
+              <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="link">
+                {galaz.wspolna ? "Całe drzewo" : galaz.nazwa}
               </Link>
             </p>
             <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">{pelneImie(o)}</h1>
@@ -198,10 +199,10 @@ export default async function StronaOsoby({ params }: Props) {
             {!!o.niepewne?.length && <p className="mt-3 text-sm text-tekst-2">W źródle: {o.niepewne.map((n) => NIEPEWNE[n]).join(", ")}.</p>}
 
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              <Link href={sciezkaGalezi(slug, galaz.id, o.id)} className="przycisk przycisk-glowny">
+              <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="przycisk przycisk-glowny">
                 Pokaż na liście
               </Link>
-              <Link href={sciezkaDiagramu(slug, galaz.id, o.id)} className="przycisk">
+              <Link href={sciezkaDiagramu(slug, idWidoku(galaz), o.id)} className="przycisk">
                 Pokaż na diagramie
               </Link>
             </div>
@@ -211,7 +212,7 @@ export default async function StronaOsoby({ params }: Props) {
             <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3">
               <ul className="grid gap-2">
                 {zwiazki.map((z) => (
-                  <li key={z.osoba.id}>{karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek")}</li>
+                  <li key={z.osoba.id}>{karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}</li>
                 ))}
               </ul>
             </Poziom>
@@ -253,7 +254,7 @@ export default async function StronaOsoby({ params }: Props) {
                       )}
                       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {lista.map((dz) => (
-                          <li key={dz.id}>{karta(dz, undefined, true)}</li>
+                          <li key={dz.id}>{karta(dz, undefined, true, "👶")}</li>
                         ))}
                       </ul>
                     </div>

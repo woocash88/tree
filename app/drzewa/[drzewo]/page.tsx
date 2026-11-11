@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Stopka } from "@/components/Stopka";
 import { Wyszukiwarka } from "@/components/Wyszukiwarka";
-import { pobierzDrzewo } from "@/lib/dane";
+import { pobierzDrzewo, statystykaWidoku } from "@/lib/dane";
 import { dataPL, ileOsob, ilePokolen, pelneImie } from "@/lib/format";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaIndeksuOsob, sciezkaOsoby } from "@/lib/sciezki";
 
@@ -79,7 +79,7 @@ export default async function StronaDrzewa({ params }: Props) {
             </Link>
           </div>
           <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {d.statystykiGalezi.map(({ galaz, osob, od, do: doRoku }) => (
+            {[statystykaWidoku(d, "cale")!, ...d.statystykiGalezi.filter((x) => !x.galaz.wspolna)].map(({ galaz, osob, od, do: doRoku }) => (
               <li key={galaz.id} className="szklo flex flex-col p-4" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
                 <h3 className="text-lg leading-tight">
                   <span className="znacznik" style={{ ["--kolor" as string]: galaz.kolor }}>
