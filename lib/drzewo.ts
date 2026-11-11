@@ -126,63 +126,71 @@ export function zbudujLas(osoby: OsobaDrzewa[], pary: ParaDrzewa[]): Las {
 }
 
 // ───────────────────────────── geometria ─────────────────────────────
+//
+// Układ POZIOMY: pokolenia biegną od lewej do prawej, dzieci stoją na prawo od rodziców,
+// a małżonkowie jednej jednostki są ustawieni jeden pod drugim.
 
 export const KARTA_SZER = 172;
 export const KARTA_WYS = 62;
-export const ODSTEP_PARY = 22;
-export const ODSTEP_POKOLEN = 74;
-const ODSTEP_RODZENSTWA = 22;
-const ODSTEP_KUZYNOW = 44;
+/** Odstęp pionowy między kartami małżonków jednej jednostki. */
+export const ODSTEP_PARY = 16;
+/** Odstęp poziomy między kolumnami pokoleń (miejsce na linie łączące i przycisk zwijania). */
+export const ODSTEP_POKOLEN = 66;
+const ODSTEP_RODZENSTWA = 14;
+const ODSTEP_KUZYNOW = 30;
 
-export type KartaWJednostce = { osobaId: string; x: number; rola: "glowna" | "partner"; kolejnosc?: number; odsylacz?: boolean };
+/** `y` – przesunięcie karty od góry jednostki. */
+export type KartaWJednostce = { osobaId: string; y: number; rola: "glowna" | "partner"; kolejnosc?: number; odsylacz?: boolean };
 
-/** Rozmieszczenie kart wewnątrz jednostki: [żona 1] [osoba] [żona 2] … albo [osoba] [małżonek]. */
-export function kartyJednostki(j: Jednostka): { karty: KartaWJednostce[]; szerokosc: number; uchwyty: number[]; uchwytGlownej: number } {
+/** Rozmieszczenie kart wewnątrz jednostki (od góry): [żona 1] [osoba] [żona 2] … albo [osoba] [małżonek]. */
+export function kartyJednostki(j: Jednostka): { karty: KartaWJednostce[]; wysokosc: number; uchwyty: number[]; uchwytGlownej: number } {
   const kolejne: KartaWJednostce[] = [];
-  const partner = (p: Partner): KartaWJednostce => ({ osobaId: p.id, x: 0, rola: "partner", kolejnosc: p.kolejnosc, odsylacz: p.odsylacz });
-  const glowna: KartaWJednostce = { osobaId: j.glowna, x: 0, rola: "glowna" };
+  const partner = (p: Partner): KartaWJednostce => ({ osobaId: p.id, y: 0, rola: "partner", kolejnosc: p.kolejnosc, odsylacz: p.odsylacz });
+  const glowna: KartaWJednostce = { osobaId: j.glowna, y: 0, rola: "glowna" };
   if (j.partnerzy.length >= 2) kolejne.push(partner(j.partnerzy[0]), glowna, ...j.partnerzy.slice(1).map(partner));
   else kolejne.push(glowna, ...j.partnerzy.map(partner));
-  kolejne.forEach((k, i) => (k.x = i * (KARTA_SZER + ODSTEP_PARY)));
-  const szerokosc = kolejne.length * KARTA_SZER + (kolejne.length - 1) * ODSTEP_PARY;
-  const xGlownej = glowna.x;
+  kolejne.forEach((k, i) => (k.y = i * (KARTA_WYS + ODSTEP_PARY)));
+  const wysokosc = kolejne.length * KARTA_WYS + (kolejne.length - 1) * ODSTEP_PARY;
+  const yGlownej = glowna.y;
   // Uchwyt pary = środek odstępu między główną osobą a danym partnerem (dla dalszych: środek karty partnera).
   const uchwyty = j.partnerzy.map((p) => {
     const k = kolejne.find((x) => x.rola === "partner" && x.osobaId === p.id)!;
-    if (Math.abs(k.x - xGlownej) === KARTA_SZER + ODSTEP_PARY) return (Math.max(k.x, xGlownej) + Math.min(k.x, xGlownej) + KARTA_SZER) / 2;
-    return k.x + KARTA_SZER / 2;
+    if (Math.abs(k.y - yGlownej) === KARTA_WYS + ODSTEP_PARY) return (Math.max(k.y, yGlownej) + Math.min(k.y, yGlownej) + KARTA_WYS) / 2;
+    return k.y + KARTA_WYS / 2;
   });
-  return { karty: kolejne, szerokosc, uchwyty, uchwytGlownej: xGlownej + KARTA_SZER / 2 };
+  return { karty: kolejne, wysokosc, uchwyty, uchwytGlownej: yGlownej + KARTA_WYS / 2 };
 }
 
-export type Pozycja = { id: string; x: number; y: number; szerokosc: number };
+/** Położenie jednostki na płótnie: lewy górny róg i rozmiar. */
+export type Pozycja = { id: string; x: number; y: number; szerokosc: number; wysokosc: number };
 
-type WezelUkladu = { id: string | null; szerokosc: number; dzieci: WezelUkladu[] };
+type WezelUkladu = { id: string | null; wysokosc: number; dzieci: WezelUkladu[] };
 
 /**
  * Układ widocznej części lasu. `rozwiniete` – jednostki, których dzieci są pokazane;
  * `korzenie` – od których jednostek zacząć (całe drzewo albo jedna gałąź).
+ * d3-flextree liczy układ pionowy, więc osie zamieniamy: „szerokość” drzewa to nasza wysokość.
  */
 export function ulozLas(las: Las, korzenie: string[], rozwiniete: ReadonlySet<string>): Pozycja[] {
   const buduj = (id: string): WezelUkladu => {
     const j = las.jednostki.get(id)!;
     return {
       id,
-      szerokosc: kartyJednostki(j).szerokosc,
+      wysokosc: kartyJednostki(j).wysokosc,
       dzieci: rozwiniete.has(id) ? j.dzieci.map(buduj) : [],
     };
   };
-  const korzen: WezelUkladu = { id: null, szerokosc: 0, dzieci: korzenie.map(buduj) };
+  const korzen: WezelUkladu = { id: null, wysokosc: 0, dzieci: korzenie.map(buduj) };
   const uklad = flextree<WezelUkladu>({
     children: (d) => d.dzieci,
-    nodeSize: (n) => (n.data.id === null ? [0, 0] : [n.data.szerokosc, KARTA_WYS + ODSTEP_POKOLEN]),
+    nodeSize: (n) => (n.data.id === null ? [0, 0] : [n.data.wysokosc, KARTA_SZER + ODSTEP_POKOLEN]),
     spacing: (a, b) => (a.parent === b.parent ? ODSTEP_RODZENSTWA : ODSTEP_KUZYNOW),
   });
   const drzewo = uklad.hierarchy(korzen);
   uklad(drzewo);
   const wynik: Pozycja[] = [];
   drzewo.each((n) => {
-    if (n.data.id !== null) wynik.push({ id: n.data.id, x: n.x - n.data.szerokosc / 2, y: n.y, szerokosc: n.data.szerokosc });
+    if (n.data.id !== null) wynik.push({ id: n.data.id, x: n.y, y: n.x - n.data.wysokosc / 2, szerokosc: KARTA_SZER, wysokosc: n.data.wysokosc });
   });
   return wynik;
 }

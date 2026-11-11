@@ -231,7 +231,7 @@ linii), wcięcie według pokolenia z cienką linią prowadzącą, przycisk zwija
 - Kolor kropki przy osobie oznacza **pokolenie** (ta sama paleta przy numerach pokoleń na belce); w widoku „Całe drzewo” cienki pasek z lewej pokazuje gałąź.
 - Lista jest zwirtualizowana (`@tanstack/react-virtual`): w DOM jest tylko kilkadziesiąt wierszy.
 
-Diagram (`@xyflow/react` + `d3-flextree`) jest widokiem dodatkowym. „Dopasuj do ekranu” i widok początkowy
+Diagram (`@xyflow/react` + `d3-flextree`) jest widokiem dodatkowym i ma układ **poziomy**: pokolenia od lewej do prawej, małżonkowie jedno pod drugim. „Dopasuj do ekranu” i widok początkowy
 dobierają powiększenie tak, by daty na kartach były czytelne bez przybliżania (≥ 0,9; na telefonie ≥ 0,8)
 i by nad drzewem nie było pustego pola. Gdy całość się nie mieści, widok dopasowuje się do wybranej osoby
 (albo korzenia) i pokazuje podpowiedź „użyj wyszukiwarki lub zwijania”.
