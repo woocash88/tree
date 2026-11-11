@@ -416,7 +416,7 @@ function ListaGaleziWnetrze({ slug, osoby: osobyBazowe, pary, galezie, galazId, 
                     className={`wiersz-listy absolute left-0 top-0 flex w-full cursor-pointer items-center outline-offset-[-2px] ${podswietlona === w.id ? "podswietlona" : ""}`}
                     style={{ height: wysokoscWiersza, transform: `translateY(${v.start - wirtualizator.options.scrollMargin}px)`, borderLeft: galazId === "cale" ? `3px solid ${koloryGalezi.get(o.galazId) ?? "transparent"}` : undefined }}
                   >
-                    <span aria-hidden="true" className="prowadnice pointer-events-none absolute inset-y-0 left-0" style={{ width: w.poziom * WCIECIE + 19, ["--wciecie" as string]: `${WCIECIE}px`, backgroundPosition: "20px 0" }} />
+                    <Polaczenia ostatni={w.ostatni} wysokosc={wysokoscWiersza} />
                     <div className="relative flex min-w-0 flex-1 items-center gap-2 pr-3" style={{ paddingLeft: w.poziom * WCIECIE + 8 }}>
                       {w.maDzieci ? (
                         <button
@@ -482,6 +482,32 @@ function ListaGaleziWnetrze({ slug, osoby: osobyBazowe, pary, galezie, galazId, 
         </div>
       </main>
     </>
+  );
+}
+
+/**
+ * Linie łączące wiersz z rodzicem i rodzeństwem (jak w eksploratorze plików): pionowa linia pod rodzicem,
+ * od niej poziome odnogi do każdego dziecka, a przy ostatnim dziecku zaokrąglone zakończenie.
+ */
+function Polaczenia({ ostatni, wysokosc }: { ostatni: boolean[]; wysokosc: number }) {
+  const p = ostatni.length;
+  if (!p) return null;
+  const srodek = wysokosc / 2;
+  const d: string[] = [];
+  for (let l = 1; l <= p; l++) {
+    const x = (l - 1) * WCIECIE + 20.5;
+    if (l < p) {
+      if (!ostatni[l - 1]) d.push(`M${x} 0V${wysokosc}`); // linia rodzeństwa przodka biegnie dalej
+    } else if (ostatni[l - 1]) {
+      d.push(`M${x} 0V${srodek - 5}a5 5 0 0 0 5 5H${x + 11}`);
+    } else {
+      d.push(`M${x} 0V${wysokosc}M${x} ${srodek}H${x + 11}`);
+    }
+  }
+  return (
+    <svg aria-hidden="true" width={p * WCIECIE + 20} height={wysokosc} className="pointer-events-none absolute left-0 top-0 text-tekst-2/60" fill="none" stroke="currentColor" strokeWidth="1.3">
+      <path d={d.join("")} />
+    </svg>
   );
 }
 

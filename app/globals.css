@@ -253,12 +253,6 @@ h1, h2, h3 {
   }
 }
 
-/* Prowadnice wcięć listy (jak w eksploratorze plików): jedna cienka linia na każdy poziom. */
-.prowadnice {
-  background-image: repeating-linear-gradient(to right, var(--kreska) 0 1px, transparent 1px var(--wciecie, 20px));
-  background-position: 9px 0;
-}
-
 @keyframes podswietlenie {
   0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
   25%, 75% { box-shadow: inset 3px 0 0 var(--akcent); background-color: var(--zaznaczenie); }

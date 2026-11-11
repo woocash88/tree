@@ -66,6 +66,14 @@ describe("nakładanie edycji na osoby", () => {
     expect(las.jednostki.get("marek-przykladowski-1935")!.dzieci).toContain(id);
   });
 
+  it("ręcznie wpisane imię usuwa znacznik niepewności „?”", () => {
+    const o = { ...przyklad.rodzina.osoby[0], niepewne: ["imie" as const, "miejsce" as const] };
+    expect(zastosujPatch(o, { imie: "Jan" }).niepewne).toEqual(["miejsce"]);
+    expect(zastosujPatch({ ...o, niepewne: ["imie" as const] }, { imie: "Jan" }).niepewne).toBeUndefined();
+    const panel = dane.osoby.map((x) => ({ ...x, niepewna: true }));
+    expect(naPanelu(panel, { osoby: { [stanislaw.id]: { imie: "Stach" } }, dodane: [] }).find((x) => x.id === stanislaw.id)!.niepewna).toBe(false);
+  });
+
   it("id nowej osoby jest unikalne", () => {
     expect(noweId("Jan", "Kowalski", 1900, new Set(["jan-kowalski-1900"]))).toBe("jan-kowalski-1900-2");
   });

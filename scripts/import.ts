@@ -16,6 +16,7 @@ import { pathToFileURL } from "node:url";
 import { normalizuj } from "../lib/format";
 import type { DataZdarzenia, Galaz, Malzenstwo, Osoba, Rodzina } from "../lib/schemat";
 import { katalogDrzewa } from "../lib/drzewa-pliki";
+import { zastosujPatch } from "../lib/edycje";
 import { walidujRodzine } from "../lib/walidacja";
 import { IMIONA_MESKIE, IMIONA_ZENSKIE } from "./imiona";
 
@@ -639,9 +640,7 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
     const idx = wynikOsoby.findIndex((o) => o.id === id);
     if (idx < 0) throw new Error(`poprawki.json: nie ma osoby o id „${id}” – popraw lub usuń ten wpis.`);
     if ("id" in pola) throw new Error(`poprawki.json: nie można zmieniać pola „id” (osoba „${id}”).`);
-    const scalona: Record<string, unknown> = { ...wynikOsoby[idx], ...pola };
-    for (const [k, v] of Object.entries(pola)) if (v === null && k !== "ojciecId" && k !== "matkaId") delete scalona[k];
-    wynikOsoby[idx] = scalona as Osoba;
+    wynikOsoby[idx] = zastosujPatch(wynikOsoby[idx], pola);
   }
   for (const nowa of poprawki.dodane ?? []) {
     if (wynikOsoby.some((o) => o.id === nowa.id)) throw new Error(`poprawki.json → dodane: osoba o id „${nowa.id}” już istnieje.`);

@@ -36,7 +36,8 @@ export function osobaPanelu(o: ZrodloPanelu, pokolenie: number): OsobaPanelu {
     ojciecId: o.ojciecId,
     matkaId: o.matkaId,
     zmarla,
-    niepewna: !!o.niepewne?.length,
+    // „?” przy nazwisku tylko wtedy, gdy w źródle niepewny jest sam wpis albo imię/nazwisko (nie np. miejsce).
+    niepewna: !!o.niepewne?.some((n) => n === "wpis" || n === "imie" || n === "nazwisko"),
     plec: o.plec,
     ur: opisZdarzenia(o.urodzenie),
     // Pustą datę śmierci pokazujemy tylko osobom, które według danych nie żyją.

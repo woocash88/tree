@@ -96,6 +96,8 @@ export function naPanelu(bazowe: OsobaPanelu[], e: Edycje): OsobaPanelu[] {
     const p = e.osoby[o.id];
     if (!p) return o;
     const nowa: OsobaPanelu = { ...o };
+    // Ręcznie wpisane imię lub nazwisko przestaje być „niepewne”.
+    if (p.imie !== undefined || p.nazwisko !== undefined) nowa.niepewna = false;
     if (p.imie !== undefined) nowa.imie = p.imie;
     if (p.nazwisko !== undefined) nowa.nazwisko = p.nazwisko;
     if (p.nazwiskoRodowe !== undefined) {
@@ -136,8 +138,13 @@ export function doPliku(slug: string, e: Edycje): string {
 }
 
 /** Nakłada zmianę na osobę z rodzina.json (`null` usuwa pole opcjonalne). */
-export function zastosujPatch(o: Osoba, p: PatchOsoby): Osoba {
+export function zastosujPatch(o: Osoba, p: Partial<Osoba> | PatchOsoby): Osoba {
   const wynik: Record<string, unknown> = { ...o, ...p };
-  for (const [k, v] of Object.entries(p)) if (v === null) delete wynik[k];
+  for (const [k, v] of Object.entries(p)) if (v === null && k !== "ojciecId" && k !== "matkaId") delete wynik[k];
+  if (o.niepewne && (p.imie !== undefined || p.nazwisko !== undefined)) {
+    const zostaje = o.niepewne.filter((n) => !(n === "imie" && p.imie !== undefined) && !(n === "nazwisko" && p.nazwisko !== undefined));
+    if (zostaje.length) wynik.niepewne = zostaje;
+    else delete wynik.niepewne;
+  }
   return wynik as Osoba;
 }

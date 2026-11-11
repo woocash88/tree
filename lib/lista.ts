@@ -16,12 +16,17 @@ export type WierszListy = {
   potomkow: number;
   malzonkowie: { id: string; kolejnosc: number; odsylacz: boolean }[];
   rodzicId: string | null;
+  /**
+   * Do rysowania linii łączących z potomstwem: dla każdego poziomu 1..poziom informacja, czy przodek na tym poziomie
+   * (a na ostatnim miejscu – sam wiersz) jest ostatnim dzieckiem swojego rodzica. Pusta dla korzeni.
+   */
+  ostatni: boolean[];
 };
 
 /** Widoczne wiersze w kolejności wyświetlania (przejście w głąb). */
 export function zbudujWiersze(las: Las, korzenie: string[], rozwiniete: ReadonlySet<string>): WierszListy[] {
   const wynik: WierszListy[] = [];
-  const idz = (id: string, poziom: number, rodzicId: string | null) => {
+  const idz = (id: string, poziom: number, rodzicId: string | null, ostatni: boolean[]) => {
     const j = las.jednostki.get(id)!;
     const otwarty = rozwiniete.has(id) && j.dzieci.length > 0;
     wynik.push({
@@ -32,10 +37,11 @@ export function zbudujWiersze(las: Las, korzenie: string[], rozwiniete: Readonly
       potomkow: j.potomkow,
       malzonkowie: j.partnerzy.map((p) => ({ id: p.id, kolejnosc: p.kolejnosc, odsylacz: p.odsylacz })),
       rodzicId,
+      ostatni,
     });
-    if (otwarty) for (const d of j.dzieci) idz(d, poziom + 1, id);
+    if (otwarty) j.dzieci.forEach((d, i) => idz(d, poziom + 1, id, [...ostatni, i === j.dzieci.length - 1]));
   };
-  for (const k of korzenie) idz(k, 0, null);
+  for (const k of korzenie) idz(k, 0, null, []);
   return wynik;
 }
 

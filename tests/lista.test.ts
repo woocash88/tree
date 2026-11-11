@@ -23,6 +23,16 @@ describe("lista gałęzi (outline)", () => {
     expect(wiersze.filter((w) => w.poziom === 1).map((w) => w.id)).toEqual(["piotr-przykladowski-1848", "jozef-przykladowski-1855", "anna-przykladowska-1851"]);
   });
 
+  it("zaznacza ostatnie dziecko każdego rodzica (do rysowania linii łączących)", () => {
+    const wiersze = zbudujWiersze(las, korzenie, rozwinDoPoziomu(las, korzenie, 3));
+    const poId = new Map(wiersze.map((w) => [w.id, w]));
+    expect(poId.get("jan-przykladowski-1822")!.ostatni).toEqual([]);
+    expect(poId.get("piotr-przykladowski-1848")!.ostatni).toEqual([false]);
+    expect(poId.get("anna-przykladowska-1851")!.ostatni).toEqual([true]);
+    expect(poId.get("wanda-przykladowska-1877")!.ostatni).toEqual([false, true]); // ostatnie dziecko Piotra
+    expect(poId.get("stanislaw-przykladowski-1874")!.ostatni).toEqual([false, false]);
+  });
+
   it("przy węzłach zwiniętych podaje licznik potomków (z małżonkami), a małżonków w jednym wierszu", () => {
     const wiersze = zbudujWiersze(las, korzenie, rozwinDoPoziomu(las, korzenie, 1));
     expect(wiersze).toHaveLength(1);
