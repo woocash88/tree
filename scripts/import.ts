@@ -1,12 +1,12 @@
 /**
- * Import drzewa z data/zrodlo/lulkiewicz.txt do data/rodzina.json.
+ * Import drzewa ze źródła tekstowego: data/drzewa/<slug>/zrodlo/<slug>.txt → data/drzewa/<slug>/rodzina.json.
  *
- *   npm run import
+ *   npm run import -- lulkiewicz
  *
  * Zasady:
- *  - skrypt niczego nie zgaduje – każda niejednoznaczność trafia do data/import-raport.md
+ *  - skrypt niczego nie zgaduje – każda niejednoznaczność trafia do data/drzewa/<slug>/import-raport.md
  *    z numerem wiersza i powodem;
- *  - ręczne poprawki z data/poprawki.json są nakładane po imporcie, więc ponowne
+ *  - ręczne poprawki z data/drzewa/<slug>/poprawki.json są nakładane po imporcie, więc ponowne
  *    uruchomienie ich nie kasuje;
  *  - wynik przechodzi tę samą walidację co build strony.
  */
@@ -15,14 +15,21 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { normalizuj } from "../lib/format";
 import type { DataZdarzenia, Galaz, Malzenstwo, Osoba, Rodzina } from "../lib/schemat";
+import { katalogDrzewa } from "../lib/drzewa-pliki";
 import { walidujRodzine } from "../lib/walidacja";
 import { IMIONA_MESKIE, IMIONA_ZENSKIE } from "./imiona";
 
-const KATALOG = path.resolve(__dirname, "..");
-export const PLIK_ZRODLA = path.join(KATALOG, "data/zrodlo/lulkiewicz.txt");
-export const PLIK_POPRAWEK = path.join(KATALOG, "data/poprawki.json");
-const PLIK_WYNIKU = path.join(KATALOG, "data/rodzina.json");
-const PLIK_RAPORTU = path.join(KATALOG, "data/import-raport.md");
+/** Ścieżki plików importu dla drzewa o danym slugu (wszystko leży w data/drzewa/<slug>/). */
+export function sciezkiImportu(slug: string) {
+  const katalog = katalogDrzewa(slug);
+  return {
+    katalog,
+    zrodlo: path.join(katalog, "zrodlo", `${slug}.txt`),
+    poprawki: path.join(katalog, "poprawki.json"),
+    wynik: path.join(katalog, "rodzina.json"),
+    raport: path.join(katalog, "import-raport.md"),
+  };
+}
 
 /** Pokolenia 1–2 to wspólny pień; każde dziecko osoby z pokolenia 2 zaczyna własną gałąź. */
 const POKOLENIE_GALEZI = 3;
@@ -31,19 +38,19 @@ const ROK_GRANICZNY_ZYJACYCH = 1925;
 const PIEN: Galaz = {
   id: "pien",
   nazwa: "Wspólny pień",
-  kolor: "#4a3728",
+  kolor: "#64748b",
   opis: "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii.",
 };
 
 /** Siedem linii potomków Wiktora Lulkiewicza (ur. ok. 1780), w kolejności ze źródła. */
 const LINIE: { imie: string; id: string; dopelniacz: string; kolor: string }[] = [
-  { imie: "Antoni", id: "antoni", dopelniacz: "Antoniego", kolor: "#7a2331" }, // bordo
-  { imie: "Konstancja", id: "konstancja", dopelniacz: "Konstancji", kolor: "#63345a" }, // śliwka
-  { imie: "Julian", id: "julian", dopelniacz: "Juliana", kolor: "#1f4d3a" }, // butelkowa zieleń
-  { imie: "Józefa", id: "jozefa", dopelniacz: "Józefy", kolor: "#9a4a22" }, // rdza
-  { imie: "Wojciech", id: "wojciech", dopelniacz: "Wojciecha", kolor: "#2b3f66" }, // atrament
-  { imie: "Filip", id: "filip", dopelniacz: "Filipa", kolor: "#806210" }, // stare złoto
-  { imie: "Józef", id: "jozef", dopelniacz: "Józefa", kolor: "#55602a" }, // oliwka
+  { imie: "Antoni", id: "antoni", dopelniacz: "Antoniego", kolor: "#e11d48" }, // róża
+  { imie: "Konstancja", id: "konstancja", dopelniacz: "Konstancji", kolor: "#8b5cf6" }, // fiolet
+  { imie: "Julian", id: "julian", dopelniacz: "Juliana", kolor: "#059669" }, // szmaragd
+  { imie: "Józefa", id: "jozefa", dopelniacz: "Józefy", kolor: "#ea580c" }, // pomarańcz
+  { imie: "Wojciech", id: "wojciech", dopelniacz: "Wojciecha", kolor: "#3b82f6" }, // błękit
+  { imie: "Filip", id: "filip", dopelniacz: "Filipa", kolor: "#58980b" }, // limonka
+  { imie: "Józef", id: "jozef", dopelniacz: "Józefa", kolor: "#0891b2" }, // turkus
 ];
 
 // ───────────────────────────── raport ─────────────────────────────
@@ -242,7 +249,7 @@ function slug(tekst: string): string {
 export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu {
   const uwagi: Uwaga[] = [];
   const uwaga = (u: Uwaga) => uwagi.push(u);
-  const wiersze = zrodlo.split("\n");
+  const wiersze = zrodlo.replace(/\r\n?/g, "\n").split("\n"); // źródło może mieć zakończenia wierszy CRLF (Windows)
 
   const osoby: OsobaRobocza[] = [];
   const malzenstwa: Malzenstwo[] = [];
@@ -515,7 +522,7 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
       uwaga({
         sekcja: "duplikaty",
         wiersz: a.wierszZrodla!,
-        tekst: `Para „${k}” występuje też w wierszu ${a0.wierszZrodla}. Być może to te same osoby (małżeństwo dwojga potomków): „${a.id}” ≟ „${b0.id}”, „${b.id}” ≟ „${a0.id}”. Nie scalono – w razie potrzeby użyj sekcji „scal” w data/poprawki.json.`,
+        tekst: `Para „${k}” występuje też w wierszu ${a0.wierszZrodla}. Być może to te same osoby (małżeństwo dwojga potomków): „${a.id}” ≟ „${b0.id}”, „${b.id}” ≟ „${a0.id}”. Nie scalono – w razie potrzeby użyj sekcji „scal” w poprawki.json.`,
       });
     } else {
       pary.set(k, m);
@@ -578,7 +585,7 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
   // Osoby żyjące: urodzone po roku granicznym, bez informacji o śmierci.
   for (const o of osoby) {
     const rok = o.urodzenie.wartosc ? Number(o.urodzenie.wartosc.slice(0, 4)) : null;
-    if (rok !== null && rok > ROK_GRANICZNY_ZYJACYCH && !o.smierc) o.ukryjDaty = true;
+    if (rok !== null && rok > ROK_GRANICZNY_ZYJACYCH && !o.smierc) o.zyjaca = true;
   }
 
   // Opisy gałęzi.
@@ -601,7 +608,7 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
   });
   let wynikMalzenstwa = malzenstwa;
   for (const { zostaw, usun } of poprawki.scal ?? []) {
-    if (!poId.has(zostaw) || !poId.has(usun)) throw new Error(`data/poprawki.json → scal: nie ma osoby „${poId.has(zostaw) ? usun : zostaw}”.`);
+    if (!poId.has(zostaw) || !poId.has(usun)) throw new Error(`poprawki.json → scal: nie ma osoby „${poId.has(zostaw) ? usun : zostaw}”.`);
     const zamien = (id: string | null) => (id === usun ? zostaw : id);
     const usuwana = wynikOsoby.find((o) => o.id === usun)!;
     wynikOsoby = wynikOsoby
@@ -610,7 +617,7 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
         const scalona = o.id === zostaw
           ? { ...o, ojciecId: o.ojciecId ?? usuwana.ojciecId, matkaId: o.matkaId ?? usuwana.matkaId, notatka: o.notatka ?? usuwana.notatka,
               urodzenie: o.urodzenie.wartosc ? o.urodzenie : usuwana.urodzenie, ...(o.smierc ?? usuwana.smierc ? { smierc: o.smierc ?? usuwana.smierc } : {}),
-              ...(o.ukryjDaty || usuwana.ukryjDaty ? { ukryjDaty: true } : {}) }
+              ...(o.zyjaca || usuwana.zyjaca ? { zyjaca: true } : {}) }
           : o;
         return { ...scalona, ojciecId: zamien(scalona.ojciecId), matkaId: zamien(scalona.matkaId) };
       });
@@ -627,17 +634,14 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
   }
   for (const [id, pola] of Object.entries(poprawki.osoby ?? {})) {
     const idx = wynikOsoby.findIndex((o) => o.id === id);
-    if (idx < 0) throw new Error(`data/poprawki.json: nie ma osoby o id „${id}” – popraw lub usuń ten wpis.`);
-    if ("id" in pola) throw new Error(`data/poprawki.json: nie można zmieniać pola „id” (osoba „${id}”).`);
+    if (idx < 0) throw new Error(`poprawki.json: nie ma osoby o id „${id}” – popraw lub usuń ten wpis.`);
+    if ("id" in pola) throw new Error(`poprawki.json: nie można zmieniać pola „id” (osoba „${id}”).`);
     const scalona: Record<string, unknown> = { ...wynikOsoby[idx], ...pola };
     for (const [k, v] of Object.entries(pola)) if (v === null && k !== "ojciecId" && k !== "matkaId") delete scalona[k];
     wynikOsoby[idx] = scalona as Osoba;
   }
 
   const surowa = {
-    tytul: "Drzewo genealogiczne rodziny Lulkiewiczów",
-    opis: "Potomkowie Sebastiana i Wiktora Lulkiewiczów z Kobylina – dziesięć pokoleń, od ok. 1780 r.",
-    zrodlo: "https://genealogia.okiem.pl/drzewo/238/lulkiewicz",
     galezie,
     osoby: wynikOsoby,
     malzenstwa: wynikMalzenstwa,
@@ -663,13 +667,13 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
 
 export function zbudujRaport(w: WynikImportu, poprawki: Poprawki): string {
   const s = w.statystyki;
-  const ukryte = w.rodzina.osoby.filter((o) => o.ukryjDaty).length;
+  const ukryte = w.rodzina.osoby.filter((o) => o.zyjaca).length;
   const linie: string[] = [
     "# Raport importu",
     "",
     "Plik generowany przez `npm run import` – nie edytuj go ręcznie.",
-    "Zawiera wszystko, czego skrypt nie potrafił jednoznacznie odczytać z `data/zrodlo/lulkiewicz.txt`.",
-    "Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom import ponownie.",
+    "Zawiera wszystko, czego skrypt nie potrafił jednoznacznie odczytać z pliku źródłowego (`zrodlo/<slug>.txt`).",
+    "Poprawki wpisuj do `poprawki.json` drzewa (opis w README), a następnie uruchom import ponownie.",
     "",
     "## Podsumowanie",
     "",
@@ -678,7 +682,7 @@ export function zbudujRaport(w: WynikImportu, poprawki: Poprawki): string {
     `- Osoby scalone (odsyłacze „[n]” i sekcja „scal”): **${s.scalonych}**.`,
     `- Osoby w \`rodzina.json\`: **${s.osob}** = ${s.wierszyPotomkow} + ${s.wzmianekMalzonkow} − ${s.scalonych}.`,
     `- Małżeństwa: **${s.malzenstw}**, pokolenia: **${s.pokolen}**, gałęzie: **${w.rodzina.galezie.length}** (w tym wspólny pień).`,
-    `- Osoby z flagą \`ukryjDaty\` (ur. po ${ROK_GRANICZNY_ZYJACYCH}, bez daty śmierci): **${ukryte}**.`,
+    `- Osoby z flagą \`zyjaca\` (ur. po ${ROK_GRANICZNY_ZYJACYCH}, bez daty śmierci): **${ukryte}**.`,
     `- Zastosowane poprawki ręczne: **${Object.keys(poprawki.osoby ?? {}).length}** osób, **${(poprawki.scal ?? []).length}** scaleń.`,
     "",
   ];
@@ -690,7 +694,7 @@ export function zbudujRaport(w: WynikImportu, poprawki: Poprawki): string {
     linie.push("");
   }
   const zastosowane = Object.entries(poprawki.osoby ?? {});
-  linie.push("## Zastosowane poprawki z data/poprawki.json", "");
+  linie.push("## Zastosowane poprawki z poprawki.json", "");
   if (!zastosowane.length && !(poprawki.scal ?? []).length) linie.push("_Brak._");
   for (const [id, pola] of zastosowane) linie.push(`- \`${id}\`: ${Object.entries(pola).map(([k, v]) => `${k} → ${JSON.stringify(v)}`).join(", ")}`);
   for (const sc of poprawki.scal ?? []) linie.push(`- scalono \`${sc.usun}\` → \`${sc.zostaw}\``);
@@ -698,27 +702,34 @@ export function zbudujRaport(w: WynikImportu, poprawki: Poprawki): string {
   return linie.join("\n");
 }
 
-export function wczytajPoprawki(): Poprawki {
-  if (!fs.existsSync(PLIK_POPRAWEK)) return {};
-  const { osoby, scal } = JSON.parse(fs.readFileSync(PLIK_POPRAWEK, "utf8"));
+export function wczytajPoprawki(slug: string): Poprawki {
+  const plik = sciezkiImportu(slug).poprawki;
+  if (!fs.existsSync(plik)) return {};
+  const { osoby, scal } = JSON.parse(fs.readFileSync(plik, "utf8"));
   return { osoby, scal };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  if (!fs.existsSync(PLIK_ZRODLA)) {
-    console.error(`Brak pliku ${path.relative(KATALOG, PLIK_ZRODLA)} – wklej do niego tekst drzewa ze strony źródłowej.`);
+  const slug = process.argv[2];
+  if (!slug) {
+    console.error("Podaj slug drzewa, np.: npm run import -- lulkiewicz");
+    process.exit(1);
+  }
+  const sc = sciezkiImportu(slug);
+  if (!fs.existsSync(sc.zrodlo)) {
+    console.error(`Drzewo „${slug}”: brak pliku ${path.relative(process.cwd(), sc.zrodlo)} – wklej do niego tekst drzewa ze strony źródłowej.`);
     process.exit(1);
   }
   try {
-    const poprawki = wczytajPoprawki();
-    const wynik = importuj(fs.readFileSync(PLIK_ZRODLA, "utf8"), poprawki);
-    fs.writeFileSync(PLIK_WYNIKU, JSON.stringify(wynik.rodzina, null, 2) + "\n");
-    fs.writeFileSync(PLIK_RAPORTU, zbudujRaport(wynik, poprawki));
+    const poprawki = wczytajPoprawki(slug);
+    const wynik = importuj(fs.readFileSync(sc.zrodlo, "utf8"), poprawki);
+    fs.writeFileSync(sc.wynik, JSON.stringify(wynik.rodzina, null, 2) + "\n");
+    fs.writeFileSync(sc.raport, zbudujRaport(wynik, poprawki));
     const s = wynik.statystyki;
-    console.log(`Zaimportowano ${s.osob} osób, ${s.malzenstw} małżeństw, ${s.pokolen} pokoleń.`);
-    console.log(`Uwagi do przejrzenia: ${wynik.uwagi.length} → data/import-raport.md`);
+    console.log(`Drzewo „${slug}”: zaimportowano ${s.osob} osób, ${s.malzenstw} małżeństw, ${s.pokolen} pokoleń.`);
+    console.log(`Uwagi do przejrzenia: ${wynik.uwagi.length} → ${path.relative(process.cwd(), sc.raport)}`);
   } catch (e) {
-    console.error(e instanceof Error ? e.message : e);
+    console.error(`Drzewo „${slug}”: ${e instanceof Error ? e.message : e}`);
     process.exit(1);
   }
 }

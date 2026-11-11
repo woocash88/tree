@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import przyklad from "../data/przyklad.json";
+import przyklad from "./przyklad.json";
 import { BladDanych, walidujRodzine } from "../lib/walidacja";
 
 const kopia = () => structuredClone(przyklad) as typeof przyklad;

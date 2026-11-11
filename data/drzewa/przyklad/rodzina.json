@@ -1,0 +1,794 @@
+{
+ "galezie": [
+  {
+   "id": "przykladowscy",
+   "nazwa": "Przykładowscy",
+   "kolor": "#3b82f6",
+   "opis": "Fikcyjna linia Przykładowskich z Rzeczywiska."
+  },
+  {
+   "id": "wzorowscy",
+   "nazwa": "Wzorowscy",
+   "kolor": "#ea580c",
+   "opis": "Fikcyjna linia Wzorowskich z Rzeczywiska."
+  }
+ ],
+ "osoby": [
+  {
+   "id": "jan-przykladowski-1822",
+   "imie": "Jan",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1822-03-14",
+    "dokladnosc": "dokladna",
+    "miejsce": "Rzeczywisko"
+   },
+   "smierc": {
+    "wartosc": "1890-11-02",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "maria-przykladowska-1826",
+   "imie": "Maria",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Wzorcowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1826",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1899",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "piotr-przykladowski-1848",
+   "imie": "Piotr",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1848-06-21",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1921-01-30",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "jan-przykladowski-1822",
+   "matkaId": "maria-przykladowska-1826",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "helena-przykladowska-1852",
+   "imie": "Helena",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Modelowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1852",
+    "dokladnosc": "okolo"
+   },
+   "smierc": {
+    "wartosc": "1930",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "stanislaw-przykladowski-1874",
+   "imie": "Stanisław",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1874-09-05",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1945-05-17",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "piotr-przykladowski-1848",
+   "matkaId": "helena-przykladowska-1852",
+   "galazId": "przykladowscy",
+   "notatka": "Przykładowy wpis: prowadził młyn w Rzeczywisku."
+  },
+  {
+   "id": "zofia-przykladowska-1878",
+   "imie": "Zofia",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Próbna",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1878",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1950",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "tadeusz-przykladowski-1903",
+   "imie": "Tadeusz",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1903-12-01",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1980-08-09",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "stanislaw-przykladowski-1874",
+   "matkaId": "zofia-przykladowska-1878",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "irena-przykladowska-1908",
+   "imie": "Irena",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Okazowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1908",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1990",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "marek-przykladowski-1935",
+   "imie": "Marek",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1935-04-18",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "2012-02-27",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "tadeusz-przykladowski-1903",
+   "matkaId": "irena-przykladowska-1908",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "barbara-przykladowska-1938",
+   "imie": "Barbara",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Pokazowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1938",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "2015",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "ewa-przykladowska",
+   "imie": "Ewa",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1940-07-07",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "tadeusz-przykladowski-1903",
+   "matkaId": "irena-przykladowska-1908",
+   "galazId": "przykladowscy",
+   "zyjaca": true
+  },
+  {
+   "id": "halina-przykladowska-1906",
+   "imie": "Halina",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1906",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1999",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "stanislaw-przykladowski-1874",
+   "matkaId": "zofia-przykladowska-1878",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "waclaw-przykladowski-1910",
+   "imie": "Wacław",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1910",
+    "dokladnosc": "okolo"
+   },
+   "smierc": {
+    "wartosc": "1944",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "stanislaw-przykladowski-1874",
+   "matkaId": "zofia-przykladowska-1878",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "wanda-przykladowska-1877",
+   "imie": "Wanda",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1877-02-11",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1960",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "piotr-przykladowski-1848",
+   "matkaId": "helena-przykladowska-1852",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "jozef-przykladowski-1855",
+   "imie": "Józef",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1855",
+    "dokladnosc": "okolo"
+   },
+   "smierc": {
+    "wartosc": "1930",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "jan-przykladowski-1822",
+   "matkaId": "maria-przykladowska-1826",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "rozalia-przykladowska-1860",
+   "imie": "Rozalia",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Wzorowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1860",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1935",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "franciszek-przykladowski-1884",
+   "imie": "Franciszek",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1884-10-23",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1962",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "jozef-przykladowski-1855",
+   "matkaId": "rozalia-przykladowska-1860",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "genowefa-przykladowska-1889",
+   "imie": "Genowefa",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Nowakowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1889",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1970",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "boleslaw-przykladowski-1912",
+   "imie": "Bolesław",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1912",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1991",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "franciszek-przykladowski-1884",
+   "matkaId": "genowefa-przykladowska-1889",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "krystyna-przykladowska-1918",
+   "imie": "Krystyna",
+   "nazwisko": "Przykładowska",
+   "nazwiskoRodowe": "Dawna",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1918",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "2003",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "andrzej-przykladowski",
+   "imie": "Andrzej",
+   "nazwisko": "Przykładowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1946-01-12",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "boleslaw-przykladowski-1912",
+   "matkaId": "krystyna-przykladowska-1918",
+   "galazId": "przykladowscy",
+   "zyjaca": true
+  },
+  {
+   "id": "teresa-przykladowska",
+   "imie": "Teresa",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1949",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "boleslaw-przykladowski-1912",
+   "matkaId": "krystyna-przykladowska-1918",
+   "galazId": "przykladowscy",
+   "zyjaca": true
+  },
+  {
+   "id": "marianna-przykladowska-1887",
+   "imie": "Marianna",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1887",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1966",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "jozef-przykladowski-1855",
+   "matkaId": "rozalia-przykladowska-1860",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "anna-przykladowska-1851",
+   "imie": "Anna",
+   "nazwisko": "Przykładowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1851-08-30",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1920",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "jan-przykladowski-1822",
+   "matkaId": "maria-przykladowska-1826",
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "karol-testowy-1849",
+   "imie": "Karol",
+   "nazwisko": "Testowy",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1849",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1915",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "przykladowscy"
+  },
+  {
+   "id": "antoni-wzorowski-1830",
+   "imie": "Antoni",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1830",
+    "dokladnosc": "okolo",
+    "miejsce": "Rzeczywisko"
+   },
+   "smierc": {
+    "wartosc": "1902-04-19",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "karolina-wzorowska-1835",
+   "imie": "Karolina",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Modelowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1835",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1910",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "wojciech-wzorowski-1858",
+   "imie": "Wojciech",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1858-05-09",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1933",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "antoni-wzorowski-1830",
+   "matkaId": "karolina-wzorowska-1835",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "julianna-wzorowska-1862",
+   "imie": "Julianna",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Pokazowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1862",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1928",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "salomea-wzorowska-1870",
+   "imie": "Salomea",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Ćwiczebna",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1870",
+    "dokladnosc": "okolo"
+   },
+   "smierc": {
+    "wartosc": "1944",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "kazimierz-wzorowski-1885",
+   "imie": "Kazimierz",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1885-07-02",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1958",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "wojciech-wzorowski-1858",
+   "matkaId": "julianna-wzorowska-1862",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "stefania-wzorowska-1890",
+   "imie": "Stefania",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Przykładna",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1890",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1975",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "henryk-wzorowski-1918",
+   "imie": "Henryk",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1918-03-25",
+    "dokladnosc": "dokladna"
+   },
+   "smierc": {
+    "wartosc": "1999",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "kazimierz-wzorowski-1885",
+   "matkaId": "stefania-wzorowska-1890",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "danuta-wzorowska-1923",
+   "imie": "Danuta",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Wzorcowa",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1923",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "2008",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "grzegorz-wzorowski",
+   "imie": "Grzegorz",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1950-09-14",
+    "dokladnosc": "dokladna"
+   },
+   "ojciecId": "henryk-wzorowski-1918",
+   "matkaId": "danuta-wzorowska-1923",
+   "galazId": "wzorowscy",
+   "zyjaca": true
+  },
+  {
+   "id": "magdalena-wzorowska",
+   "imie": "Magdalena",
+   "nazwisko": "Wzorowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1953",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "henryk-wzorowski-1918",
+   "matkaId": "danuta-wzorowska-1923",
+   "galazId": "wzorowscy",
+   "zyjaca": true
+  },
+  {
+   "id": "czeslawa-wzorowska-1921",
+   "imie": "Czesława",
+   "nazwisko": "Wzorowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1921",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1944",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "kazimierz-wzorowski-1885",
+   "matkaId": "stefania-wzorowska-1890",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "leon-wzorowski-1891",
+   "imie": "Leon",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1891",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1970",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "wojciech-wzorowski-1858",
+   "matkaId": "salomea-wzorowska-1870",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "aniela-wzorowska-1895",
+   "imie": "Aniela",
+   "nazwisko": "Wzorowska",
+   "nazwiskoRodowe": "Szkolna",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1895",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1982",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": null,
+   "matkaId": null,
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "romuald-wzorowski-1925",
+   "imie": "Romuald",
+   "nazwisko": "Wzorowski",
+   "plec": "M",
+   "urodzenie": {
+    "wartosc": "1925",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "2001",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "leon-wzorowski-1891",
+   "matkaId": "aniela-wzorowska-1895",
+   "galazId": "wzorowscy"
+  },
+  {
+   "id": "eleonora-wzorowska-1861",
+   "imie": "Eleonora",
+   "nazwisko": "Wzorowska",
+   "plec": "K",
+   "urodzenie": {
+    "wartosc": "1861",
+    "dokladnosc": "rok"
+   },
+   "smierc": {
+    "wartosc": "1940",
+    "dokladnosc": "rok"
+   },
+   "ojciecId": "antoni-wzorowski-1830",
+   "matkaId": "karolina-wzorowska-1835",
+   "galazId": "wzorowscy"
+  }
+ ],
+ "malzenstwa": [
+  {
+   "osobaAId": "jan-przykladowski-1822",
+   "osobaBId": "maria-przykladowska-1826",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "piotr-przykladowski-1848",
+   "osobaBId": "helena-przykladowska-1852",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "stanislaw-przykladowski-1874",
+   "osobaBId": "zofia-przykladowska-1878",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "tadeusz-przykladowski-1903",
+   "osobaBId": "irena-przykladowska-1908",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "marek-przykladowski-1935",
+   "osobaBId": "barbara-przykladowska-1938",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "jozef-przykladowski-1855",
+   "osobaBId": "rozalia-przykladowska-1860",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "franciszek-przykladowski-1884",
+   "osobaBId": "genowefa-przykladowska-1889",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "boleslaw-przykladowski-1912",
+   "osobaBId": "krystyna-przykladowska-1918",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "anna-przykladowska-1851",
+   "osobaBId": "karol-testowy-1849",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "antoni-wzorowski-1830",
+   "osobaBId": "karolina-wzorowska-1835",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "wojciech-wzorowski-1858",
+   "osobaBId": "julianna-wzorowska-1862",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "wojciech-wzorowski-1858",
+   "osobaBId": "salomea-wzorowska-1870",
+   "kolejnosc": 2
+  },
+  {
+   "osobaAId": "kazimierz-wzorowski-1885",
+   "osobaBId": "stefania-wzorowska-1890",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "henryk-wzorowski-1918",
+   "osobaBId": "danuta-wzorowska-1923",
+   "kolejnosc": 1
+  },
+  {
+   "osobaAId": "leon-wzorowski-1891",
+   "osobaBId": "aniela-wzorowska-1895",
+   "kolejnosc": 1
+  }
+ ]
+}

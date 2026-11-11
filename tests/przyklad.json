@@ -1,6 +1,4 @@
 {
-  "tytul": "Rodzina przykładowa",
-  "opis": "Mały, fikcyjny zestaw danych pokazujący format pliku: dwie niepołączone gałęzie, dwa małżeństwa jednej osoby, daty o różnej dokładności.",
   "galezie": [
     { "id": "kowalscy", "nazwa": "Kowalscy", "kolor": "#7a2331", "opis": "Potomkowie Jana Kowalskiego." },
     { "id": "zielinscy", "nazwa": "Zielińscy", "kolor": "#1f4d3a", "opis": "Osobna gałąź, niepołączona z Kowalskimi." }
@@ -23,7 +21,7 @@
       "ojciecId": "jan-kowalski-1560", "matkaId": "zofia-wisniewska", "galazId": "kowalscy" },
     { "id": "anna-kowalska-1953", "imie": "Anna", "nazwisko": "Kowalska", "plec": "K",
       "urodzenie": { "wartosc": "1953-03-04", "dokladnosc": "dokladna", "miejsce": "Kraków" },
-      "ojciecId": "piotr-kowalski-1891", "matkaId": null, "galazId": "kowalscy", "ukryjDaty": true },
+      "ojciecId": "piotr-kowalski-1891", "matkaId": null, "galazId": "kowalscy", "zyjaca": true },
     { "id": "adam-zielinski-1820", "imie": "Adam", "nazwisko": "Zieliński", "plec": "M",
       "urodzenie": { "wartosc": "1820", "dokladnosc": "rok" },
       "ojciecId": null, "matkaId": null, "galazId": "zielinscy" },

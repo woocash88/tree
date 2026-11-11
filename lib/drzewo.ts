@@ -210,3 +210,50 @@ export function rozwinDoPoziomu(las: Las, korzenie: string[], poziomy: number): 
   korzenie.forEach((k) => idz(k, 1));
   return wynik;
 }
+
+// ───────────────────────────── widok jednej gałęzi ─────────────────────────────
+
+export type LasGalezi = { las: Las; korzenie: string[]; maxPoziomow: number };
+
+/**
+ * Las ograniczony do jednej gałęzi: pod jednostkami zostają tylko dzieci z tej samej gałęzi,
+ * a korzenie to pierwsze jednostki gałęzi. Wspólne dla listy i diagramu.
+ */
+export function lasGalezi(osoby: OsobaDrzewa[], pary: ParaDrzewa[], galazId: string): LasGalezi {
+  const poId = new Map(osoby.map((o) => [o.id, o]));
+  const pelny = zbudujLas(osoby, pary);
+  const jednostki = new Map([...pelny.jednostki].map(([id, j]) => [id, { ...j, dzieci: j.dzieci.filter((d) => poId.get(d)!.galazId === galazId) }]));
+  const las: Las = { ...pelny, jednostki };
+  const korzenie = [...jednostki.values()]
+    .filter((j) => poId.get(j.glowna)!.galazId === galazId && (!j.rodzicId || poId.get(jednostki.get(j.rodzicId)!.glowna)!.galazId !== galazId))
+    .map((j) => j.id);
+  const glebokosc = (id: string): number => 1 + Math.max(0, ...jednostki.get(id)!.dzieci.map(glebokosc));
+  return { las, korzenie, maxPoziomow: Math.max(1, ...korzenie.map(glebokosc)) };
+}
+
+/**
+ * Czy jednostka należy do widoku gałęzi: jest korzeniem albo da się do niej dojść od korzenia
+ * po dzieciach przefiltrowanych do tej gałęzi (potomek z innej gałęzi nie należy do widoku,
+ * choć jego przodkowie tak).
+ */
+export function wWidoku(las: Las, korzenie: string[], jednostkaId: string): boolean {
+  let j = las.jednostki.get(jednostkaId);
+  while (j) {
+    if (korzenie.includes(j.id)) return true;
+    const rodzic = j.rodzicId ? las.jednostki.get(j.rodzicId) : undefined;
+    if (!rodzic || !rodzic.dzieci.includes(j.id)) return false;
+    j = rodzic;
+  }
+  return false;
+}
+
+/** Jednostki do rozwinięcia, aby jednostka `id` była widoczna w widoku gałęzi (rodzice aż do korzenia widoku). */
+export function przodkowieWWidoku(las: Las, korzenie: string[], id: string): string[] {
+  const wynik: string[] = [];
+  let j = las.jednostki.get(id);
+  while (j && !korzenie.includes(j.id) && j.rodzicId) {
+    wynik.push(j.rodzicId);
+    j = las.jednostki.get(j.rodzicId);
+  }
+  return wynik;
+}

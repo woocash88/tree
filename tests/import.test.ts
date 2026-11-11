@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import rodzinaZPliku from "../data/rodzina.json";
-import { importuj, PLIK_ZRODLA, wczytajPoprawki } from "../scripts/import";
+import rodzinaZPliku from "../data/drzewa/lulkiewicz/rodzina.json";
+import { importuj, sciezkiImportu, wczytajPoprawki } from "../scripts/import";
 
-const zrodlo = fs.readFileSync(PLIK_ZRODLA, "utf8");
-const poprawki = wczytajPoprawki();
+const zrodlo = fs.readFileSync(sciezkiImportu("lulkiewicz").zrodlo, "utf8").replace(/\r\n?/g, "\n");
+const poprawki = wczytajPoprawki("lulkiewicz");
 const { rodzina, statystyki, uwagi } = importuj(zrodlo, poprawki);
 const poId = new Map(rodzina.osoby.map((o) => [o.id, o]));
 
@@ -114,12 +114,12 @@ describe("import drzewa Lulkiewiczów", () => {
   it("ukrywa daty osób urodzonych po 1925 r. bez daty śmierci", () => {
     for (const o of rodzina.osoby) {
       const rok = o.urodzenie.wartosc ? Number(o.urodzenie.wartosc.slice(0, 4)) : null;
-      expect(!!o.ukryjDaty, o.id).toBe(rok !== null && rok > 1925 && !o.smierc);
+      expect(!!o.zyjaca, o.id).toBe(rok !== null && rok > 1925 && !o.smierc);
     }
-    expect(poId.get("kazimiera-pospiech-1928")!.ukryjDaty).toBeUndefined(); // zm. 1995
-    expect(poId.get("teresa-rybacka")!.ukryjDaty).toBe(true);
+    expect(poId.get("kazimiera-pospiech-1928")!.zyjaca).toBeUndefined(); // zm. 1995
+    expect(poId.get("teresa-rybacka")!.zyjaca).toBe(true);
     // Rok urodzenia osoby żyjącej nie może wyciekać przez id (adres URL).
-    for (const o of rodzina.osoby) if (o.ukryjDaty) expect(o.id).not.toContain(o.urodzenie.wartosc!.slice(0, 4));
+    for (const o of rodzina.osoby) if (o.zyjaca) expect(o.id).not.toContain(o.urodzenie.wartosc!.slice(0, 4));
   });
 
   it("nakłada poprawki ręczne i nie zmienia przy tym id", () => {
@@ -129,7 +129,7 @@ describe("import drzewa Lulkiewiczów", () => {
     expect(() => importuj(zrodlo, { osoby: { "nie-ma": { imie: "X" } } })).toThrow(/nie ma osoby o id „nie-ma”/);
   });
 
-  it("data/rodzina.json jest aktualny względem źródła i poprawek", () => {
+  it("data/drzewa/lulkiewicz/rodzina.json jest aktualny względem źródła i poprawek", () => {
     expect(rodzinaZPliku).toEqual(JSON.parse(JSON.stringify(rodzina)));
   });
 });

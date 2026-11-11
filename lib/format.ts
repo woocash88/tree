@@ -51,7 +51,7 @@ export function lataZycia(o: ZDatami): string {
   return o.smierc ? "†" : "";
 }
 
-function odmien(n: number, jeden: string, kilka: string, wiele: string): string {
+export function odmien(n: number, jeden: string, kilka: string, wiele: string): string {
   if (n === 1) return jeden;
   const j = n % 10;
   const d = n % 100;
@@ -82,6 +82,16 @@ export function wiek(o: ZDatami): string | null {
   }
   const lata = rokZdarzenia(zm)! - rokZdarzenia(ur)!;
   return `ok. ${lata} ${odmien(lata, "rok", "lata", "lat")}`;
+}
+
+export const ileOsob = (n: number) => `${n} ${odmien(n, "osoba", "osoby", "osób")}`;
+export const ilePokolen = (n: number) => `${n} ${odmien(n, "pokolenie", "pokolenia", "pokoleń")}`;
+export const ileGalezi = (n: number) => `${n} ${odmien(n, "gałąź", "gałęzie", "gałęzi")}`;
+
+/** "2026-11-11" → "11.11.2026". */
+export function dataPL(iso: string): string {
+  const [r, m, d] = iso.split("-");
+  return `${Number(d)}.${m}.${r}`;
 }
 
 /** Stulecie rzymską cyfrą dla roku: 1780 → "XVIII". */

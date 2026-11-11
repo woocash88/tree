@@ -1,49 +1,78 @@
 /**
- * Wczytanie i przygotowanie danych drzewa po stronie builda (Server Components).
- * Dane osób z flagą ukryjDaty są tu okrawane – do przeglądarki trafia samo imię i nazwisko.
+ * Warstwa danych serwisu. Widoki czytają dane WYŁĄCZNIE przez funkcje pobierz*() z tego pliku.
+ * Funkcje są asynchroniczne, choć dziś czytają pliki z repozytorium podczas builda – dzięki temu
+ * późniejsze przejście na bazę (np. Supabase) zmieni tylko ten plik, a nie widoki.
+ *
+ * Dane osób żyjących są okrajane tutaj, zgodnie z polityką dat drzewa (drzewo.json),
+ * więc do widoków i do przeglądarki nie trafia nic ponad to, co wolno opublikować.
  */
-import fs from "node:fs";
-import path from "node:path";
 import { formatDaty, lataZycia, pelneImie, rokZdarzenia, wiek } from "./format";
-import type { DataZdarzenia, Galaz, Osoba, Rodzina } from "./schemat";
-import { walidujRodzine } from "./walidacja";
+import type { DataZdarzenia, Galaz, Malzenstwo, Osoba, Rodzina } from "./schemat";
+import type { DrzewoMeta, PolitykaDat } from "./schemat-drzewa";
 import type { OsobaDrzewa, ParaDrzewa } from "./drzewo";
 import type { WpisSzukania } from "./szukaj";
 
-export type Zwiazek = { osoba: Osoba; kolejnosc: number };
+/** Osoba po zastosowaniu polityki dat. `ukryjDaty` = daty tej osoby nie są publikowane. */
+export type OsobaWidoczna = Osoba & { ukryjDaty?: boolean };
+
+export type Zwiazek = { osoba: OsobaWidoczna; kolejnosc: number };
 
 export type StatystykiGalezi = { galaz: Galaz; osob: number; od: number | null; do: number | null; zalozycielId: string | null };
 
-export type Dane = {
-  rodzina: Rodzina;
-  osoby: Map<string, Osoba>;
-  dzieci: Map<string, Osoba[]>;
+export type Drzewo = {
+  meta: DrzewoMeta;
+  /** Osoby w kolejności z pliku (kolejność rodzeństwa). */
+  osobyLista: OsobaWidoczna[];
+  osoby: Map<string, OsobaWidoczna>;
+  malzenstwa: Malzenstwo[];
+  galezieLista: Galaz[];
+  dzieci: Map<string, OsobaWidoczna[]>;
   malzonkowie: Map<string, Zwiazek[]>;
   pokolenie: Map<string, number>;
   galezie: Map<string, Galaz>;
   statystykiGalezi: StatystykiGalezi[];
-  statystyki: { osob: number; pokolen: number; malzenstw: number; nazwisk: number; najstarszy: { osoba: Osoba; rok: number } | null; od: number | null; do: number | null };
+  statystyki: { osob: number; pokolen: number; malzenstw: number; nazwisk: number; najstarszy: { osoba: OsobaWidoczna; rok: number } | null; od: number | null; do: number | null };
   korzenId: string;
 };
 
-let pamiec: Dane | null = null;
+export type PodsumowanieDrzewa = {
+  meta: DrzewoMeta;
+  osob: number;
+  pokolen: number;
+  galezi: number;
+  /** Najczęstsze nazwiska w drzewie (do wyszukiwania i opisów). */
+  nazwiska: string[];
+};
 
-export function wczytajDane(): Dane {
-  if (pamiec) return pamiec;
-  const plik = path.resolve(process.cwd(), process.env.RODZINA_PLIK ?? "data/rodzina.json");
-  const { rodzina } = walidujRodzine(JSON.parse(fs.readFileSync(plik, "utf8")));
+/** Okrawa dane osoby żyjącej wg polityki; osoby zmarłe zostają bez zmian. */
+export function okroj(o: Osoba, polityka: PolitykaDat): OsobaWidoczna {
+  if (!o.zyjaca || polityka === "pokaz") return o;
+  const baza: OsobaWidoczna = {
+    id: o.id,
+    imie: o.imie,
+    nazwisko: o.nazwisko,
+    nazwiskoRodowe: o.nazwiskoRodowe,
+    plec: o.plec,
+    urodzenie: { dokladnosc: "nieznana" },
+    ojciecId: o.ojciecId,
+    matkaId: o.matkaId,
+    galazId: o.galazId,
+    zyjaca: true,
+    niepewne: o.niepewne,
+  };
+  if (polityka === "ukryj") return { ...baza, ukryjDaty: true };
+  const rok = o.urodzenie.wartosc?.slice(0, 4);
+  return { ...baza, urodzenie: rok ? { wartosc: rok, dokladnosc: o.urodzenie.dokladnosc === "okolo" ? "okolo" : "rok" } : { dokladnosc: "nieznana" } };
+}
 
-  // Okrojenie danych osób żyjących – w zbudowanej stronie nie ma ich dat, miejsc ani notatek.
+/** Buduje wszystkie struktury pomocnicze drzewa. Czysta funkcja – bez dostępu do plików. */
+export function przygotujDrzewo(meta: DrzewoMeta, rodzina: Rodzina): Drzewo {
   const pelne = new Map(rodzina.osoby.map((o) => [o.id, o]));
-  const osobyWidoczne: Osoba[] = rodzina.osoby.map((o) =>
-    o.ukryjDaty
-      ? { id: o.id, imie: o.imie, nazwisko: o.nazwisko, nazwiskoRodowe: o.nazwiskoRodowe, plec: o.plec, urodzenie: { dokladnosc: "nieznana" }, ojciecId: o.ojciecId, matkaId: o.matkaId, galazId: o.galazId, ukryjDaty: true, niepewne: o.niepewne }
-      : o,
-  );
-  const osoby = new Map(osobyWidoczne.map((o) => [o.id, o]));
+  const osobyLista = rodzina.osoby.map((o) => okroj(o, meta.politykaDatZyjacych));
+  const osoby = new Map(osobyLista.map((o) => [o.id, o]));
 
-  const dzieci = new Map<string, Osoba[]>();
-  for (const o of osobyWidoczne) {
+  const dzieci = new Map<string, OsobaWidoczna[]>();
+  for (const o of osobyLista) {
     for (const r of new Set([o.ojciecId, o.matkaId])) {
       if (r) dzieci.set(r, [...(dzieci.get(r) ?? []), o]);
     }
@@ -69,13 +98,13 @@ export function wczytajDane(): Dane {
     pokolenie.set(id, p);
     return p;
   };
-  osobyWidoczne.forEach((o) => licz(o.id));
-  for (const o of osobyWidoczne) {
+  osobyLista.forEach((o) => licz(o.id));
+  for (const o of osobyLista) {
     if (o.ojciecId || o.matkaId) continue;
     const partnerzy = (malzonkowie.get(o.id) ?? []).filter((z) => z.osoba.ojciecId || z.osoba.matkaId);
     if (partnerzy.length) pokolenie.set(o.id, Math.max(...partnerzy.map((z) => pokolenie.get(z.osoba.id)!)));
   }
-  for (const o of osobyWidoczne) {
+  for (const o of osobyLista) {
     if (o.ojciecId || o.matkaId) continue;
     const partnerzy = malzonkowie.get(o.id) ?? [];
     if (partnerzy.length) pokolenie.set(o.id, Math.max(pokolenie.get(o.id)!, ...partnerzy.map((z) => pokolenie.get(z.osoba.id)!)));
@@ -86,43 +115,94 @@ export function wczytajDane(): Dane {
     const o = pelne.get(id)!;
     return [rokZdarzenia(o.urodzenie), rokZdarzenia(o.smierc)].filter((r): r is number => r !== null);
   };
-  const zakres = (lista: Osoba[]) => {
+  const zakres = (lista: OsobaWidoczna[]) => {
     const lata = lista.flatMap((o) => lataOsoby(o.id));
     return lata.length ? { od: Math.min(...lata), do: Math.max(...lata) } : { od: null, do: null };
   };
   const statystykiGalezi = rodzina.galezie.map((galaz) => {
-    const lista = osobyWidoczne.filter((o) => o.galazId === galaz.id);
+    const lista = osobyLista.filter((o) => o.galazId === galaz.id);
     const zalozyciel = lista.slice().sort((a, b) => pokolenie.get(a.id)! - pokolenie.get(b.id)!).find((o) => o.ojciecId || o.matkaId) ?? lista[0];
     return { galaz, osob: lista.length, ...zakres(lista), zalozycielId: zalozyciel?.id ?? null };
   });
 
-  let najstarszy: Dane["statystyki"]["najstarszy"] = null;
-  for (const o of osobyWidoczne) {
+  let najstarszy: Drzewo["statystyki"]["najstarszy"] = null;
+  for (const o of osobyLista) {
     const rok = rokZdarzenia(o.urodzenie) ?? rokZdarzenia(o.smierc);
     if (rok !== null && (!najstarszy || rok < najstarszy.rok)) najstarszy = { osoba: o, rok };
   }
-  const korzen = osobyWidoczne.find((o) => !o.ojciecId && !o.matkaId && (dzieci.get(o.id)?.length ?? 0) > 0) ?? osobyWidoczne[0];
+  const korzen = osobyLista.find((o) => !o.ojciecId && !o.matkaId && (dzieci.get(o.id)?.length ?? 0) > 0) ?? osobyLista[0];
 
-  pamiec = {
-    rodzina,
+  return {
+    meta,
+    osobyLista,
     osoby,
+    malzenstwa: rodzina.malzenstwa,
+    galezieLista: rodzina.galezie,
     dzieci,
     malzonkowie,
     pokolenie,
     galezie: new Map(rodzina.galezie.map((g) => [g.id, g])),
     statystykiGalezi,
     statystyki: {
-      osob: osobyWidoczne.length,
+      osob: osobyLista.length,
       pokolen: Math.max(...pokolenie.values()),
       malzenstw: rodzina.malzenstwa.length,
-      nazwisk: new Set(osobyWidoczne.map((o) => o.nazwisko).filter(Boolean)).size,
+      nazwisk: new Set(osobyLista.map((o) => o.nazwisko).filter(Boolean)).size,
       najstarszy,
-      ...zakres(osobyWidoczne),
+      ...zakres(osobyLista),
     },
     korzenId: korzen.id,
   };
-  return pamiec;
 }
+
+export function podsumuj(d: Drzewo): PodsumowanieDrzewa {
+  const licznik = new Map<string, number>();
+  for (const o of d.osobyLista) if (o.nazwisko) licznik.set(o.nazwisko, (licznik.get(o.nazwisko) ?? 0) + 1);
+  const nazwiska = [...licznik.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pl")).slice(0, 12).map(([n]) => n);
+  return { meta: d.meta, osob: d.statystyki.osob, pokolen: d.statystyki.pokolen, galezi: d.galezieLista.length, nazwiska };
+}
+
+// ───────────────────────────── interfejs dla widoków ─────────────────────────────
+
+const pamiec = new Map<string, Drzewo>();
+
+async function zaladuj(slug: string): Promise<Drzewo | null> {
+  const znane = pamiec.get(slug);
+  if (znane) return znane;
+  // Import dynamiczny: moduł z dostępem do plików nie trafia do paczek przeglądarkowych.
+  const { listaSlugow, wczytajDrzewo } = await import("./drzewa-pliki");
+  if (!listaSlugow().includes(slug)) return null;
+  const { meta, rodzina } = wczytajDrzewo(slug);
+  const drzewo = przygotujDrzewo(meta, rodzina);
+  pamiec.set(slug, drzewo);
+  return drzewo;
+}
+
+/** Lista wszystkich publicznych drzew (alfabetycznie według nazwy). */
+export async function pobierzDrzewa(): Promise<PodsumowanieDrzewa[]> {
+  const { listaSlugow } = await import("./drzewa-pliki");
+  const drzewa = await Promise.all(listaSlugow().map(zaladuj));
+  return drzewa
+    .filter((d): d is Drzewo => !!d && d.meta.widocznosc === "publiczne")
+    .map(podsumuj)
+    .sort((a, b) => a.meta.nazwa.localeCompare(b.meta.nazwa, "pl"));
+}
+
+/** Całe drzewo (metadane, osoby, relacje, statystyki) albo null, gdy nie ma takiego slugu. */
+export async function pobierzDrzewo(slug: string): Promise<Drzewo | null> {
+  return zaladuj(slug);
+}
+
+/** Osoby drzewa w kolejności z pliku, po zastosowaniu polityki dat. */
+export async function pobierzOsoby(slug: string): Promise<OsobaWidoczna[] | null> {
+  return (await zaladuj(slug))?.osobyLista ?? null;
+}
+
+export async function pobierzOsobe(slug: string, id: string): Promise<OsobaWidoczna | null> {
+  return (await zaladuj(slug))?.osoby.get(id) ?? null;
+}
+
+// ───────────────────────────── pomocnicze dla widoków ─────────────────────────────
 
 export function opisZdarzenia(d?: DataZdarzenia): string {
   if (!d) return "";
@@ -130,18 +210,18 @@ export function opisZdarzenia(d?: DataZdarzenia): string {
 }
 
 /** Czy osobę traktujemy jako zmarłą (znana data/miejsce śmierci albo urodzenie ponad 110 lat temu). */
-export function czyZmarla(o: Osoba): boolean {
+export function czyZmarla(o: OsobaWidoczna): boolean {
+  if (o.zyjaca) return false;
   if (o.smierc) return true;
   const rok = rokZdarzenia(o.urodzenie);
   return rok !== null && rok < new Date().getFullYear() - 110;
 }
 
-// ── dane dla komponentów klienckich ──
-
-
-export function indeksSzukania(): WpisSzukania[] {
-  const { osoby } = wczytajDane();
-  return [...osoby.values()].map((o) => ({
+/** Wpisy indeksu wyszukiwania osób jednego drzewa (serwowane jako /dane/szukaj-<slug>.json). */
+export async function pobierzIndeksSzukania(slug: string): Promise<WpisSzukania[]> {
+  const d = await zaladuj(slug);
+  if (!d) return [];
+  return d.osobyLista.map((o) => ({
     id: o.id,
     i: o.imie,
     n: o.nazwisko,
@@ -154,43 +234,48 @@ export function indeksSzukania(): WpisSzukania[] {
 
 export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rodowe?: string; notatka?: string; ukryta: boolean };
 
-export function daneDrzewa(): { osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[] } {
-  const d = wczytajDane();
+export type DaneWidoku = { osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[] };
+
+/** Dane przekazywane do komponentów klienckich (lista gałęzi, diagram, panel osoby). */
+export function daneWidoku(d: Drzewo): DaneWidoku {
   return {
-    osoby: [...d.osoby.values()].map((o) => ({
-      id: o.id,
-      imie: o.imie,
-      nazwisko: o.nazwisko,
-      lata: lataZycia(o),
-      galazId: o.galazId,
-      ojciecId: o.ojciecId,
-      matkaId: o.matkaId,
-      zmarla: czyZmarla(o),
-      niepewna: !!o.niepewne?.length,
-      plec: o.plec,
-      ur: opisZdarzenia(o.urodzenie),
-      zm: o.smierc ? opisZdarzenia(o.smierc) || "data nieznana" : "",
-      wiek: wiek(o),
-      pokolenie: d.pokolenie.get(o.id)!,
-      ...(o.nazwiskoRodowe ? { rodowe: o.nazwiskoRodowe } : {}),
-      ...(o.notatka ? { notatka: o.notatka } : {}),
-      ukryta: !!o.ukryjDaty,
-    })),
-    pary: d.rodzina.malzenstwa.map((m) => ({ a: m.osobaAId, b: m.osobaBId, kolejnosc: m.kolejnosc })),
-    galezie: d.rodzina.galezie,
+    osoby: d.osobyLista.map((o) => {
+      const zmarla = czyZmarla(o);
+      return {
+        id: o.id,
+        imie: o.imie,
+        nazwisko: o.nazwisko,
+        lata: lataZycia(o),
+        galazId: o.galazId,
+        ojciecId: o.ojciecId,
+        matkaId: o.matkaId,
+        zmarla,
+        niepewna: !!o.niepewne?.length,
+        plec: o.plec,
+        ur: opisZdarzenia(o.urodzenie),
+        // Pustą datę śmierci pokazujemy tylko osobom, które według danych nie żyją.
+        zm: o.smierc ? opisZdarzenia(o.smierc) || "data nieznana" : zmarla ? "data nieznana" : "",
+        wiek: wiek(o),
+        pokolenie: d.pokolenie.get(o.id)!,
+        ...(o.nazwiskoRodowe ? { rodowe: o.nazwiskoRodowe } : {}),
+        ...(o.notatka ? { notatka: o.notatka } : {}),
+        ukryta: !!o.ukryjDaty,
+      };
+    }),
+    pary: d.malzenstwa.map((m) => ({ a: m.osobaAId, b: m.osobaBId, kolejnosc: m.kolejnosc })),
+    galezie: d.galezieLista,
   };
 }
 
 /** Ścieżka pochodzenia od najdalszego znanego przodka do osoby (po linii z dłuższym rodowodem). */
-export function sciezkaPochodzenia(id: string): Osoba[] {
-  const { osoby, pokolenie } = wczytajDane();
-  const sciezka: Osoba[] = [];
-  let o: Osoba | undefined = osoby.get(id);
+export function sciezkaPochodzenia(d: Drzewo, id: string): OsobaWidoczna[] {
+  const sciezka: OsobaWidoczna[] = [];
+  let o: OsobaWidoczna | undefined = d.osoby.get(id);
   while (o) {
     sciezka.unshift(o);
-    const rodzice: Osoba[] = [o.ojciecId, o.matkaId].filter((r): r is string => !!r).map((r) => osoby.get(r)!);
+    const rodzice: OsobaWidoczna[] = [o.ojciecId, o.matkaId].filter((r): r is string => !!r).map((r) => d.osoby.get(r)!);
     const zRodowodem = rodzice.filter((r) => r.ojciecId || r.matkaId);
-    o = (zRodowodem.length ? zRodowodem : rodzice).sort((a, b) => pokolenie.get(b.id)! - pokolenie.get(a.id)!)[0];
+    o = (zRodowodem.length ? zRodowodem : rodzice).sort((a, b) => d.pokolenie.get(b.id)! - d.pokolenie.get(a.id)!)[0];
   }
   return sciezka;
 }

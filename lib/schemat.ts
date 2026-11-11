@@ -55,11 +55,11 @@ export const SchematOsoby = z.strictObject({
   galazId: Id,
   miejsce: z.string().min(1).optional(),
   notatka: z.string().min(1).optional(),
-  /** Osoba żyjąca: na stronie widać tylko imię i nazwisko. */
-  ukryjDaty: z.boolean().optional(),
+  /** Osoba żyjąca: jej daty, miejsca i notatki publikujemy zgodnie z polityką drzewa (drzewo.json → politykaDatZyjacych). */
+  zyjaca: z.boolean().optional(),
   /** Które informacje są w źródle oznaczone jako niepewne ("??", "?"). */
   niepewne: z.array(z.enum(NIEPEWNE_POLA)).optional(),
-  /** Numer wiersza w data/zrodlo/lulkiewicz.txt (ustawiany przez import). */
+  /** Numer wiersza w pliku źródłowym drzewa (ustawiany przez import). */
   wierszZrodla: z.number().int().positive().optional(),
 });
 
@@ -78,9 +78,6 @@ export const SchematGalezi = z.strictObject({
 });
 
 export const SchematRodziny = z.strictObject({
-  tytul: z.string().min(1),
-  opis: z.string().optional(),
-  zrodlo: z.string().optional(),
   galezie: z.array(SchematGalezi).min(1),
   osoby: z.array(SchematOsoby).min(1),
   malzenstwa: z.array(SchematMalzenstwa),

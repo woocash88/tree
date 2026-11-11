@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # wygenerowane dane testowe
-/data/testowe-*.json
+/data/testowe/

@@ -1,18 +1,18 @@
 // Wycina blok <pre id="drzewo_tresc"> z pobranego HTML strony źródłowej.
 //
 //   curl -L -o /tmp/strona.html https://genealogia.okiem.pl/drzewo/238/lulkiewicz
-//   node scripts/wytnij-zrodlo.mjs /tmp/strona.html
+//   node scripts/wytnij-zrodlo.mjs lulkiewicz /tmp/strona.html
 //
 // Zapisuje:
-//   data/zrodlo/lulkiewicz.pre.html – dosłowny fragment HTML (bajt w bajt),
-//   data/zrodlo/lulkiewicz.txt      – ten sam tekst po czysto mechanicznej zamianie:
+//   data/drzewa/<slug>/zrodlo/<slug>.pre.html – dosłowny fragment HTML (bajt w bajt),
+//   data/drzewa/<slug>/zrodlo/<slug>.txt      – ten sam tekst po czysto mechanicznej zamianie:
 //                                     <br> → nowy wiersz, usunięcie znaczników, dekodowanie encji.
 // Żadna treść nie jest poprawiana ani uzupełniana.
 import fs from "node:fs";
 
-const plik = process.argv[2];
-if (!plik) {
-  console.error("Użycie: node scripts/wytnij-zrodlo.mjs <pobrany.html>");
+const [slug, plik] = process.argv.slice(2);
+if (!slug || !plik) {
+  console.error("Użycie: node scripts/wytnij-zrodlo.mjs <slug> <pobrany.html>");
   process.exit(1);
 }
 const html = fs.readFileSync(plik, "utf8");
@@ -35,7 +35,8 @@ const tekst = surowy
   .replace(/&nbsp;/g, " ")
   .replace(/&amp;/g, "&");
 
-fs.mkdirSync("data/zrodlo", { recursive: true });
-fs.writeFileSync("data/zrodlo/lulkiewicz.pre.html", surowy + "\n");
-fs.writeFileSync("data/zrodlo/lulkiewicz.txt", tekst);
-console.log(`Zapisano ${tekst.split("\n").length} wierszy do data/zrodlo/lulkiewicz.txt`);
+const katalog = `data/drzewa/${slug}/zrodlo`;
+fs.mkdirSync(katalog, { recursive: true });
+fs.writeFileSync(`${katalog}/${slug}.pre.html`, surowy + "\n");
+fs.writeFileSync(`${katalog}/${slug}.txt`, tekst);
+console.log(`Zapisano ${tekst.split("\n").length} wierszy do ${katalog}/${slug}.txt`);

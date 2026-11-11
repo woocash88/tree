@@ -1,8 +1,8 @@
 # Raport importu
 
 Plik generowany przez `npm run import` – nie edytuj go ręcznie.
-Zawiera wszystko, czego skrypt nie potrafił jednoznacznie odczytać z `data/zrodlo/lulkiewicz.txt`.
-Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom import ponownie.
+Zawiera wszystko, czego skrypt nie potrafił jednoznacznie odczytać z pliku źródłowego (`zrodlo/<slug>.txt`).
+Poprawki wpisuj do `poprawki.json` drzewa (opis w README), a następnie uruchom import ponownie.
 
 ## Podsumowanie
 
@@ -11,7 +11,7 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 - Osoby scalone (odsyłacze „[n]” i sekcja „scal”): **1**.
 - Osoby w `rodzina.json`: **427** = 303 + 125 − 1.
 - Małżeństwa: **125**, pokolenia: **10**, gałęzie: **8** (w tym wspólny pień).
-- Osoby z flagą `ukryjDaty` (ur. po 1925, bez daty śmierci): **59**.
+- Osoby z flagą `zyjaca` (ur. po 1925, bez daty śmierci): **59**.
 - Zastosowane poprawki ręczne: **2** osób, **0** scaleń.
 
 ## Wiersze bez numeru pokolenia
@@ -30,7 +30,7 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 
 - **Wiersz 119:** Maksymilian Wabiński z odsyłaczem „[1]” występuje też w wierszu 108 (to samo imię, nazwisko i data urodzenia). Potraktowano jako JEDNĄ osobę („maksymilian-wabinski-1863”) z kolejnym małżeństwem. Kolejność związków przyjęto według kolejności wierszy – źródło jej nie podaje.
 - **Wiersz 147:** Józef Buczkiewicz, ur. 1880-03-05 („jozef-buczkiewicz-1880-2”) – to samo imię, nazwisko i data urodzenia co w wierszu 146 („jozef-buczkiewicz-1880”). Zachowano oba wpisy.
-- **Wiersz 241:** Para „Piotr Matysiak + Zofia Rybacka” występuje też w wierszu 201. Być może to te same osoby (małżeństwo dwojga potomków): „piotr-matysiak-2” ≟ „piotr-matysiak”, „zofia-rybacka-2” ≟ „zofia-rybacka”. Nie scalono – w razie potrzeby użyj sekcji „scal” w data/poprawki.json.
+- **Wiersz 241:** Para „Piotr Matysiak + Zofia Rybacka” występuje też w wierszu 201. Być może to te same osoby (małżeństwo dwojga potomków): „piotr-matysiak-2” ≟ „piotr-matysiak”, „zofia-rybacka-2” ≟ „zofia-rybacka”. Nie scalono – w razie potrzeby użyj sekcji „scal” w poprawki.json.
 
 ## Podejrzane literówki i utracone polskie znaki
 
@@ -107,7 +107,7 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 - **Wiersz 277:** Wariant „=a7”, choć Antoni Zemboldt ma w źródle tylko jeden związek.
 - **Wiersz 280:** Wariant „=a7”, choć Antoni Zemboldt ma w źródle tylko jeden związek.
 
-## Zastosowane poprawki z data/poprawki.json
+## Zastosowane poprawki z poprawki.json
 
 - `aukasz-mocek`: imie → "Łukasz", plec → "M"
 - `aukasz-zemboldt`: imie → "Łukasz", plec → "M"

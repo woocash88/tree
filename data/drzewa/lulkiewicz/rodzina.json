@@ -1,54 +1,51 @@
 {
-  "tytul": "Drzewo genealogiczne rodziny Lulkiewiczów",
-  "opis": "Potomkowie Sebastiana i Wiktora Lulkiewiczów z Kobylina – dziesięć pokoleń, od ok. 1780 r.",
-  "zrodlo": "https://genealogia.okiem.pl/drzewo/238/lulkiewicz",
   "galezie": [
     {
       "id": "pien",
       "nazwa": "Wspólny pień",
-      "kolor": "#4a3728",
+      "kolor": "#64748b",
       "opis": "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii."
     },
     {
       "id": "antoni",
       "nazwa": "Linia Antoniego",
-      "kolor": "#7a2331",
+      "kolor": "#e11d48",
       "opis": "Potomkowie Antoniego Lulkiewicza (ur. ok. 1807)."
     },
     {
       "id": "konstancja",
       "nazwa": "Linia Konstancji",
-      "kolor": "#63345a",
+      "kolor": "#8b5cf6",
       "opis": "Konstancja Lulkiewicz (ur. ok. 1809) – źródło nie podaje potomków."
     },
     {
       "id": "julian",
       "nazwa": "Linia Juliana",
-      "kolor": "#1f4d3a",
+      "kolor": "#059669",
       "opis": "Potomkowie Juliana Lulkiewicza (ur. ok. 1813)."
     },
     {
       "id": "jozefa",
       "nazwa": "Linia Józefy",
-      "kolor": "#9a4a22",
+      "kolor": "#ea580c",
       "opis": "Potomkowie Józefy Lulkiewicz (ur. 1817)."
     },
     {
       "id": "wojciech",
       "nazwa": "Linia Wojciecha",
-      "kolor": "#2b3f66",
+      "kolor": "#3b82f6",
       "opis": "Potomkowie Wojciecha Lulkiewicza (ur. ok. 1819)."
     },
     {
       "id": "filip",
       "nazwa": "Linia Filipa",
-      "kolor": "#806210",
+      "kolor": "#58980b",
       "opis": "Potomkowie Filipa Lulkiewicza (ur. 1820)."
     },
     {
       "id": "jozef",
       "nazwa": "Linia Józefa",
-      "kolor": "#55602a",
+      "kolor": "#0891b2",
       "opis": "Potomkowie Józefa Lulkiewicza (ur. ok. 1823)."
     }
   ],
@@ -643,7 +640,7 @@
       "ojciecId": "zdzislaw-gawel",
       "matkaId": "wioleta-lulkiewicz",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 28
     },
     {
@@ -658,7 +655,7 @@
       "ojciecId": "kazimierz-lulkiewicz-2",
       "matkaId": "irena-furmankiewicz",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 29
     },
     {
@@ -752,7 +749,7 @@
       "ojciecId": "kazimierz-lulkiewicz-2",
       "matkaId": "irena-furmankiewicz",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 33
     },
     {
@@ -783,7 +780,7 @@
       "ojciecId": "kazimierz-lulkiewicz-2",
       "matkaId": "irena-furmankiewicz",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 34
     },
     {
@@ -798,7 +795,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "niepewne": [
         "nazwisko"
       ],
@@ -816,7 +813,7 @@
       "ojciecId": "zbigniew-lulkiewicz",
       "matkaId": "teresa-nn",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 35
     },
     {
@@ -831,7 +828,7 @@
       "ojciecId": "kazimierz-lulkiewicz-2",
       "matkaId": "irena-furmankiewicz",
       "galazId": "antoni",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 36
     },
     {
@@ -4173,7 +4170,7 @@
       "ojciecId": "boleslaw-rybacki",
       "matkaId": "krystyna-wascinska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 202
     },
     {
@@ -4188,7 +4185,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 202
     },
     {
@@ -4216,7 +4213,7 @@
       "ojciecId": "boleslaw-rybacki",
       "matkaId": "krystyna-wascinska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 204
     },
     {
@@ -4280,7 +4277,7 @@
       "ojciecId": "marian-rybacki-1922",
       "matkaId": "kazimiera-pospiech-1928",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 206
     },
     {
@@ -4308,7 +4305,7 @@
       "ojciecId": "marian-rybacki-1922",
       "matkaId": "kazimiera-pospiech-1928",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 207
     },
     {
@@ -4336,7 +4333,7 @@
       "ojciecId": "marian-rybacki-1922",
       "matkaId": "kazimiera-pospiech-1928",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 208
     },
     {
@@ -4400,7 +4397,7 @@
       "ojciecId": "stanislaw-grocholski-1922",
       "matkaId": "kazimiera-rybacka-1924",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 210
     },
     {
@@ -4415,7 +4412,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 210
     },
     {
@@ -4430,7 +4427,7 @@
       "ojciecId": "zbigniew-kapala",
       "matkaId": "ewa-grocholska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 211
     },
     {
@@ -4445,7 +4442,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 211
     },
     {
@@ -4473,7 +4470,7 @@
       "ojciecId": "zbigniew-kapala",
       "matkaId": "ewa-grocholska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 213
     },
     {
@@ -4527,7 +4524,7 @@
       "ojciecId": "zbigniew-kapala",
       "matkaId": "ewa-grocholska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 216
     },
     {
@@ -4542,7 +4539,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 216
     },
     {
@@ -4557,7 +4554,7 @@
       "ojciecId": "zbigniew-kapala",
       "matkaId": "ewa-grocholska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 217
     },
     {
@@ -4601,7 +4598,7 @@
       "ojciecId": "stanislaw-grocholski-1922",
       "matkaId": "kazimiera-rybacka-1924",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 219
     },
     {
@@ -4616,7 +4613,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 219
     },
     {
@@ -4670,7 +4667,7 @@
       "ojciecId": "stanislaw-grocholski-1922",
       "matkaId": "kazimiera-rybacka-1924",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 223
     },
     {
@@ -4685,7 +4682,7 @@
       "ojciecId": "stanislaw-grocholski-1922",
       "matkaId": "kazimiera-rybacka-1924",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 224
     },
     {
@@ -4739,7 +4736,7 @@
       "ojciecId": "stanislaw-grocholski-1922",
       "matkaId": "kazimiera-rybacka-1924",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 227
     },
     {
@@ -4806,7 +4803,7 @@
       "ojciecId": "adam-rybacki-1891",
       "matkaId": "zofia-czaplicka",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 231
     },
     {
@@ -4839,7 +4836,7 @@
       "ojciecId": "kazimierz-zybert-1933",
       "matkaId": "teresa-rybacka",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 232
     },
     {
@@ -4854,7 +4851,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 232
     },
     {
@@ -4869,7 +4866,7 @@
       "ojciecId": "bogdan-langner",
       "matkaId": "grazyna-zybert",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 233
     },
     {
@@ -4884,7 +4881,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 233
     },
     {
@@ -4899,7 +4896,7 @@
       "ojciecId": "witold-mroczek",
       "matkaId": "izabela-langner",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 234
     },
     {
@@ -4981,7 +4978,7 @@
       "ojciecId": "jan-czaplicki-1897",
       "matkaId": "marianna-rybacka-1894",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 238
     },
     {
@@ -5012,7 +5009,7 @@
       "ojciecId": "jan-czaplicki-1897",
       "matkaId": "marianna-rybacka-1894",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 239
     },
     {
@@ -5079,7 +5076,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 241
     },
     {
@@ -5697,7 +5694,7 @@
       "ojciecId": "wladyslaw-zemboldt-1933",
       "matkaId": "anna-zyto",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 273
     },
     {
@@ -5795,7 +5792,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 277
     },
     {
@@ -5826,7 +5823,7 @@
       "ojciecId": "krzysztof-zemboldt",
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 278
     },
     {
@@ -5841,7 +5838,7 @@
       "ojciecId": "krzysztof-zemboldt",
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 279
     },
     {
@@ -5939,7 +5936,7 @@
       "ojciecId": "stanislaw-zemboldt-1906",
       "matkaId": "agnieszka-rybacka-1903",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 284
     },
     {
@@ -5955,7 +5952,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 284
     },
     {
@@ -5971,7 +5968,7 @@
       "ojciecId": "franciszek-gregor",
       "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 285
     },
     {
@@ -5986,7 +5983,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 285
     },
     {
@@ -6001,7 +5998,7 @@
       "ojciecId": "pawel-gregor",
       "matkaId": "wioletta-aazinska",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 286
     },
     {
@@ -6016,7 +6013,7 @@
       "ojciecId": null,
       "matkaId": "martyna-hop",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "niepewne": [
         "nazwisko"
       ],
@@ -6035,7 +6032,7 @@
       "ojciecId": "franciszek-gregor",
       "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 288
     },
     {
@@ -6050,7 +6047,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 288
     },
     {
@@ -6065,7 +6062,7 @@
       "ojciecId": "czeslaw-kaczmarek",
       "matkaId": "anna-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 289
     },
     {
@@ -6080,7 +6077,7 @@
       "ojciecId": "czeslaw-kaczmarek",
       "matkaId": "anna-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 290
     },
     {
@@ -6095,7 +6092,7 @@
       "ojciecId": "czeslaw-kaczmarek",
       "matkaId": "anna-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 291
     },
     {
@@ -6110,7 +6107,7 @@
       "ojciecId": "czeslaw-kaczmarek",
       "matkaId": "anna-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 292
     },
     {
@@ -6126,7 +6123,7 @@
       "ojciecId": "franciszek-gregor",
       "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 293
     },
     {
@@ -6142,7 +6139,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 293
     },
     {
@@ -6158,7 +6155,7 @@
       "ojciecId": "ryszard-gregor",
       "matkaId": "elzbieta-malec",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 294
     },
     {
@@ -6173,7 +6170,7 @@
       "ojciecId": "ryszard-gregor",
       "matkaId": "elzbieta-malec",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 295
     },
     {
@@ -6189,7 +6186,7 @@
       "ojciecId": "franciszek-gregor",
       "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 296
     },
     {
@@ -6205,7 +6202,7 @@
       "ojciecId": null,
       "matkaId": null,
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 296
     },
     {
@@ -6221,7 +6218,7 @@
       "ojciecId": "pawel-gotter",
       "matkaId": "honorata-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 297
     },
     {
@@ -6237,7 +6234,7 @@
       "ojciecId": "pawel-gotter",
       "matkaId": "honorata-gregor",
       "galazId": "filip",
-      "ukryjDaty": true,
+      "zyjaca": true,
       "wierszZrodla": 298
     },
     {
