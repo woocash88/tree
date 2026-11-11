@@ -1,0 +1,38 @@
+{
+  "tytul": "Rodzina przykładowa",
+  "opis": "Mały, fikcyjny zestaw danych pokazujący format pliku: dwie niepołączone gałęzie, dwa małżeństwa jednej osoby, daty o różnej dokładności.",
+  "galezie": [
+    { "id": "kowalscy", "nazwa": "Kowalscy", "kolor": "#7a2331", "opis": "Potomkowie Jana Kowalskiego." },
+    { "id": "zielinscy", "nazwa": "Zielińscy", "kolor": "#1f4d3a", "opis": "Osobna gałąź, niepołączona z Kowalskimi." }
+  ],
+  "osoby": [
+    { "id": "jan-kowalski-1560", "imie": "Jan", "nazwisko": "Kowalski", "plec": "M",
+      "urodzenie": { "wartosc": "1560", "dokladnosc": "okolo" }, "smierc": { "wartosc": "1610", "dokladnosc": "rok" },
+      "ojciecId": null, "matkaId": null, "galazId": "kowalscy" },
+    { "id": "anna-nowak", "imie": "Anna", "nazwisko": "Kowalska", "nazwiskoRodowe": "Nowak", "plec": "K",
+      "urodzenie": { "dokladnosc": "nieznana" }, "smierc": { "dokladnosc": "nieznana" },
+      "ojciecId": null, "matkaId": null, "galazId": "kowalscy" },
+    { "id": "zofia-wisniewska", "imie": "Zofia", "nazwisko": "Kowalska", "nazwiskoRodowe": "Wiśniewska", "plec": "K",
+      "urodzenie": { "dokladnosc": "nieznana" },
+      "ojciecId": null, "matkaId": null, "galazId": "kowalscy", "notatka": "Druga żona Jana." },
+    { "id": "piotr-kowalski-1891", "imie": "Piotr", "nazwisko": "Kowalski", "plec": "M",
+      "urodzenie": { "wartosc": "1891", "dokladnosc": "rok" }, "smierc": { "wartosc": "1973-11-02", "dokladnosc": "dokladna", "miejsce": "Kraków" },
+      "ojciecId": "jan-kowalski-1560", "matkaId": "anna-nowak", "galazId": "kowalscy" },
+    { "id": "lukasz-kowalski", "imie": "Łukasz", "nazwisko": "Kowalski", "plec": "M",
+      "urodzenie": { "dokladnosc": "nieznana" },
+      "ojciecId": "jan-kowalski-1560", "matkaId": "zofia-wisniewska", "galazId": "kowalscy" },
+    { "id": "anna-kowalska-1953", "imie": "Anna", "nazwisko": "Kowalska", "plec": "K",
+      "urodzenie": { "wartosc": "1953-03-04", "dokladnosc": "dokladna", "miejsce": "Kraków" },
+      "ojciecId": "piotr-kowalski-1891", "matkaId": null, "galazId": "kowalscy", "ukryjDaty": true },
+    { "id": "adam-zielinski-1820", "imie": "Adam", "nazwisko": "Zieliński", "plec": "M",
+      "urodzenie": { "wartosc": "1820", "dokladnosc": "rok" },
+      "ojciecId": null, "matkaId": null, "galazId": "zielinscy" },
+    { "id": "ewa-zielinska-1850", "imie": "Ewa", "nazwisko": "Zielińska", "plec": "K",
+      "urodzenie": { "wartosc": "1850-07-19", "dokladnosc": "dokladna" }, "smierc": { "wartosc": "1850-07-24", "dokladnosc": "dokladna" },
+      "ojciecId": "adam-zielinski-1820", "matkaId": null, "galazId": "zielinscy" }
+  ],
+  "malzenstwa": [
+    { "osobaAId": "jan-kowalski-1560", "osobaBId": "anna-nowak", "kolejnosc": 1 },
+    { "osobaAId": "jan-kowalski-1560", "osobaBId": "zofia-wisniewska", "kolejnosc": 2 }
+  ]
+}
