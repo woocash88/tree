@@ -1,16 +1,23 @@
 import Link from "next/link";
-import { Ornament } from "@/components/Ornament";
+import { Naglowek } from "@/components/Naglowek";
+import { Stopka } from "@/components/Stopka";
 
 export default function NieZnaleziono() {
   return (
-    <main className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-5xl font-medium">Brak takiej karty</h1>
-      <Ornament className="mx-auto mt-4" />
-      <p className="szeryf mt-4 text-xl text-sepia">Tej strony nie ma w księdze. Być może adres jest niepełny albo osoba ma inny identyfikator.</p>
-      <p className="mt-6 flex justify-center gap-4">
-        <Link href="/" className="link">Strona główna</Link>
-        <Link href="/osoby/" className="link">Indeks osób</Link>
-      </p>
-    </main>
+    <>
+      <Naglowek />
+      <main id="tresc" className="mx-auto w-full max-w-xl flex-1 px-4 py-20">
+        <div className="szklo p-8 text-center">
+          <p className="text-6xl font-bold text-akcent">404</p>
+          <h1 className="mt-2 text-3xl">Nie ma takiej strony</h1>
+          <p className="mt-3 text-tekst-2">Adres może być niepełny, drzewo mogło zmienić nazwę albo osoba ma inny identyfikator.</p>
+          <p className="mt-6 flex flex-wrap justify-center gap-2">
+            <Link href="/" className="przycisk">Strona główna</Link>
+            <Link href="/drzewa/" className="przycisk przycisk-glowny">Wszystkie drzewa</Link>
+          </p>
+        </div>
+      </main>
+      <Stopka />
+    </>
   );
 }

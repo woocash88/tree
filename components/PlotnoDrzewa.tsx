@@ -11,21 +11,31 @@ import {
   KARTA_WYS,
   ODSTEP_PARY,
   kartyJednostki,
+  lasGalezi,
   przodkowieJednostki,
+  przodkowieWWidoku,
   rozwinDoPoziomu,
   ulozLas,
-  zbudujLas,
+  wWidoku,
   type Jednostka,
   type Las,
   type ParaDrzewa,
+  type Pozycja,
 } from "@/lib/drzewo";
-import { pelneImie } from "@/lib/format";
+import { odmien, pelneImie } from "@/lib/format";
+import { tekstNaKolorze } from "@/lib/kolor";
 import type { Galaz } from "@/lib/schemat";
-import { sciezkaDrzewa, sciezkaOsoby } from "@/lib/sciezki";
+import { sciezkaDiagramu, sciezkaGalezi } from "@/lib/sciezki";
 import { ustawObslugeWyboru } from "@/lib/wybor";
 import { PanelOsoby } from "./PanelOsoby";
 
 const DOMYSLNE_POZIOMY = 3;
+/** Najmniejsze powiększenie, przy którym daty na kartach (12 px) są czytelne bez przybliżania. */
+const MIN_ZOOM_PC = 0.9;
+const MIN_ZOOM_TELEFON = 0.8;
+const MARGINES = 24;
+
+const minZoom = () => (typeof window !== "undefined" && window.innerWidth < 640 ? MIN_ZOOM_TELEFON : MIN_ZOOM_PC);
 
 type Kontekst = {
   las: Las;
@@ -42,10 +52,7 @@ const KontekstPlotna = createContext<Kontekst | null>(null);
 type DaneWezla = { jednostkaId: string };
 type WezelJednostki = Node<DaneWezla, "jednostka">;
 
-function odmienOsoby(n: number) {
-  if (n === 1) return "osoba";
-  return n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? "osoby" : "osób";
-}
+const odmienOsoby = (n: number) => odmien(n, "osoba", "osoby", "osób");
 
 const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJednostki>) {
   const k = useContext(KontekstPlotna)!;
@@ -70,17 +77,17 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
         const nrPartnera = j.partnerzy.findIndex((p) => p.id === karta.osobaId);
         return sasiad ? (
           <div key={`l-${karta.osobaId}`} aria-hidden="true">
-            <div className="absolute h-[5px] border-y border-kreska" style={{ left: lewo, width: ODSTEP_PARY, top: KARTA_WYS / 2 - 2 }} />
+            <div className="absolute h-[5px] border-y border-tekst-2" style={{ left: lewo, width: ODSTEP_PARY, top: KARTA_WYS / 2 - 2 }} />
             {j.partnerzy.length > 1 && (
-              <span className="absolute z-10 flex size-4 items-center justify-center rounded-full border border-kreska bg-papier-jasny text-[10px] leading-none text-sepia" style={{ left: lewo + ODSTEP_PARY / 2 - 8, top: KARTA_WYS / 2 - 8 }}>
+              <span className="absolute z-10 flex size-4 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst" style={{ left: lewo + ODSTEP_PARY / 2 - 8, top: KARTA_WYS / 2 - 8 }}>
                 {karta.kolejnosc}
               </span>
             )}
-            {partnerzyZDziecmi.has(nrPartnera) && <div className="absolute w-px bg-kreska" style={{ left: uklad.uchwyty[nrPartnera], top: KARTA_WYS / 2 + 3, height: KARTA_WYS / 2 - 3 }} />}
+            {partnerzyZDziecmi.has(nrPartnera) && <div className="absolute w-px bg-tekst-2" style={{ left: uklad.uchwyty[nrPartnera], top: KARTA_WYS / 2 + 3, height: KARTA_WYS / 2 - 3 }} />}
           </div>
         ) : (
-          <div key={`l-${karta.osobaId}`} aria-hidden="true" className="absolute h-2.5 border-x border-t border-kreska" style={{ left: glownaX + KARTA_SZER / 2, width: karta.x - glownaX, top: -10 }}>
-            <span className="absolute -top-2 left-1/2 flex size-4 -translate-x-1/2 items-center justify-center rounded-full border border-kreska bg-papier-jasny text-[10px] leading-none text-sepia">{karta.kolejnosc}</span>
+          <div key={`l-${karta.osobaId}`} aria-hidden="true" className="absolute h-2.5 border-x border-t border-tekst-2" style={{ left: glownaX + KARTA_SZER / 2, width: karta.x - glownaX, top: -10 }}>
+            <span className="absolute -top-2 left-1/2 flex size-4 -translate-x-1/2 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst">{karta.kolejnosc}</span>
           </div>
         );
       })}
@@ -97,15 +104,16 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
             aria-pressed={wybrana}
             aria-label={`${pelneImie(o)}${o.lata ? `, ${o.lata}` : ""}${karta.rola === "partner" ? `, małżonek osoby ${pelneImie(glowna)}` : ""}${karta.odsylacz ? " (odsyłacz do własnej karty)" : ""}`}
             title={pelneImie(o)}
-            className={`etykieta absolute top-0 block cursor-pointer border-l-4 px-2.5 py-1.5 text-left hover:bg-white ${karta.rola === "partner" ? "bg-papier" : ""} ${karta.odsylacz ? "border-dashed" : ""} ${wybrana ? "z-20 ring-2 ring-bordo" : ""} ${k.podswietlona === o.id ? "podswietlona z-20" : ""}`}
+            // Karta na płótnie: półprzezroczyste tło BEZ rozmycia (kart są setki).
+            className={`panel absolute top-0 block cursor-pointer !rounded-xl border-l-4 px-2.5 py-1.5 text-left transition-colors hover:bg-najazd ${karta.odsylacz ? "border-dashed" : ""} ${wybrana ? "z-20 ring-2 ring-akcent" : ""} ${k.podswietlona === o.id ? "podswietlona z-20" : ""}`}
             style={{ left: karta.x, width: KARTA_SZER, height: KARTA_WYS, borderLeftColor: k.kolory.get(o.galazId) }}
           >
-            <span className="szeryf block truncate text-[16px] font-semibold leading-[1.15] text-atrament">
+            <span className="block truncate text-[14px] font-semibold leading-[1.2]">
               {o.imie || "NN"}
-              {o.niepewna && <span className="font-normal text-sepia"> ?</span>}
+              {o.niepewna && <span className="font-normal text-tekst-2"> ?</span>}
             </span>
-            <span className="szeryf block truncate text-[15px] leading-[1.15] text-atrament">{o.nazwisko || "NN"}</span>
-            <span className="block truncate text-[12px] leading-tight tabular-nums text-sepia">{karta.odsylacz ? "↗ ma własną kartę" : o.lata}</span>
+            <span className="block truncate text-[14px] leading-[1.2]">{o.nazwisko || "NN"}</span>
+            <span className="block truncate text-[12px] leading-tight tabular-nums text-tekst-2">{karta.odsylacz ? "↗ ma własną kartę" : o.lata}</span>
           </button>
         );
       })}
@@ -122,10 +130,10 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
           aria-expanded={rozwinieta}
           aria-label={`${rozwinieta ? "Zwiń" : "Rozwiń"} potomków: ${pelneImie(glowna)} (${j.potomkow} ${odmienOsoby(j.potomkow)})`}
           title={rozwinieta ? "Zwiń potomków" : `Rozwiń potomków (${j.potomkow} ${odmienOsoby(j.potomkow)})`}
-          className={`absolute z-30 flex h-[22px] min-w-[22px] -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border px-1.5 text-[12px] font-semibold leading-none tabular-nums shadow-sm ${
-            rozwinieta ? "border-kreska bg-papier-jasny text-sepia hover:bg-white" : "border-bordo bg-bordo text-white hover:bg-[#641c28]"
+          className={`absolute z-30 flex h-[24px] min-w-[24px] -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border px-1.5 text-[12px] font-bold leading-none tabular-nums shadow-sm ${
+            rozwinieta ? "border-tekst-2 bg-lita text-tekst hover:bg-najazd" : "border-akcent bg-akcent text-akcent-tekst hover:brightness-110"
           }`}
-          style={{ left: xPrzycisku, top: KARTA_WYS + 7 }}
+          style={{ left: xPrzycisku, top: KARTA_WYS + 6 }}
         >
           {rozwinieta ? "−" : `+${j.potomkow}`}
         </button>
@@ -136,37 +144,20 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
 
 const TYPY_WEZLOW = { jednostka: Jednostka_ };
 
-type Props = { osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[]; galazId?: string };
+type Props = { slug: string; osoby: OsobaPanelu[]; pary: ParaDrzewa[]; galezie: Galaz[]; galazId: string };
 
-function Plotno({ osoby, pary, galezie, galazId }: Props) {
+function Plotno({ slug, osoby, pary, galezie, galazId }: Props) {
   const router = useRouter();
   const rf = useReactFlow();
   const mapaOsob = useMemo(() => new Map(osoby.map((o) => [o.id, o])), [osoby]);
-  const las = useMemo(() => {
-    const pelny = zbudujLas(osoby, pary);
-    if (!galazId) return pelny;
-    // Widok jednej gałęzi: pod jednostkami zostają tylko dzieci z tej samej gałęzi.
-    const jednostki = new Map([...pelny.jednostki].map(([id, j]) => [id, { ...j, dzieci: j.dzieci.filter((d) => mapaOsob.get(d)!.galazId === galazId) }]));
-    return { ...pelny, jednostki };
-  }, [osoby, pary, galazId, mapaOsob]);
+  const { las, korzenie, maxPoziomow } = useMemo(() => lasGalezi(osoby, pary, galazId), [osoby, pary, galazId]);
   const kolory = useMemo(() => new Map(galezie.map((g) => [g.id, g.kolor])), [galezie]);
-
-  // Korzenie widoku: całe drzewo albo pierwsze jednostki wybranej gałęzi.
-  const korzenie = useMemo(() => {
-    if (!galazId) return las.korzenie;
-    return [...las.jednostki.values()]
-      .filter((j) => mapaOsob.get(j.glowna)!.galazId === galazId && (!j.rodzicId || mapaOsob.get(las.jednostki.get(j.rodzicId)!.glowna)!.galazId !== galazId))
-      .map((j) => j.id);
-  }, [las, mapaOsob, galazId]);
-  const maxPoziomow = useMemo(() => {
-    const glebokosc = (id: string): number => 1 + Math.max(0, ...las.jednostki.get(id)!.dzieci.map(glebokosc));
-    return Math.max(1, ...korzenie.map(glebokosc));
-  }, [las, korzenie]);
 
   const [rozwiniete, setRozwiniete] = useState<Set<string>>(() => rozwinDoPoziomu(las, korzenie, DOMYSLNE_POZIOMY));
   const [poziomy, setPoziomy] = useState(Math.min(DOMYSLNE_POZIOMY, maxPoziomow));
   const [wybrana, setWybrana] = useState<string | null>(null);
   const [podswietlona, setPodswietlona] = useState<string | null>(null);
+  const [komunikat, setKomunikat] = useState<string | null>(null);
   const [gotowe, setGotowe] = useState(false);
   /** Zadanie do wykonania po przeliczeniu układu: przesuń do osoby / dopasuj / utrzymaj węzeł w miejscu. */
   const poUkladzie = useRef<{ rodzaj: "osoba"; id: string } | { rodzaj: "dopasuj" } | { rodzaj: "kotwica"; id: string; x: number; y: number } | null>(null);
@@ -175,15 +166,10 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
   const pozycje = useMemo(() => ulozLas(las, korzenie, rozwiniete), [las, korzenie, rozwiniete]);
   const mapaPozycji = useMemo(() => new Map(pozycje.map((p) => [p.id, p])), [pozycje]);
 
-  const wGalezi = useCallback(
-    (jednostkaId: string) => korzenie.includes(jednostkaId) || przodkowieJednostki(las, jednostkaId).some((p) => korzenie.includes(p)),
-    [las, korzenie],
-  );
-
   const ustawAdres = useCallback((osobaId: string | null) => {
     const adres = new URL(window.location.href);
-    if (osobaId) adres.searchParams.set("osoba", osobaId);
-    else adres.searchParams.delete("osoba");
+    if (osobaId) adres.searchParams.set("os", osobaId);
+    else adres.searchParams.delete("os");
     window.history.replaceState(null, "", adres.pathname + adres.search);
   }, []);
 
@@ -191,16 +177,17 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
   const pokazOsobe = useCallback(
     (osobaId: string, opcje: { przesun?: boolean } = {}) => {
       const jednostkaId = las.jednostkaOsoby.get(osobaId);
-      if (!jednostkaId) return;
-      if (!wGalezi(jednostkaId)) {
-        router.push(sciezkaDrzewa(null, osobaId));
+      const o = mapaOsob.get(osobaId);
+      if (!jednostkaId || !o) return;
+      if (!wWidoku(las, korzenie, jednostkaId)) {
+        router.push(sciezkaDiagramu(slug, o.galazId, osobaId));
         return;
       }
       setWybrana(osobaId);
       ustawAdres(osobaId);
       if (opcje.przesun === false) return;
       setPodswietlona(osobaId);
-      const doRozwiniecia = przodkowieJednostki(las, jednostkaId);
+      const doRozwiniecia = przodkowieWWidoku(las, korzenie, jednostkaId);
       poUkladzie.current = { rodzaj: "osoba", id: osobaId };
       setRozwiniete((stare) => {
         if (doRozwiniecia.every((id) => stare.has(id))) return stare;
@@ -210,7 +197,7 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
       });
       setLicznikUkladu((n) => n + 1);
     },
-    [las, wGalezi, router, ustawAdres],
+    [las, korzenie, mapaOsob, router, slug, ustawAdres],
   );
 
   const zamknijPanel = useCallback(() => {
@@ -246,26 +233,61 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
     [las, korzenie, maxPoziomow],
   );
 
-  // Widok początkowy: całość, jeśli mieści się w czytelnym powiększeniu; w przeciwnym razie
-  // korzeń drzewa u góry ekranu (resztę widać na minimapie i po przesunięciu).
+  // ── dopasowanie widoku ──
+  // Zasada: karty muszą być czytelne (daty bez przybliżania) i nie może zostawać duże puste pole nad drzewem.
+  // Gdy całość mieści się przy czytelnym powiększeniu – dopasowujemy całość, wyrównaną do góry.
+  // W przeciwnym razie dopasowujemy do wybranej osoby (jej poddrzewa) i podpowiadamy, co zrobić.
   const obszar = useRef<HTMLDivElement>(null);
-  const naStart = useCallback(() => {
-    const el = obszar.current;
-    if (el && pozycje.length) {
+  const dopasuj = useCallback(
+    (animuj: boolean) => {
+      const el = obszar.current;
+      if (!el || !pozycje.length) return;
       const W = el.clientWidth;
       const H = el.clientHeight;
-      const x0 = Math.min(...pozycje.map((p) => p.x));
-      const x1 = Math.max(...pozycje.map((p) => p.x + p.szerokosc));
-      const y0 = Math.min(...pozycje.map((p) => p.y));
-      const y1 = Math.max(...pozycje.map((p) => p.y)) + KARTA_WYS + 30;
-      const zoom = Math.max(W < 640 ? 0.7 : 0.6, Math.min(1, (W - 48) / (x1 - x0), (H - 48) / (y1 - y0)));
-      const pierwsze = pozycje.filter((p) => korzenie.includes(p.id));
-      const srodek = pierwsze.length ? (Math.min(...pierwsze.map((p) => p.x)) + Math.max(...pierwsze.map((p) => p.x + p.szerokosc))) / 2 : (x0 + x1) / 2;
-      const wys = (y1 - y0) * zoom;
-      rf.setViewport({ x: W / 2 - srodek * zoom, y: wys < H ? (H - wys) / 2 - y0 * zoom : 28 - y0 * zoom, zoom });
-    }
+      const granice = (lista: Pozycja[]) => ({
+        x0: Math.min(...lista.map((p) => p.x)),
+        x1: Math.max(...lista.map((p) => p.x + p.szerokosc)),
+        y0: Math.min(...lista.map((p) => p.y)),
+        y1: Math.max(...lista.map((p) => p.y)) + KARTA_WYS + 34,
+      });
+      const zFit = (g: ReturnType<typeof granice>) => Math.min((W - 2 * MARGINES) / (g.x1 - g.x0), (H - 2 * MARGINES) / (g.y1 - g.y0));
+      const opcje = animuj ? { duration: 400 } : undefined;
+      const minimum = minZoom();
+
+      const calosc = granice(pozycje);
+      const zCalosci = zFit(calosc);
+      if (zCalosci >= minimum) {
+        const zoom = Math.min(1, zCalosci);
+        rf.setViewport({ x: (W - (calosc.x1 - calosc.x0) * zoom) / 2 - calosc.x0 * zoom, y: MARGINES - calosc.y0 * zoom, zoom }, opcje);
+        setKomunikat(null);
+        return;
+      }
+
+      // Całość się nie mieści: ostrość na wybranej osobie (albo na pierwszym korzeniu) i jej widocznych potomkach.
+      const fokusJ = (wybrana && las.jednostkaOsoby.get(wybrana)) || korzenie[0];
+      const fokusPoz = mapaPozycji.get(fokusJ) ?? pozycje[0];
+      const poddrzewo: Pozycja[] = [];
+      const idz = (id: string) => {
+        const p = mapaPozycji.get(id);
+        if (!p) return;
+        poddrzewo.push(p);
+        if (rozwiniete.has(id)) las.jednostki.get(id)!.dzieci.forEach(idz);
+      };
+      idz(fokusPoz.id);
+      const g = granice(poddrzewo);
+      const zoom = Math.max(minimum, Math.min(1, zFit(g)));
+      const srodekX = (g.x1 - g.x0) * zoom <= W - 2 * MARGINES ? (g.x0 + g.x1) / 2 : fokusPoz.x + fokusPoz.szerokosc / 2;
+      rf.setViewport({ x: W / 2 - srodekX * zoom, y: MARGINES - fokusPoz.y * zoom, zoom }, opcje);
+      const nazwa = pelneImie(mapaOsob.get(las.jednostki.get(fokusPoz.id)!.glowna)!);
+      setKomunikat(`Całe drzewo nie mieści się w czytelnym powiększeniu – widok dopasowano do osoby: ${nazwa}. Użyj wyszukiwarki lub zwijania pokoleń.`);
+    },
+    [pozycje, mapaPozycji, rozwiniete, las, korzenie, wybrana, rf, mapaOsob],
+  );
+
+  const naStart = useCallback(() => {
+    dopasuj(false);
     setGotowe(true);
-  }, [pozycje, korzenie, rf]);
+  }, [dopasuj]);
 
   // Po każdej zmianie układu wykonaj zaplanowany ruch kamery.
   useEffect(() => {
@@ -273,7 +295,7 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
     if (!gotowe || !zadanie) return;
     poUkladzie.current = null;
     if (zadanie.rodzaj === "dopasuj") {
-      requestAnimationFrame(() => rf.fitView({ padding: 0.12, maxZoom: 1, duration: 400 }));
+      requestAnimationFrame(() => dopasuj(true));
     } else if (zadanie.rodzaj === "kotwica") {
       const p = mapaPozycji.get(zadanie.id);
       if (!p) return;
@@ -284,14 +306,14 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
       const p = mapaPozycji.get(jednostkaId);
       if (!p) return;
       const karta = kartyJednostki(las.jednostki.get(jednostkaId)!).karty.find((x) => x.osobaId === zadanie.id);
-      const zoom = Math.max(rf.getZoom(), window.innerWidth < 640 ? 0.8 : 1);
+      const zoom = Math.max(rf.getZoom(), minZoom());
       // Na telefonie dolną część ekranu zajmuje szuflada – celujemy nieco wyżej.
       const telefon = window.innerWidth < 640;
       const przesuniecieY = telefon ? 110 / zoom : 0;
-      const przesuniecieX = telefon ? 0 : 180 / zoom; // szerokość panelu bocznego / 2
+      const przesuniecieX = telefon ? 0 : 180 / zoom; // połowa szerokości panelu bocznego
       rf.setCenter(p.x + (karta?.x ?? 0) + KARTA_SZER / 2 + przesuniecieX, p.y + KARTA_WYS / 2 + przesuniecieY, { zoom: Math.min(zoom, 1.25), duration: 700 });
     }
-  }, [licznikUkladu, gotowe, mapaPozycji, las, rf]);
+  }, [licznikUkladu, gotowe, mapaPozycji, las, rf, dopasuj]);
 
   useEffect(() => {
     if (!podswietlona) return;
@@ -299,11 +321,11 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
     return () => clearTimeout(t);
   }, [podswietlona]);
 
-  // Stan w adresie: ?osoba=<id> (także przy „wstecz” w przeglądarce).
+  // Stan w adresie: ?os=<id osoby> (także przy „wstecz” w przeglądarce).
   useEffect(() => {
     if (!gotowe) return;
     const zAdresu = () => {
-      const id = new URLSearchParams(window.location.search).get("osoba");
+      const id = new URLSearchParams(window.location.search).get("os");
       if (id && las.jednostkaOsoby.has(id)) pokazOsobe(id);
       else if (!id) setWybrana(null);
     };
@@ -358,7 +380,7 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
         focusable: false,
         selectable: false,
         zIndex: naSciezce ? 1 : 0,
-        style: naSciezce ? { stroke: "var(--color-bordo)", strokeWidth: 2 } : undefined,
+        style: naSciezce ? { stroke: "var(--akcent)", strokeWidth: 2.5 } : undefined,
       } as Edge);
     }
     return wynik;
@@ -371,75 +393,73 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
 
   const widocznychOsob = useMemo(() => pozycje.reduce((s, p) => s + 1 + las.jednostki.get(p.id)!.partnerzy.length, 0), [pozycje, las]);
   const wszystkoRozwiniete = pozycje.length === korzenie.reduce((s, k) => s + 1 + liczJednostki(las, k), 0);
-  const przycisk = "flex h-9 min-w-9 shrink-0 items-center whitespace-nowrap justify-center rounded-sm border border-kreska bg-papier-jasny px-2 text-[15px] text-atrament shadow-karta hover:bg-white disabled:opacity-45";
-  const galazAktywna = galezie.find((g) => g.id === galazId);
-  const startMobilny = wybrana ?? (korzenie[0] ? las.jednostki.get(korzenie[0])!.glowna : null);
+  const galazAktywna = galezie.find((g) => g.id === galazId)!;
 
   return (
     <KontekstPlotna.Provider value={kontekst}>
       <div className="absolute inset-0 flex flex-col">
-        <div className="z-20 flex flex-col gap-2 border-b border-kreska/60 bg-papier/90 px-3 py-2 2xl:flex-row 2xl:items-center">
-          <nav aria-label="Legenda gałęzi – pokaż tylko wybraną" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:flex-wrap md:pb-0">
-            <Link href={sciezkaDrzewa()} aria-current={!galazId ? "page" : undefined} className={`shrink-0 rounded-full border px-3 py-1 text-sm ${!galazId ? "border-atrament bg-atrament text-white" : "border-kreska bg-papier-jasny text-atrament hover:bg-white"}`}>
-              Wszystkie gałęzie
-            </Link>
+        <div className="z-20 flex flex-col gap-2 border-b border-kreska bg-lita/90 px-3 py-2 2xl:flex-row 2xl:items-center">
+          <nav aria-label="Gałęzie – pokaż diagram wybranej" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 md:flex-wrap md:pb-0">
             {galezie.map((g) => {
               const aktywna = g.id === galazId;
               return (
                 <Link
                   key={g.id}
-                  href={sciezkaDrzewa(g.id)}
+                  href={sciezkaDiagramu(slug, g.id)}
                   aria-current={aktywna ? "page" : undefined}
-                  className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-sm ${aktywna ? "text-white" : "border-kreska bg-papier-jasny text-atrament hover:bg-white"}`}
-                  style={aktywna ? { backgroundColor: g.kolor, borderColor: g.kolor } : undefined}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium"
+                  style={aktywna ? { backgroundColor: g.kolor, borderColor: g.kolor, color: tekstNaKolorze(g.kolor) } : { borderColor: "var(--kreska)" }}
                 >
-                  <span aria-hidden="true" className="size-2.5 rounded-full" style={{ backgroundColor: aktywna ? "#fff" : g.kolor }} />
+                  {!aktywna && <span aria-hidden="true" className="size-2.5 rounded-full" style={{ backgroundColor: g.kolor }} />}
                   {g.nazwa}
                 </Link>
               );
             })}
           </nav>
 
-          <div role="toolbar" aria-label="Sterowanie widokiem drzewa" className="flex flex-wrap items-center gap-1.5 2xl:ml-auto 2xl:flex-nowrap">
+          <div role="toolbar" aria-label="Sterowanie widokiem drzewa" className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0 2xl:ml-auto 2xl:flex-nowrap [&>*]:shrink-0">
             <div className="flex items-center gap-1" role="group" aria-label="Liczba rozwiniętych pokoleń">
-              <span className="mr-0.5 hidden text-sm text-sepia sm:inline">Pokolenia</span>
-              <button type="button" className={przycisk} onClick={() => ustawPoziomy(poziomy - 1)} disabled={poziomy <= 1} aria-label="Zwiń jedno pokolenie">
+              <span className="mr-0.5 hidden text-sm text-tekst-2 sm:inline">Pokolenia</span>
+              <button type="button" className="przycisk !min-h-9 !min-w-9 !px-2" onClick={() => ustawPoziomy(poziomy - 1)} disabled={poziomy <= 1} aria-label="Zwiń jedno pokolenie">
                 −
               </button>
-              <output className="min-w-12 text-center text-sm tabular-nums text-atrament" aria-live="polite">
+              <output className="min-w-12 text-center text-sm tabular-nums" aria-live="polite">
                 {poziomy} z {maxPoziomow}
               </output>
-              <button type="button" className={przycisk} onClick={() => ustawPoziomy(poziomy + 1)} disabled={poziomy >= maxPoziomow} aria-label="Rozwiń kolejne pokolenie">
+              <button type="button" className="przycisk !min-h-9 !min-w-9 !px-2" onClick={() => ustawPoziomy(poziomy + 1)} disabled={poziomy >= maxPoziomow} aria-label="Rozwiń kolejne pokolenie">
                 +
               </button>
             </div>
-            <button type="button" className={przycisk} onClick={() => ustawPoziomy(wszystkoRozwiniete ? DOMYSLNE_POZIOMY : maxPoziomow)}>
+            <button type="button" className="przycisk !min-h-9" onClick={() => ustawPoziomy(wszystkoRozwiniete ? DOMYSLNE_POZIOMY : maxPoziomow)}>
               {wszystkoRozwiniete ? "Zwiń do 3" : "Rozwiń wszystko"}
             </button>
-            <span aria-hidden="true" className="mx-1 hidden h-6 w-px bg-kreska/60 sm:block" />
-            <button type="button" className={`${przycisk} max-sm:hidden`} onClick={() => rf.zoomOut({ duration: 200 })} aria-label="Pomniejsz">
+            <span aria-hidden="true" className="mx-1 hidden h-6 w-px bg-kreska sm:block" />
+            <button type="button" className="przycisk !min-h-9 !min-w-9 !px-2 max-sm:hidden" onClick={() => rf.zoomOut({ duration: 200 })} aria-label="Pomniejsz">
               <Lupa znak="minus" />
             </button>
-            <button type="button" className={`${przycisk} max-sm:hidden`} onClick={() => rf.zoomIn({ duration: 200 })} aria-label="Powiększ">
+            <button type="button" className="przycisk !min-h-9 !min-w-9 !px-2 max-sm:hidden" onClick={() => rf.zoomIn({ duration: 200 })} aria-label="Powiększ">
               <Lupa znak="plus" />
             </button>
-            <button type="button" className={przycisk} onClick={() => rf.fitView({ padding: 0.12, maxZoom: 1, duration: 400 })}>
+            <button type="button" className="przycisk !min-h-9" onClick={() => dopasuj(true)}>
               Dopasuj<span className="max-sm:sr-only">&nbsp;do ekranu</span>
             </button>
+            <Link href={sciezkaGalezi(slug, galazId, wybrana)} className="przycisk przycisk-glowny !min-h-9">
+              Pokaż jako listę
+            </Link>
           </div>
         </div>
 
         <div ref={obszar} className="relative min-h-0 flex-1">
-          <h1 className="sr-only">{galazAktywna ? `Drzewo – ${galazAktywna.nazwa}` : "Drzewo genealogiczne"}</h1>
+          <h1 className="sr-only">Diagram – {galazAktywna.nazwa}</h1>
           <p className="sr-only" role="status" aria-live="polite">
-            Widocznych osób: {widocznychOsob} z {osoby.length}.
+            Widocznych osób: {widocznychOsob}.
           </p>
           <ReactFlow
             nodes={wezly}
             edges={krawedzie}
             nodeTypes={TYPY_WEZLOW}
             onInit={naStart}
-            minZoom={0.03}
+            minZoom={0.05}
             maxZoom={2}
             nodesDraggable={false}
             nodesConnectable={false}
@@ -457,21 +477,22 @@ function Plotno({ osoby, pary, galezie, galazId }: Props) {
               zoomable
               ariaLabel="Minimapa drzewa"
               className="!hidden sm:!block"
-              nodeColor={(n) => kolory.get(mapaOsob.get(n.id)?.galazId ?? "") ?? "#a08a6c"}
+              nodeColor={(n) => kolory.get(mapaOsob.get(las.jednostki.get(n.id)?.glowna ?? "")?.galazId ?? "") ?? "#64748b"}
               nodeStrokeWidth={0}
               nodeBorderRadius={6}
             />
           </ReactFlow>
 
-          {!wybrana && startMobilny && (
-            <p className="pointer-events-none absolute inset-x-2 bottom-2 z-10 flex justify-center sm:hidden">
-              <Link href={sciezkaOsoby(startMobilny)} className="etykieta pointer-events-auto px-3 py-2 text-center text-sm text-atrament">
-                Mały ekran? Wygodniejszy jest <span className="link">widok osoby</span>
-              </Link>
+          {komunikat && !wybrana && (
+            <p role="status" className="panel absolute bottom-3 left-1/2 z-10 flex w-[min(40rem,calc(100%-1.5rem))] sm:w-[min(40rem,calc(100%-18.5rem))] -translate-x-1/2 items-start gap-2 !rounded-xl bg-lita px-3 py-2 text-sm shadow-szklo sm:left-[17rem] sm:translate-x-0">
+              <span className="flex-1">{komunikat}</span>
+              <button type="button" onClick={() => setKomunikat(null)} aria-label="Ukryj podpowiedź" className="-my-1 -mr-1 size-8 shrink-0 rounded-lg text-lg leading-none text-tekst-2 hover:bg-najazd">
+                <span aria-hidden="true">×</span>
+              </button>
             </p>
           )}
 
-          {wybrana && <PanelOsoby osoba={mapaOsob.get(wybrana)!} osoby={mapaOsob} pary={pary} galezie={galezie} naWybor={pokazOsobe} naZamkniecie={zamknijPanel} />}
+          {wybrana && <PanelOsoby slug={slug} osoba={mapaOsob.get(wybrana)!} osoby={mapaOsob} pary={pary} galezie={galezie} widok="diagram" naWybor={pokazOsobe} naZamkniecie={zamknijPanel} />}
         </div>
       </div>
     </KontekstPlotna.Provider>
@@ -498,12 +519,12 @@ export function PlotnoDrzewa(props: Props) {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- celowe: przełączenie z wersji statycznej na interaktywną
   useEffect(() => setZamontowane(true), []);
   if (!zamontowane) {
-    return <p className="absolute inset-0 flex items-center justify-center text-sepia">Rozkładanie drzewa…</p>;
+    return <p className="absolute inset-0 flex items-center justify-center text-tekst-2">Rozkładanie drzewa…</p>;
   }
   return (
     <ReactFlowProvider>
       {/* key: przejście między gałęziami zaczyna od domyślnego stanu rozwinięcia */}
-      <Plotno key={props.galazId ?? "wszystkie"} {...props} />
+      <Plotno key={props.galazId} {...props} />
     </ReactFlowProvider>
   );
 }

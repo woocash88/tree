@@ -1,17 +1,28 @@
-export function Stopka({ zrodlo }: { zrodlo?: string }) {
+import Link from "next/link";
+import type { DrzewoMeta } from "@/lib/schemat-drzewa";
+
+/** Stopka serwisu; na stronach drzewa pokazuje źródło danych i opiekuna. */
+export function Stopka({ drzewo }: { drzewo?: Pick<DrzewoMeta, "zrodlo" | "autor" | "politykaDatZyjacych" | "przykladowe"> }) {
   return (
-    <footer className="mt-16 border-t border-kreska/60 px-4 py-6 text-center text-sm text-sepia">
-      <p>
-        {zrodlo && (
-          <>
-            Dane:{" "}
-            <a className="link" href={zrodlo} rel="noreferrer">
-              genealogia.okiem.pl
+    <footer className="mx-auto mt-16 max-w-7xl px-4 pb-8 text-center text-sm text-tekst-2">
+      {drzewo && (
+        <p className="mb-2">
+          {drzewo.przykladowe ? "Drzewo przykładowe – wszystkie dane są zmyślone. " : "Źródło danych: "}
+          {!drzewo.przykladowe && (
+            <a className="link" href={drzewo.zrodlo.url} rel="noreferrer">
+              {drzewo.zrodlo.nazwa}
             </a>
-            .{" "}
-          </>
-        )}
-        Daty osób żyjących są ukryte. Strona nie używa ciasteczek ani skryptów śledzących.
+          )}
+          {!drzewo.przykladowe && ". "}
+          Opiekun: {drzewo.autor.url ? <a className="link" href={drzewo.autor.url} rel="noreferrer">{drzewo.autor.nazwa}</a> : drzewo.autor.nazwa}.{" "}
+          {drzewo.politykaDatZyjacych === "ukryj" ? "Dane osób żyjących są ukryte." : drzewo.politykaDatZyjacych === "tylko-rok" ? "Przy osobach żyjących pokazujemy tylko rok urodzenia." : ""}
+        </p>
+      )}
+      <p>
+        <Link href="/" className="font-semibold text-tekst">
+          Przodkowie
+        </Link>{" "}
+        · drzewa genealogiczne rodzin · bez ciasteczek i skryptów śledzących
       </p>
     </footer>
   );

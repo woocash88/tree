@@ -1,46 +1,134 @@
 @import "tailwindcss";
-@import "@fontsource-variable/eb-garamond/wght.css";
-@import "@fontsource-variable/eb-garamond/wght-italic.css";
-@import "@fontsource-variable/source-sans-3/wght.css";
+@import "@fontsource-variable/inter/wght.css";
 
-@theme {
-  --font-serif: "EB Garamond Variable", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --font-sans: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+/*
+ * Motyw „glass”. Wszystkie kolory to zmienne CSS przełączane między trybem jasnym i ciemnym:
+ *   – domyślnie według prefers-color-scheme,
+ *   – ręcznie przez atrybut data-theme="jasny" | "ciemny" na <html> (przełącznik w nagłówku).
+ * Kontrast tekstu sprawdzony skryptem (patrz README, „Styl i dostępność”): tekst podstawowy ≥ 12:1,
+ * tekst pomocniczy ≥ 6:1 na każdej powierzchni, także w najjaśniejszym punkcie tła.
+ */
+:root {
+  color-scheme: light;
+  --tlo: #e9edfb;
+  --plama-1: rgba(99, 102, 241, 0.34);
+  --plama-2: rgba(45, 212, 191, 0.3);
+  --plama-3: rgba(167, 139, 250, 0.34);
+  --plama-4: rgba(56, 189, 248, 0.24);
+  --tekst: #0f1429;
+  --tekst-2: #434a69;
+  --kreska: rgba(36, 46, 110, 0.16);
+  --szklo: rgba(255, 255, 255, 0.62);
+  --szklo-ramka: rgba(255, 255, 255, 0.75);
+  --panel: rgba(255, 255, 255, 0.74);
+  --pole: rgba(255, 255, 255, 0.9);
+  --lita: #f6f7fe;
+  --najazd: rgba(54, 64, 212, 0.1);
+  --zaznaczenie: rgba(54, 64, 212, 0.16);
+  --akcent: #3540d1;
+  --akcent-tekst: #ffffff;
+  --blad: #b4234a;
+  --cien: 0 10px 34px -8px rgba(31, 38, 135, 0.22), 0 2px 6px rgba(31, 38, 135, 0.06);
+}
 
-  /* Papier i atrament. Kontrast tekstu do tła: atrament 13:1, sepia 7:1 (WCAG AA/AAA). */
-  --color-papier: #f3ead6;
-  --color-papier-jasny: #fbf6ea;
-  --color-papier-ciemny: #e8dcc0;
-  --color-atrament: #2b2118;
-  --color-sepia: #5a4332;
-  --color-kreska: #a08a6c;
-  --color-bordo: #7a2331;
-  --color-zielen: #1f4d3a;
-  --color-zloto: #806210;
-  --color-zloto-jasne: #c9a227;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="jasny"]) {
+    color-scheme: dark;
+    --tlo: #0a0e1f;
+    --plama-1: rgba(99, 102, 241, 0.4);
+    --plama-2: rgba(20, 184, 166, 0.24);
+    --plama-3: rgba(139, 92, 246, 0.36);
+    --plama-4: rgba(14, 165, 233, 0.2);
+    --tekst: #eceffd;
+    --tekst-2: #aab1d0;
+    --kreska: rgba(255, 255, 255, 0.14);
+    --szklo: rgba(22, 28, 62, 0.62);
+    --szklo-ramka: rgba(255, 255, 255, 0.22);
+    --panel: rgba(18, 24, 54, 0.78);
+    --pole: rgba(12, 16, 40, 0.8);
+    --lita: #141a3a;
+    --najazd: rgba(143, 155, 255, 0.14);
+    --zaznaczenie: rgba(143, 155, 255, 0.24);
+    --akcent: #99a4ff;
+    --akcent-tekst: #0a0e22;
+    --blad: #ff8fa8;
+    --cien: 0 12px 40px -8px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+}
 
-  --shadow-karta: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 1px 2px rgba(43, 33, 24, 0.12), 0 3px 8px -4px rgba(43, 33, 24, 0.25);
+:root[data-theme="ciemny"] {
+  color-scheme: dark;
+  --tlo: #0a0e1f;
+  --plama-1: rgba(99, 102, 241, 0.4);
+  --plama-2: rgba(20, 184, 166, 0.24);
+  --plama-3: rgba(139, 92, 246, 0.36);
+  --plama-4: rgba(14, 165, 233, 0.2);
+  --tekst: #eceffd;
+  --tekst-2: #aab1d0;
+  --kreska: rgba(255, 255, 255, 0.14);
+  --szklo: rgba(22, 28, 62, 0.62);
+  --szklo-ramka: rgba(255, 255, 255, 0.22);
+  --panel: rgba(18, 24, 54, 0.78);
+  --pole: rgba(12, 16, 40, 0.8);
+  --lita: #141a3a;
+  --najazd: rgba(143, 155, 255, 0.14);
+  --zaznaczenie: rgba(143, 155, 255, 0.24);
+  --akcent: #99a4ff;
+  --akcent-tekst: #0a0e22;
+  --blad: #ff8fa8;
+  --cien: 0 12px 40px -8px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --color-tlo: var(--tlo);
+  --color-tekst: var(--tekst);
+  --color-tekst-2: var(--tekst-2);
+  --color-kreska: var(--kreska);
+  --color-panel: var(--panel);
+  --color-pole: var(--pole);
+  --color-lita: var(--lita);
+  --color-najazd: var(--najazd);
+  --color-zaznaczenie: var(--zaznaczenie);
+  --color-akcent: var(--akcent);
+  --color-akcent-tekst: var(--akcent-tekst);
+  --color-blad: var(--blad);
+  --shadow-szklo: var(--cien);
 }
 
 html {
-  background-color: var(--color-papier);
-  color: var(--color-atrament);
+  background-color: var(--tlo);
+  color: var(--tekst);
   font-family: var(--font-sans);
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 8rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   min-height: 100dvh;
-  /* Delikatna faktura papieru – bez plików graficznych. */
-  background-image:
-    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(255, 252, 240, 0.75), transparent 70%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.27 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-attachment: fixed, scroll;
+  font-size: 16px;
+  line-height: 1.5;
+  font-feature-settings: "cv11", "ss03";
 }
 
-h1, h2, h3, .szeryf {
-  font-family: var(--font-serif);
-  font-feature-settings: "liga", "onum";
+/* Tło „mesh”: kilka dużych, rozmytych plam koloru. Stałe, bez obrazów i bez filtrów blur (gradienty są miękkie same z siebie). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 50vmax at 8% 6%, var(--plama-1), transparent 62%),
+    radial-gradient(55vmax 45vmax at 94% 12%, var(--plama-2), transparent 60%),
+    radial-gradient(60vmax 55vmax at 78% 98%, var(--plama-3), transparent 62%),
+    radial-gradient(45vmax 40vmax at 4% 90%, var(--plama-4), transparent 60%);
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  font-weight: 650;
+  text-wrap: balance;
 }
 
 @layer base {
@@ -48,29 +136,87 @@ h1, h2, h3, .szeryf {
     outline-offset: 2px;
   }
   :focus-visible {
-    outline: 2px solid var(--color-bordo);
+    outline: 2px solid var(--akcent);
+  }
+  button {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--zaznaczenie);
   }
 }
 
-/* Własne klasy leżą w warstwie components, aby narzędzia Tailwinda (np. absolute, border-l-4) mogły je nadpisywać. */
 @layer components {
-  /* Etykieta archiwalna: cienka ramka, wewnętrzna ramka, lekki cień. */
-  .etykieta {
-    position: relative;
-    background-color: var(--color-papier-jasny);
-    border: 1px solid color-mix(in srgb, var(--color-kreska) 85%, transparent);
-    box-shadow: var(--shadow-karta);
+  /* Duża powierzchnia ze szkłem: tylko nagłówek, panel boczny, karty indeksów, okno widoku osoby. */
+  .szklo {
+    background: var(--szklo);
+    border: 1px solid var(--szklo-ramka);
+    border-radius: 20px;
+    box-shadow: var(--cien);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
   }
-  .etykieta::after {
-    content: "";
-    position: absolute;
-    inset: 3px;
-    border: 1px solid color-mix(in srgb, var(--color-kreska) 35%, transparent);
-    pointer-events: none;
+
+  /* Półprzezroczyste tło BEZ rozmycia: wiersze listy, karty na płótnie, małe elementy. */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--kreska);
+    border-radius: 14px;
+  }
+
+  .pole {
+    background: var(--pole);
+    border: 1px solid var(--kreska);
+    border-radius: 12px;
+    color: var(--tekst);
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+  }
+  .pole::placeholder {
+    color: var(--tekst-2);
+    opacity: 1;
+  }
+
+  .przycisk {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 2.25rem;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--kreska);
+    background: var(--pole);
+    color: var(--tekst);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  .przycisk:hover:not(:disabled) {
+    background: var(--najazd);
+    border-color: var(--akcent);
+  }
+  .przycisk:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .przycisk[aria-pressed="true"],
+  .przycisk[aria-current="page"],
+  .przycisk-glowny {
+    background: var(--akcent);
+    border-color: var(--akcent);
+    color: var(--akcent-tekst);
+  }
+  .przycisk-glowny:hover:not(:disabled),
+  .przycisk[aria-pressed="true"]:hover:not(:disabled),
+  .przycisk[aria-current="page"]:hover:not(:disabled) {
+    background: var(--akcent);
+    filter: brightness(1.08);
   }
 
   .link {
-    color: var(--color-bordo);
+    color: var(--akcent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
@@ -78,46 +224,95 @@ h1, h2, h3, .szeryf {
   .link:hover {
     text-decoration-thickness: 2px;
   }
+
+  /* Etykieta gałęzi: kolor + nazwa, więc znacznik nie opiera się wyłącznie na barwie. */
+  .znacznik {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    max-width: 100%;
+  }
+  .znacznik::before {
+    content: "";
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: var(--kolor);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--kolor) 28%, transparent);
+  }
+
+  .wiersz-listy {
+    transition: background-color 0.12s;
+  }
+  .wiersz-listy:hover {
+    background: var(--najazd);
+  }
+  .wiersz-listy[aria-selected="true"] {
+    background: var(--zaznaczenie);
+  }
+}
+
+/* Prowadnice wcięć listy (jak w eksploratorze plików): jedna cienka linia na każdy poziom. */
+.prowadnice {
+  background-image: repeating-linear-gradient(to right, var(--kreska) 0 1px, transparent 1px var(--wciecie, 20px));
+  background-position: 9px 0;
 }
 
 @keyframes podswietlenie {
-  0%, 100% { box-shadow: 0 0 0 3px var(--color-zloto-jasne), 0 0 0 8px rgba(201, 162, 39, 0); }
-  50% { box-shadow: 0 0 0 3px var(--color-zloto-jasne), 0 0 0 10px rgba(201, 162, 39, 0.35); }
+  0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
+  25%, 75% { box-shadow: inset 3px 0 0 var(--akcent); background-color: var(--zaznaczenie); }
 }
 .podswietlona {
   animation: podswietlenie 1.1s ease-in-out 3;
 }
+.react-flow .podswietlona {
+  animation: podswietlenie-karty 1.1s ease-in-out 3;
+}
+@keyframes podswietlenie-karty {
+  0%, 100% { box-shadow: 0 0 0 2px var(--akcent), 0 0 0 6px transparent; }
+  50% { box-shadow: 0 0 0 2px var(--akcent), 0 0 0 9px var(--zaznaczenie); }
+}
 
 @keyframes wysun {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { transform: translateY(100%); opacity: 0.4; }
+  to { transform: translateY(0); opacity: 1; }
 }
 @keyframes wjedz {
   from { transform: translateX(24px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+@keyframes pojaw {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.pojaw {
+  animation: pojaw 0.35s ease-out both;
 }
 
-/* React Flow w barwach księgi. */
+/* Przełącznik motywu: pokazuje ikonę docelowego motywu. */
+.ikona-ksiezyc { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="jasny"]) .ikona-slonce { display: none; }
+  :root:not([data-theme="jasny"]) .ikona-ksiezyc { display: block; }
+}
+:root[data-theme="ciemny"] .ikona-slonce { display: none; }
+:root[data-theme="ciemny"] .ikona-ksiezyc { display: block; }
+
+/* React Flow w barwach motywu. */
 .react-flow {
   --xy-background-color: transparent;
-  --xy-edge-stroke: var(--color-kreska);
-  --xy-edge-stroke-width: 1;
-  --xy-minimap-background-color: var(--color-papier-jasny);
-  --xy-minimap-mask-background-color: rgba(90, 67, 50, 0.18);
+  --xy-edge-stroke: var(--tekst-2);
+  --xy-edge-stroke-width: 1.2;
+  --xy-minimap-background-color: var(--lita);
+  --xy-minimap-mask-background-color: rgba(120, 130, 220, 0.2);
   --xy-attribution-background-color: transparent;
 }
 .react-flow__minimap {
-  border: 1px solid var(--color-kreska);
-  box-shadow: var(--shadow-karta);
+  border: 1px solid var(--kreska);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--cien);
 }
 .react-flow__node {
   cursor: grab;
@@ -127,5 +322,54 @@ h1, h2, h3, .szeryf {
   pointer-events: none;
 }
 .react-flow__attribution a {
-  color: var(--color-sepia);
+  color: var(--tekst-2);
+}
+
+/* Przeglądarki bez backdrop-filter: jednolite powierzchnie. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .szklo {
+    background: var(--lita);
+  }
+}
+
+/* Użytkownik prosi o mniej przezroczystości albo większy kontrast: nieprzezroczyste tła, bez rozmycia i plam. */
+@media (prefers-reduced-transparency: reduce) {
+  .szklo, .panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--lita);
+  }
+  body::before {
+    display: none;
+  }
+}
+@media (prefers-contrast: more) {
+  :root {
+    --kreska: rgba(0, 0, 0, 0.55);
+    --tekst-2: #2a3050;
+  }
+  .szklo, .panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--lita);
+    border-color: var(--tekst-2);
+  }
+  body::before {
+    display: none;
+  }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="jasny"]) {
+    --kreska: rgba(255, 255, 255, 0.6);
+    --tekst-2: #d5daf2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
