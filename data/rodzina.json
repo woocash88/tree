@@ -1,0 +1,6979 @@
+{
+  "tytul": "Drzewo genealogiczne rodziny Lulkiewiczów",
+  "opis": "Potomkowie Sebastiana i Wiktora Lulkiewiczów z Kobylina – dziesięć pokoleń, od ok. 1780 r.",
+  "zrodlo": "https://genealogia.okiem.pl/drzewo/238/lulkiewicz",
+  "galezie": [
+    {
+      "id": "pien",
+      "nazwa": "Wspólny pień",
+      "kolor": "#4a3728",
+      "opis": "Sebastian i Wiktor Lulkiewiczowie z żonami – pokolenia 1–2, wspólne dla wszystkich linii."
+    },
+    {
+      "id": "antoni",
+      "nazwa": "Linia Antoniego",
+      "kolor": "#7a2331",
+      "opis": "Potomkowie Antoniego Lulkiewicza (ur. ok. 1807)."
+    },
+    {
+      "id": "konstancja",
+      "nazwa": "Linia Konstancji",
+      "kolor": "#63345a",
+      "opis": "Konstancja Lulkiewicz (ur. ok. 1809) – źródło nie podaje potomków."
+    },
+    {
+      "id": "julian",
+      "nazwa": "Linia Juliana",
+      "kolor": "#1f4d3a",
+      "opis": "Potomkowie Juliana Lulkiewicza (ur. ok. 1813)."
+    },
+    {
+      "id": "jozefa",
+      "nazwa": "Linia Józefy",
+      "kolor": "#9a4a22",
+      "opis": "Potomkowie Józefy Lulkiewicz (ur. 1817)."
+    },
+    {
+      "id": "wojciech",
+      "nazwa": "Linia Wojciecha",
+      "kolor": "#2b3f66",
+      "opis": "Potomkowie Wojciecha Lulkiewicza (ur. ok. 1819)."
+    },
+    {
+      "id": "filip",
+      "nazwa": "Linia Filipa",
+      "kolor": "#806210",
+      "opis": "Potomkowie Filipa Lulkiewicza (ur. 1820)."
+    },
+    {
+      "id": "jozef",
+      "nazwa": "Linia Józefa",
+      "kolor": "#55602a",
+      "opis": "Potomkowie Józefa Lulkiewicza (ur. ok. 1823)."
+    }
+  ],
+  "osoby": [
+    {
+      "id": "sebastian-lulkiewicz",
+      "imie": "Sebastian",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "pien",
+      "wierszZrodla": 1
+    },
+    {
+      "id": "anna-lulkiewicz",
+      "imie": "Anna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "pien",
+      "wierszZrodla": 1
+    },
+    {
+      "id": "wiktor-lulkiewicz-1780",
+      "imie": "Wiktor",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1780",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "sebastian-lulkiewicz",
+      "matkaId": "anna-lulkiewicz",
+      "galazId": "pien",
+      "wierszZrodla": 2
+    },
+    {
+      "id": "kungeunda-pernaczynska-1785",
+      "imie": "Kungeunda",
+      "nazwisko": "Pernaczyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1785",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1855-06-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "pien",
+      "notatka": "Ojciec: Paweł Pernaczyński; matka: Cecylia Ciesielska.",
+      "wierszZrodla": 2
+    },
+    {
+      "id": "antoni-lulkiewicz-1807",
+      "imie": "Antoni",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1807",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1847-08-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "antoni",
+      "wierszZrodla": 3
+    },
+    {
+      "id": "helena-galusinska-1806",
+      "imie": "Helena",
+      "nazwisko": "Galusińska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1806",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1852-09-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Leon Galusiński; matka: Barbara Osińska.",
+      "wierszZrodla": 3
+    },
+    {
+      "id": "antoni-lulkiewicz-1831",
+      "imie": "Antoni",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1831-09-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1831-09-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 4
+    },
+    {
+      "id": "tomasz-lulkiewicz-1832",
+      "imie": "Tomasz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1832-12-08",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1833-06-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 5
+    },
+    {
+      "id": "wiktor-lulkiewicz-1834",
+      "imie": "Wiktor",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1834-08-29",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 6
+    },
+    {
+      "id": "seweryna-ginter-1839",
+      "imie": "Seweryna",
+      "nazwisko": "Ginter",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1839",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Jakub Ginter; matka: Weronika Ginter.",
+      "wierszZrodla": 6
+    },
+    {
+      "id": "wojciech-lulkiewicz",
+      "imie": "Wojciech",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 7
+    },
+    {
+      "id": "helena-lulkiewicz",
+      "imie": "Helena",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wojciech-lulkiewicz",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 8
+    },
+    {
+      "id": "nn-paterek",
+      "imie": "",
+      "nazwisko": "Paterek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "imie",
+        "plec"
+      ],
+      "wierszZrodla": 8
+    },
+    {
+      "id": "maria-lulkiewicz",
+      "imie": "Maria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wojciech-lulkiewicz",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 9
+    },
+    {
+      "id": "stanislawa-lulkiewicz",
+      "imie": "Stanisława",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wojciech-lulkiewicz",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 10
+    },
+    {
+      "id": "teodor-lulkiewicz-1857",
+      "imie": "Teodor",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1857-11-08",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 11
+    },
+    {
+      "id": "dorota-merczynska-1861",
+      "imie": "Dorota",
+      "nazwisko": "Merczyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1861",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Szymon Merczyński; matka: Krystyna Szydłowska.",
+      "wierszZrodla": 11
+    },
+    {
+      "id": "franciszek-lulkiewicz",
+      "imie": "Franciszek",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 12
+    },
+    {
+      "id": "teodor-lulkiewicz-1886",
+      "imie": "Teodor",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1886-10-10",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 13
+    },
+    {
+      "id": "edmund-lulkiewicz",
+      "imie": "Edmund",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "teodor-lulkiewicz-1886",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 14
+    },
+    {
+      "id": "kazimierz-lulkiewicz",
+      "imie": "Kazimierz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "edmund-lulkiewicz",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 15
+    },
+    {
+      "id": "rafal-lulkiewicz",
+      "imie": "Rafał",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lulkiewicz",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 16
+    },
+    {
+      "id": "maria-lulkiewicz-1889",
+      "imie": "Maria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1889-04-08",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 17
+    },
+    {
+      "id": "nn-lasota",
+      "imie": "",
+      "nazwisko": "Lasota",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "imie",
+        "plec"
+      ],
+      "wierszZrodla": 17
+    },
+    {
+      "id": "ignacy-lulkiewicz-1893",
+      "imie": "Ignacy",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1893-02-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 18
+    },
+    {
+      "id": "zofia-kaminska",
+      "imie": "Zofia",
+      "nazwisko": "Kamińska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 18
+    },
+    {
+      "id": "kazimierz-lulkiewicz-2",
+      "imie": "Kazimierz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "ignacy-lulkiewicz-1893",
+      "matkaId": "zofia-kaminska",
+      "galazId": "antoni",
+      "wierszZrodla": 19
+    },
+    {
+      "id": "irena-furmankiewicz",
+      "imie": "Irena",
+      "nazwisko": "Furmankiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 19
+    },
+    {
+      "id": "liliana-lulkiewicz",
+      "imie": "Liliana",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 20
+    },
+    {
+      "id": "marcel-wlodarczyk",
+      "imie": "Marcel",
+      "nazwisko": "Włodarczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Edmund Włodarczyk; matka: Teresa Włodarczyk.",
+      "wierszZrodla": 20
+    },
+    {
+      "id": "agnieszka-wlodarczyk",
+      "imie": "Agnieszka",
+      "nazwisko": "Włodarczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marcel-wlodarczyk",
+      "matkaId": "liliana-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 21
+    },
+    {
+      "id": "piotr-rolnik",
+      "imie": "Piotr",
+      "nazwisko": "Rolnik",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 21
+    },
+    {
+      "id": "malgorzata-wlodarczyk",
+      "imie": "Małgorzata",
+      "nazwisko": "Włodarczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marcel-wlodarczyk",
+      "matkaId": "liliana-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 22
+    },
+    {
+      "id": "pawel-gorynia",
+      "imie": "Paweł",
+      "nazwisko": "Gorynia",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 22
+    },
+    {
+      "id": "bartosz-gorynia",
+      "imie": "Bartosz",
+      "nazwisko": "Gorynia",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "pawel-gorynia",
+      "matkaId": "malgorzata-wlodarczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 23
+    },
+    {
+      "id": "martyna-wlodarczyk",
+      "imie": "Martyna",
+      "nazwisko": "Włodarczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marcel-wlodarczyk",
+      "matkaId": "liliana-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 24
+    },
+    {
+      "id": "szymon-wlodarczyk",
+      "imie": "Szymon",
+      "nazwisko": "Włodarczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marcel-wlodarczyk",
+      "matkaId": "liliana-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 25
+    },
+    {
+      "id": "tomasz-wlodarczyk",
+      "imie": "Tomasz",
+      "nazwisko": "Włodarczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marcel-wlodarczyk",
+      "matkaId": "liliana-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 26
+    },
+    {
+      "id": "wioleta-lulkiewicz",
+      "imie": "Wioleta",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 27
+    },
+    {
+      "id": "zdzislaw-gawel",
+      "imie": "Zdzisław",
+      "nazwisko": "Gaweł",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 27
+    },
+    {
+      "id": "joachim-gawel-1994",
+      "imie": "Joachim",
+      "nazwisko": "Gaweł",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1994",
+        "dokladnosc": "rok",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "zdzislaw-gawel",
+      "matkaId": "wioleta-lulkiewicz",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 28
+    },
+    {
+      "id": "sabina-lulkiewicz-1959",
+      "imie": "Sabina",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1959",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 29
+    },
+    {
+      "id": "wieslaw-kupczyk",
+      "imie": "Wiesław",
+      "nazwisko": "Kupczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Marian Kupczyk.",
+      "wierszZrodla": 29
+    },
+    {
+      "id": "katarzyna-kupczyk",
+      "imie": "Katarzyna",
+      "nazwisko": "Kupczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wieslaw-kupczyk",
+      "matkaId": "sabina-lulkiewicz-1959",
+      "galazId": "antoni",
+      "wierszZrodla": 30
+    },
+    {
+      "id": "szymon-wojtyczka",
+      "imie": "Szymon",
+      "nazwisko": "Wojtyczka",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 30
+    },
+    {
+      "id": "weronika-wojtyczka",
+      "imie": "Weronika",
+      "nazwisko": "Wojtyczka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "szymon-wojtyczka",
+      "matkaId": "katarzyna-kupczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 31
+    },
+    {
+      "id": "rafal-kupczyk",
+      "imie": "Rafał",
+      "nazwisko": "Kupczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wieslaw-kupczyk",
+      "matkaId": "sabina-lulkiewicz-1959",
+      "galazId": "antoni",
+      "wierszZrodla": 32
+    },
+    {
+      "id": "anna-kupczyk",
+      "imie": "Anna",
+      "nazwisko": "Kupczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 32
+    },
+    {
+      "id": "stanislaw-lulkiewicz-1961",
+      "imie": "Stanisław",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1961-05-08",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 33
+    },
+    {
+      "id": "mieczyslawa-nn",
+      "imie": "Mieczysława",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 33
+    },
+    {
+      "id": "zbigniew-lulkiewicz-1971",
+      "imie": "Zbigniew",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1971",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 34
+    },
+    {
+      "id": "teresa-nn-1973",
+      "imie": "Teresa",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1973",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 34
+    },
+    {
+      "id": "marcin-lulkiewicz-1996",
+      "imie": "Marcin",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1996",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "zbigniew-lulkiewicz-1971",
+      "matkaId": "teresa-nn-1973",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 35
+    },
+    {
+      "id": "edyta-lulkiewicz-1975",
+      "imie": "Edyta",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1975",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "kazimierz-lulkiewicz-2",
+      "matkaId": "irena-furmankiewicz",
+      "galazId": "antoni",
+      "ukryjDaty": true,
+      "wierszZrodla": 36
+    },
+    {
+      "id": "przemyslaw-walczuk",
+      "imie": "Przemysław",
+      "nazwisko": "Walczuk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 36
+    },
+    {
+      "id": "alicja-walczuk",
+      "imie": "Alicja",
+      "nazwisko": "Walczuk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "przemyslaw-walczuk",
+      "matkaId": "edyta-lulkiewicz-1975",
+      "galazId": "antoni",
+      "wierszZrodla": 37
+    },
+    {
+      "id": "zofia-walczuk",
+      "imie": "Zofia",
+      "nazwisko": "Walczuk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "przemyslaw-walczuk",
+      "matkaId": "edyta-lulkiewicz-1975",
+      "galazId": "antoni",
+      "wierszZrodla": 38
+    },
+    {
+      "id": "lucja-lulkiewicz",
+      "imie": "Łucja",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "ignacy-lulkiewicz-1893",
+      "matkaId": "zofia-kaminska",
+      "galazId": "antoni",
+      "wierszZrodla": 39
+    },
+    {
+      "id": "franciszek-welzer",
+      "imie": "Franciszek",
+      "nazwisko": "Welzer",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 39
+    },
+    {
+      "id": "barbara-welzer",
+      "imie": "Barbara",
+      "nazwisko": "Welzer",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 40
+    },
+    {
+      "id": "antoni-grobelny",
+      "imie": "Antoni",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 40
+    },
+    {
+      "id": "agnieszka-grobelny",
+      "imie": "Agnieszka",
+      "nazwisko": "Grobelny",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-grobelny",
+      "matkaId": "barbara-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 41
+    },
+    {
+      "id": "jarek-mackowiak",
+      "imie": "Jarek",
+      "nazwisko": "Maćkowiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 41
+    },
+    {
+      "id": "michel-mackowiak",
+      "imie": "Michel",
+      "nazwisko": "Maćkowiak",
+      "plec": "nieznana",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jarek-mackowiak",
+      "matkaId": "agnieszka-grobelny",
+      "galazId": "antoni",
+      "wierszZrodla": 42
+    },
+    {
+      "id": "nicol-mackowiak",
+      "imie": "Nicol",
+      "nazwisko": "Maćkowiak",
+      "plec": "nieznana",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jarek-mackowiak",
+      "matkaId": "agnieszka-grobelny",
+      "galazId": "antoni",
+      "wierszZrodla": 43
+    },
+    {
+      "id": "karol-grobelny",
+      "imie": "Karol",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-grobelny",
+      "matkaId": "barbara-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 44
+    },
+    {
+      "id": "gizela-nn",
+      "imie": "Gizela",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 44
+    },
+    {
+      "id": "artur-grobelny",
+      "imie": "Artur",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "karol-grobelny",
+      "matkaId": "gizela-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 45
+    },
+    {
+      "id": "jakub-grobelny",
+      "imie": "Jakub",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "karol-grobelny",
+      "matkaId": "gizela-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 46
+    },
+    {
+      "id": "krzysztof-grobelny",
+      "imie": "Krzysztof",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "karol-grobelny",
+      "matkaId": "gizela-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 47
+    },
+    {
+      "id": "natalia-grobelny",
+      "imie": "Natalia",
+      "nazwisko": "Grobelny",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "karol-grobelny",
+      "matkaId": "gizela-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 48
+    },
+    {
+      "id": "mateusz-grobelny",
+      "imie": "Mateusz",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-grobelny",
+      "matkaId": "barbara-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 49
+    },
+    {
+      "id": "mirela-grobelny",
+      "imie": "Mirela",
+      "nazwisko": "Grobelny",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-grobelny",
+      "matkaId": "barbara-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 50
+    },
+    {
+      "id": "halina-welzer",
+      "imie": "Halina",
+      "nazwisko": "Welzer",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 51
+    },
+    {
+      "id": "jan-mackowiak",
+      "imie": "Jan",
+      "nazwisko": "Maćkowiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 51
+    },
+    {
+      "id": "andrzej-mackowiak",
+      "imie": "Andrzej",
+      "nazwisko": "Maćkowiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-mackowiak",
+      "matkaId": "halina-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 52
+    },
+    {
+      "id": "anna-mackowiak",
+      "imie": "Anna",
+      "nazwisko": "Maćkowiak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-mackowiak",
+      "matkaId": "halina-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 53
+    },
+    {
+      "id": "asia-mackowiak",
+      "imie": "Asia",
+      "nazwisko": "Maćkowiak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-mackowiak",
+      "matkaId": "halina-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 54
+    },
+    {
+      "id": "jaroslaw-mackowiak",
+      "imie": "Jarosław",
+      "nazwisko": "Maćkowiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-mackowiak",
+      "matkaId": "halina-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 55
+    },
+    {
+      "id": "ireneusz-welzer",
+      "imie": "Ireneusz",
+      "nazwisko": "Welzer",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 56
+    },
+    {
+      "id": "hanna-nn",
+      "imie": "Hanna",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 56
+    },
+    {
+      "id": "karolina-welzer",
+      "imie": "Karolina",
+      "nazwisko": "Welzer",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "ireneusz-welzer",
+      "matkaId": "hanna-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 57
+    },
+    {
+      "id": "michal-welzer",
+      "imie": "Michał",
+      "nazwisko": "Welzer",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "ireneusz-welzer",
+      "matkaId": "hanna-nn",
+      "galazId": "antoni",
+      "wierszZrodla": 58
+    },
+    {
+      "id": "mariola-welzer",
+      "imie": "Mariola",
+      "nazwisko": "Welzer",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 59
+    },
+    {
+      "id": "bogdan-wojtkowiak",
+      "imie": "Bogdan",
+      "nazwisko": "Wojtkowiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 59
+    },
+    {
+      "id": "mikolaj-welzer",
+      "imie": "Mikołaj",
+      "nazwisko": "Welzer",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "bogdan-wojtkowiak",
+      "matkaId": "mariola-welzer",
+      "galazId": "antoni",
+      "niepewne": [
+        "wpis"
+      ],
+      "wierszZrodla": 60
+    },
+    {
+      "id": "kinga-wojtkowiak",
+      "imie": "Kinga",
+      "nazwisko": "Wojtkowiak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "bogdan-wojtkowiak",
+      "matkaId": "mariola-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 61
+    },
+    {
+      "id": "mila-welzer",
+      "imie": "Miła",
+      "nazwisko": "Welzer",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 62
+    },
+    {
+      "id": "nn-mocek",
+      "imie": "",
+      "nazwisko": "Mocek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "imie",
+        "plec"
+      ],
+      "wierszZrodla": 62
+    },
+    {
+      "id": "bartek-mocek",
+      "imie": "Bartek",
+      "nazwisko": "Mocek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "nn-mocek",
+      "matkaId": "mila-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 63
+    },
+    {
+      "id": "iza-mocek",
+      "imie": "Iza",
+      "nazwisko": "Mocek",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "nn-mocek",
+      "matkaId": "mila-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 64
+    },
+    {
+      "id": "aukasz-mocek",
+      "imie": "Łukasz",
+      "nazwisko": "Mocek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "nn-mocek",
+      "matkaId": "mila-welzer",
+      "galazId": "antoni",
+      "wierszZrodla": 65
+    },
+    {
+      "id": "pawel-welzer",
+      "imie": "Paweł",
+      "nazwisko": "Welzer",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-welzer",
+      "matkaId": "lucja-lulkiewicz",
+      "galazId": "antoni",
+      "wierszZrodla": 66
+    },
+    {
+      "id": "maria-lulkiewicz-2",
+      "imie": "Maria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "ignacy-lulkiewicz-1893",
+      "matkaId": "zofia-kaminska",
+      "galazId": "antoni",
+      "wierszZrodla": 67
+    },
+    {
+      "id": "andrzej-rusiecki",
+      "imie": "Andrzej",
+      "nazwisko": "Rusiecki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 67
+    },
+    {
+      "id": "miroslawa-rusiecka",
+      "imie": "Mirosława",
+      "nazwisko": "Rusiecka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "andrzej-rusiecki",
+      "matkaId": "maria-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 68
+    },
+    {
+      "id": "jan-wilda",
+      "imie": "Jan",
+      "nazwisko": "Wilda",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 68
+    },
+    {
+      "id": "grzegorz-wilda",
+      "imie": "Grzegorz",
+      "nazwisko": "Wilda",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-wilda",
+      "matkaId": "miroslawa-rusiecka",
+      "galazId": "antoni",
+      "wierszZrodla": 69
+    },
+    {
+      "id": "marta-wilda",
+      "imie": "Marta",
+      "nazwisko": "Wilda",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-wilda",
+      "matkaId": "miroslawa-rusiecka",
+      "galazId": "antoni",
+      "wierszZrodla": 70
+    },
+    {
+      "id": "renata-rusiecka",
+      "imie": "Renata",
+      "nazwisko": "Rusiecka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "andrzej-rusiecki",
+      "matkaId": "maria-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 71
+    },
+    {
+      "id": "miroslaw-mania",
+      "imie": "Mirosław",
+      "nazwisko": "Mania",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 71
+    },
+    {
+      "id": "aleksandra-mania",
+      "imie": "Aleksandra",
+      "nazwisko": "Mania",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "miroslaw-mania",
+      "matkaId": "renata-rusiecka",
+      "galazId": "antoni",
+      "wierszZrodla": 72
+    },
+    {
+      "id": "krzysztof-rusiecki",
+      "imie": "Krzysztof",
+      "nazwisko": "Rusiecki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "andrzej-rusiecki",
+      "matkaId": "maria-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 73
+    },
+    {
+      "id": "barbara-rusiecka",
+      "imie": "Barbara",
+      "nazwisko": "Rusiecka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "krzysztof-rusiecki",
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 74
+    },
+    {
+      "id": "walenty-lulkiewicz-1893",
+      "imie": "Walenty",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1893-02-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 75
+    },
+    {
+      "id": "jozef-lulkiewicz-1896",
+      "imie": "Józef",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1896-02-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 76
+    },
+    {
+      "id": "antoni-lulkiewicz-1899",
+      "imie": "Antoni",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1899-01-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 77
+    },
+    {
+      "id": "zofia-lopaczyk",
+      "imie": "Zofia",
+      "nazwisko": "Łopaczyk",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 77
+    },
+    {
+      "id": "antoni-lulkiewicz",
+      "imie": "Antoni",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-lulkiewicz-1899",
+      "matkaId": "zofia-lopaczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 78
+    },
+    {
+      "id": "jerzy-lulkiewicz",
+      "imie": "Jerzy",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-lulkiewicz-1899",
+      "matkaId": "zofia-lopaczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 79
+    },
+    {
+      "id": "maria-lulkiewicz-3",
+      "imie": "Maria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-lulkiewicz-1899",
+      "matkaId": "zofia-lopaczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 80
+    },
+    {
+      "id": "nn-skalski",
+      "imie": "",
+      "nazwisko": "Skalski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 80
+    },
+    {
+      "id": "tadeusz-lulkiewicz",
+      "imie": "Tadeusz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-lulkiewicz-1899",
+      "matkaId": "zofia-lopaczyk",
+      "galazId": "antoni",
+      "wierszZrodla": 81
+    },
+    {
+      "id": "jan-lulkiewicz-1899",
+      "imie": "Jan",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1899-01-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "teodor-lulkiewicz-1857",
+      "matkaId": "dorota-merczynska-1861",
+      "galazId": "antoni",
+      "wierszZrodla": 82
+    },
+    {
+      "id": "rozalia-kajnata",
+      "imie": "Rozalia",
+      "nazwisko": "Kajnata",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 82
+    },
+    {
+      "id": "anna-lulkiewicz-2",
+      "imie": "Anna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-lulkiewicz-1899",
+      "matkaId": "rozalia-kajnata",
+      "galazId": "antoni",
+      "wierszZrodla": 83
+    },
+    {
+      "id": "sylwester-stanislawski",
+      "imie": "Sylwester",
+      "nazwisko": "Stanisławski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 83
+    },
+    {
+      "id": "antoni-skrzypczak",
+      "imie": "Antoni",
+      "nazwisko": "Skrzypczak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 83
+    },
+    {
+      "id": "danuta-stanislawska",
+      "imie": "Danuta",
+      "nazwisko": "Stanisławska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "sylwester-stanislawski",
+      "matkaId": "anna-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 84
+    },
+    {
+      "id": "leszek-skrzypczak",
+      "imie": "Leszek",
+      "nazwisko": "Skrzypczak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 84
+    },
+    {
+      "id": "anna-skrzypczak",
+      "imie": "Anna",
+      "nazwisko": "Skrzypczak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "leszek-skrzypczak",
+      "matkaId": "danuta-stanislawska",
+      "galazId": "antoni",
+      "wierszZrodla": 85
+    },
+    {
+      "id": "teresa-stanislawska",
+      "imie": "Teresa",
+      "nazwisko": "Stanisławska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "sylwester-stanislawski",
+      "matkaId": "anna-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 86
+    },
+    {
+      "id": "zbigniew-stanislawski",
+      "imie": "Zbigniew",
+      "nazwisko": "Stanisławski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "sylwester-stanislawski",
+      "matkaId": "anna-lulkiewicz-2",
+      "galazId": "antoni",
+      "wierszZrodla": 87
+    },
+    {
+      "id": "urszula-zietek",
+      "imie": "Urszula",
+      "nazwisko": "Ziętek",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 87
+    },
+    {
+      "id": "nn-stanislawski",
+      "imie": "",
+      "nazwisko": "Stanisławski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zbigniew-stanislawski",
+      "matkaId": "urszula-zietek",
+      "galazId": "antoni",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 88
+    },
+    {
+      "id": "marcin-stanislawski",
+      "imie": "Marcin",
+      "nazwisko": "Stanisławski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zbigniew-stanislawski",
+      "matkaId": "urszula-zietek",
+      "galazId": "antoni",
+      "wierszZrodla": 89
+    },
+    {
+      "id": "eugeniusz-lulkiewicz",
+      "imie": "Eugeniusz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-lulkiewicz-1899",
+      "matkaId": "rozalia-kajnata",
+      "galazId": "antoni",
+      "wierszZrodla": 90
+    },
+    {
+      "id": "halina-lulkiewicz",
+      "imie": "Halina",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-lulkiewicz-1899",
+      "matkaId": "rozalia-kajnata",
+      "galazId": "antoni",
+      "wierszZrodla": 91
+    },
+    {
+      "id": "krystyna-lulkiewicz",
+      "imie": "Krystyna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-lulkiewicz-1899",
+      "matkaId": "rozalia-kajnata",
+      "galazId": "antoni",
+      "wierszZrodla": 92
+    },
+    {
+      "id": "tekla-lulkiewicz-1860",
+      "imie": "Tekla",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1860-09-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 93
+    },
+    {
+      "id": "stanislaw-bystrzynski-1850",
+      "imie": "Stanisław",
+      "nazwisko": "Bystrzyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1850",
+        "dokladnosc": "okolo",
+        "miejsce": "Jutrosin?"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Antoni Bystrzyński; matka: Elżbieta Bystrzyńska.",
+      "niepewne": [
+        "miejsce"
+      ],
+      "wierszZrodla": 93
+    },
+    {
+      "id": "marianna-bystrzynska-1880",
+      "imie": "Marianna",
+      "nazwisko": "Bystrzyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1880-09-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 94
+    },
+    {
+      "id": "wiktoria-bystrzynska-1884",
+      "imie": "Wiktoria",
+      "nazwisko": "Bystrzyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1884-11-20",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 95
+    },
+    {
+      "id": "franciszka-bystrzynska-1886",
+      "imie": "Franciszka",
+      "nazwisko": "Bystrzyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1886-10-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 96
+    },
+    {
+      "id": "czeslaw-bystrzynski-1888",
+      "imie": "Czesław",
+      "nazwisko": "Bystrzyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1888-09-20",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 97
+    },
+    {
+      "id": "jozef-bystrzynski-1891",
+      "imie": "Józef",
+      "nazwisko": "Bystrzyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1891-07-04",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 98
+    },
+    {
+      "id": "helena-pastyka",
+      "imie": "Helena",
+      "nazwisko": "Pastyka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 98
+    },
+    {
+      "id": "bronislawa-bystrzynska-1893",
+      "imie": "Bronisława",
+      "nazwisko": "Bystrzyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1893-10-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-bystrzynski-1850",
+      "matkaId": "tekla-lulkiewicz-1860",
+      "galazId": "antoni",
+      "wierszZrodla": 99
+    },
+    {
+      "id": "agnieszka-lulkiewicz-1863",
+      "imie": "Agnieszka",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1863-04-12",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 100
+    },
+    {
+      "id": "stanislaw-warchalewski-1849",
+      "imie": "Stanisław",
+      "nazwisko": "Warchalewski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1849-05-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Antoni Warchalewski; matka: Antonina Szelągowska.",
+      "wierszZrodla": 100
+    },
+    {
+      "id": "wladyslaw-warchalewski-1887",
+      "imie": "Władysław",
+      "nazwisko": "Warchalewski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1887-06-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 101
+    },
+    {
+      "id": "leonarda-warchalewska-1888",
+      "imie": "Leonarda",
+      "nazwisko": "Warchalewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1888-06-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 102
+    },
+    {
+      "id": "stanislaw-zwitala-1887",
+      "imie": "Stanisław",
+      "nazwisko": "Zwitała",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1887-12-01",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 102
+    },
+    {
+      "id": "stanislaw-warchalewski-1889",
+      "imie": "Stanisław",
+      "nazwisko": "Warchalewski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1889-09-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 103
+    },
+    {
+      "id": "pelagia-warchalewska-1893",
+      "imie": "Pelagia",
+      "nazwisko": "Warchalewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1893-02-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 104
+    },
+    {
+      "id": "stanislaw-nowaczyk",
+      "imie": "Stanisław",
+      "nazwisko": "Nowaczyk",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 104
+    },
+    {
+      "id": "franciszek-warchalewski-1894",
+      "imie": "Franciszek",
+      "nazwisko": "Warchalewski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1894-03-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 105
+    },
+    {
+      "id": "stanislawa-warchalewska-1895",
+      "imie": "Stanisława",
+      "nazwisko": "Warchalewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1895-10-21",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 106
+    },
+    {
+      "id": "richard-thiele",
+      "imie": "Richard",
+      "nazwisko": "Thiele",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 106
+    },
+    {
+      "id": "anna-warchalewska-1898",
+      "imie": "Anna",
+      "nazwisko": "Warchalewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1898-07-24",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "stanislaw-warchalewski-1849",
+      "matkaId": "agnieszka-lulkiewicz-1863",
+      "galazId": "antoni",
+      "wierszZrodla": 107
+    },
+    {
+      "id": "marianna-lulkiewicz-1866",
+      "imie": "Marianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1866-01-27",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 108
+    },
+    {
+      "id": "maksymilian-wabinski-1863",
+      "imie": "Maksymilian",
+      "nazwisko": "Wabiński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1863-09-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Mikołaj Wabiński; matka: Elżbieta Lasocińska.",
+      "wierszZrodla": 108
+    },
+    {
+      "id": "michal-lulkiewicz-1868",
+      "imie": "Michał",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1868-09-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 109
+    },
+    {
+      "id": "stanislawa-leopold",
+      "imie": "Stanisława",
+      "nazwisko": "Leopold",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 109
+    },
+    {
+      "id": "franciszek-lulkiewicz-2",
+      "imie": "Franciszek",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "michal-lulkiewicz-1868",
+      "matkaId": "stanislawa-leopold",
+      "galazId": "antoni",
+      "wierszZrodla": 110
+    },
+    {
+      "id": "maria-lulkiewicz-1896",
+      "imie": "Maria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1896-07-16",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "michal-lulkiewicz-1868",
+      "matkaId": "stanislawa-leopold",
+      "galazId": "antoni",
+      "wierszZrodla": 111
+    },
+    {
+      "id": "jozefa-lulkiewicz-1898",
+      "imie": "Józefa",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1898-09-21",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "michal-lulkiewicz-1868",
+      "matkaId": "stanislawa-leopold",
+      "galazId": "antoni",
+      "wierszZrodla": 112
+    },
+    {
+      "id": "stanislaw-rozycki",
+      "imie": "Stanisław",
+      "nazwisko": "Różycki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "wierszZrodla": 112
+    },
+    {
+      "id": "stanislawa-lulkiewicz-1871",
+      "imie": "Stanisława",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1871-04-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 113
+    },
+    {
+      "id": "wladyslaw-biskupski-1868",
+      "imie": "Władysław",
+      "nazwisko": "Biskupski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1868",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Franciszek Biskupski; matka: Magdalena Żelanek.",
+      "wierszZrodla": 113
+    },
+    {
+      "id": "helena-biskupska-1893",
+      "imie": "Helena",
+      "nazwisko": "Biskupska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1893-05-21",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wladyslaw-biskupski-1868",
+      "matkaId": "stanislawa-lulkiewicz-1871",
+      "galazId": "antoni",
+      "wierszZrodla": 114
+    },
+    {
+      "id": "wiech-gerber",
+      "imie": "Wiech",
+      "nazwisko": "Gerber",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "niepewne": [
+        "plec"
+      ],
+      "wierszZrodla": 114
+    },
+    {
+      "id": "maria-biskupska-1899",
+      "imie": "Maria",
+      "nazwisko": "Biskupska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1899-01-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wladyslaw-biskupski-1868",
+      "matkaId": "stanislawa-lulkiewicz-1871",
+      "galazId": "antoni",
+      "wierszZrodla": 115
+    },
+    {
+      "id": "weronika-lulkiewicz-1874",
+      "imie": "Weronika",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1874-01-24",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 116
+    },
+    {
+      "id": "jozef-piskorek-1868",
+      "imie": "Józef",
+      "nazwisko": "Piskorek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1868",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Marcin Piskorek; matka: Weronika Koralewska.",
+      "wierszZrodla": 116
+    },
+    {
+      "id": "franciszka-lulkiewicz-1876",
+      "imie": "Franciszka",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1876-08-12",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 117
+    },
+    {
+      "id": "anna-lulkiewicz-1878",
+      "imie": "Anna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1878-06-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 118
+    },
+    {
+      "id": "jan-werner-1867",
+      "imie": "Jan",
+      "nazwisko": "Werner",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1867",
+        "dokladnosc": "rok",
+        "miejsce": "Leśna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Aleksander Werner; matka: Ewa Werner.",
+      "wierszZrodla": 118
+    },
+    {
+      "id": "leonarda-lulkiewicz-1881",
+      "imie": "Leonarda",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1881-04-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 119
+    },
+    {
+      "id": "aniela-lulkiewicz-1884",
+      "imie": "Aniela",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1884-09-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1834",
+      "matkaId": "seweryna-ginter-1839",
+      "galazId": "antoni",
+      "wierszZrodla": 120
+    },
+    {
+      "id": "sylwester-siberna-1851",
+      "imie": "Sylwester",
+      "nazwisko": "Siberna",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1851",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Józef Siberna; matka: Franciszka Waszczyńska.",
+      "wierszZrodla": 120
+    },
+    {
+      "id": "teofil-lulkiewicz-1839",
+      "imie": "Teofil",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1839-02-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 121
+    },
+    {
+      "id": "walenty-lulkiewicz-1842",
+      "imie": "Walenty",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1842-02-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-11-30",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 122
+    },
+    {
+      "id": "anna-lulkiewicz-1845",
+      "imie": "Anna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1845-06-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "antoni-lulkiewicz-1807",
+      "matkaId": "helena-galusinska-1806",
+      "galazId": "antoni",
+      "wierszZrodla": 123
+    },
+    {
+      "id": "walenty-siberna-1815",
+      "imie": "Walenty",
+      "nazwisko": "Siberna",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1815",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Mateusz Siberna; matka: Agata Sierzchulska.",
+      "wierszZrodla": 123
+    },
+    {
+      "id": "agnieszka-marianna-siberna-1863",
+      "imie": "Agnieszka Marianna",
+      "nazwisko": "Siberna",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1863-01-20",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 124
+    },
+    {
+      "id": "jan-nepomucen-szelagowski-1855",
+      "imie": "Jan Nepomucen",
+      "nazwisko": "Szelągowski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1855-05-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "antoni",
+      "notatka": "Ojciec: Wojciech Szelągowski; matka: Zuzanna Hofmańska.",
+      "wierszZrodla": 124
+    },
+    {
+      "id": "jozef-siberna-1864",
+      "imie": "Józef",
+      "nazwisko": "Siberna",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1864-11-21",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 125
+    },
+    {
+      "id": "leona-siberna-1866",
+      "imie": "Leona",
+      "nazwisko": "Siberna",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1866-04-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1866-04-25",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 126
+    },
+    {
+      "id": "prazevis-siberna-1867",
+      "imie": "Prazevis",
+      "nazwisko": "Siberna",
+      "plec": "nieznana",
+      "urodzenie": {
+        "wartosc": "1867-07-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 127
+    },
+    {
+      "id": "wiktoria-siberna-1869",
+      "imie": "Wiktoria",
+      "nazwisko": "Siberna",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1869-12-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 128
+    },
+    {
+      "id": "tomasz-siberna-1871",
+      "imie": "Tomasz",
+      "nazwisko": "Siberna",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1871-12-12",
+        "dokladnosc": "dokladna",
+        "miejsce": "kobylin"
+      },
+      "ojciecId": "walenty-siberna-1815",
+      "matkaId": "anna-lulkiewicz-1845",
+      "galazId": "antoni",
+      "wierszZrodla": 129
+    },
+    {
+      "id": "konstancja-lulkiewicz-1809",
+      "imie": "Konstancja",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1809",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1829-12-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "konstancja",
+      "wierszZrodla": 130
+    },
+    {
+      "id": "julian-lulkiewicz-1813",
+      "imie": "Julian",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1813",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "julian",
+      "wierszZrodla": 131
+    },
+    {
+      "id": "honorata-orlicka-1820",
+      "imie": "Honorata",
+      "nazwisko": "Orlicka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1820",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "julian",
+      "wierszZrodla": 131
+    },
+    {
+      "id": "elzbieta-lulkiewicz-1838",
+      "imie": "Elżbieta",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1838-11-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1863-04-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "julian-lulkiewicz-1813",
+      "matkaId": "honorata-orlicka-1820",
+      "galazId": "julian",
+      "wierszZrodla": 132
+    },
+    {
+      "id": "wawrzyniec-jarczynski-1830",
+      "imie": "Wawrzyniec",
+      "nazwisko": "Jarczyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1830",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "julian",
+      "notatka": "Ojciec: Wojciech Jarczyński; matka: Konstancja Jarczyńska.",
+      "wierszZrodla": 132
+    },
+    {
+      "id": "nn-jarczynski-1859",
+      "imie": "",
+      "nazwisko": "Jarczyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1859-03-07",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1859-03-07",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "wawrzyniec-jarczynski-1830",
+      "matkaId": "elzbieta-lulkiewicz-1838",
+      "galazId": "julian",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 133
+    },
+    {
+      "id": "jadwiga-teresa-jarczynska-1860",
+      "imie": "Jadwiga Teresa",
+      "nazwisko": "Jarczyńska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1860-10-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1860-10-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wawrzyniec-jarczynski-1830",
+      "matkaId": "elzbieta-lulkiewicz-1838",
+      "galazId": "julian",
+      "wierszZrodla": 134
+    },
+    {
+      "id": "jan-nepomucen-jarczynski-1862",
+      "imie": "Jan Nepomucen",
+      "nazwisko": "Jarczyński",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1862-05-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wawrzyniec-jarczynski-1830",
+      "matkaId": "elzbieta-lulkiewicz-1838",
+      "galazId": "julian",
+      "wierszZrodla": 135
+    },
+    {
+      "id": "makary-lulkiewicz-1840",
+      "imie": "Makary",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1840-12-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "julian-lulkiewicz-1813",
+      "matkaId": "honorata-orlicka-1820",
+      "galazId": "julian",
+      "wierszZrodla": 136
+    },
+    {
+      "id": "marianna-hofmanska",
+      "imie": "Marianna",
+      "nazwisko": "Hofmańska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "julian",
+      "wierszZrodla": 136
+    },
+    {
+      "id": "pelagia-lulkiewicz-1876",
+      "imie": "Pelagia",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1876-03-04",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "makary-lulkiewicz-1840",
+      "matkaId": "marianna-hofmanska",
+      "galazId": "julian",
+      "wierszZrodla": 137
+    },
+    {
+      "id": "jozef-lulkiewicz-1878",
+      "imie": "Józef",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1878-03-12",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "makary-lulkiewicz-1840",
+      "matkaId": "marianna-hofmanska",
+      "galazId": "julian",
+      "wierszZrodla": 138
+    },
+    {
+      "id": "jan-lulkiewicz-1880",
+      "imie": "Jan",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1880-05-02",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "makary-lulkiewicz-1840",
+      "matkaId": "marianna-hofmanska",
+      "galazId": "julian",
+      "wierszZrodla": 139
+    },
+    {
+      "id": "teofil-feliks-lulkiewicz-1883",
+      "imie": "Teofil Feliks",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1883-05-29",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "makary-lulkiewicz-1840",
+      "matkaId": "marianna-hofmanska",
+      "galazId": "julian",
+      "wierszZrodla": 140
+    },
+    {
+      "id": "piotr-lulkiewicz-1843",
+      "imie": "Piotr",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1843-10-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-09-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "julian-lulkiewicz-1813",
+      "matkaId": "honorata-orlicka-1820",
+      "galazId": "julian",
+      "wierszZrodla": 141
+    },
+    {
+      "id": "cecylia-lulkiewicz-1851",
+      "imie": "Cecylia",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1851-11-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "julian-lulkiewicz-1813",
+      "matkaId": "honorata-orlicka-1820",
+      "galazId": "julian",
+      "wierszZrodla": 142
+    },
+    {
+      "id": "piotr-buczkiewicz-1847",
+      "imie": "Piotr",
+      "nazwisko": "Buczkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1847",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "julian",
+      "notatka": "Ojciec: Tomasz Buczkiewicz; matka: Petronela Gerlicka.",
+      "wierszZrodla": 142
+    },
+    {
+      "id": "stanislawa-filipina-buczkiewicz-1875",
+      "imie": "Stanisława Filipina",
+      "nazwisko": "Buczkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1875-05-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 143
+    },
+    {
+      "id": "kazimiera-buczkiewicz-1877",
+      "imie": "Kazimiera",
+      "nazwisko": "Buczkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1877-02-27",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 144
+    },
+    {
+      "id": "teodora-buczkiewicz-1878",
+      "imie": "Teodora",
+      "nazwisko": "Buczkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1878-04-14",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 145
+    },
+    {
+      "id": "jozef-buczkiewicz-1880",
+      "imie": "Józef",
+      "nazwisko": "Buczkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1880-03-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 146
+    },
+    {
+      "id": "jozef-buczkiewicz-1880-2",
+      "imie": "Józef",
+      "nazwisko": "Buczkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1880-03-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 147
+    },
+    {
+      "id": "jadwiga-teresa-buczkiewicz-1881",
+      "imie": "Jadwiga Teresa",
+      "nazwisko": "Buczkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1881-10-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 148
+    },
+    {
+      "id": "zofia-buczkiewicz-1883",
+      "imie": "Zofia",
+      "nazwisko": "Buczkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1883-04-29",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 149
+    },
+    {
+      "id": "jozef-buczkiewicz-1885",
+      "imie": "Józef",
+      "nazwisko": "Buczkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1885-03-07",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1885-03-07",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "wierszZrodla": 150
+    },
+    {
+      "id": "nn-buczkiewicz-1886",
+      "imie": "",
+      "nazwisko": "Buczkiewicz",
+      "plec": "nieznana",
+      "urodzenie": {
+        "wartosc": "1886-04-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1886-04-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 151
+    },
+    {
+      "id": "nn-buczkiewicz-1889",
+      "imie": "",
+      "nazwisko": "Buczkiewicz",
+      "plec": "nieznana",
+      "urodzenie": {
+        "wartosc": "1889-03-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1889-03-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 152
+    },
+    {
+      "id": "nn-buczkiewicz-1891",
+      "imie": "",
+      "nazwisko": "Buczkiewicz",
+      "plec": "nieznana",
+      "urodzenie": {
+        "wartosc": "1891-05-13",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1891-05-13",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "piotr-buczkiewicz-1847",
+      "matkaId": "cecylia-lulkiewicz-1851",
+      "galazId": "julian",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 153
+    },
+    {
+      "id": "konstancja-lulkiewicz-1856",
+      "imie": "Konstancja",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1856-09-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "julian-lulkiewicz-1813",
+      "matkaId": "honorata-orlicka-1820",
+      "galazId": "julian",
+      "wierszZrodla": 154
+    },
+    {
+      "id": "jozef-wiatrolik-1854",
+      "imie": "Józef",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1854",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "julian",
+      "notatka": "Ojciec: Wincenty Wiatrólik; matka: Marianna Wiatrólik.",
+      "wierszZrodla": 154
+    },
+    {
+      "id": "marianna-wiatrolik-1878",
+      "imie": "Marianna",
+      "nazwisko": "Wiatrólik",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1878-12-24",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 155
+    },
+    {
+      "id": "jan-wiatrolik-1879",
+      "imie": "Jan",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1879-12-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 156
+    },
+    {
+      "id": "kazimierz-wiatrolik-1882",
+      "imie": "Kazimierz",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1882-02-27",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 157
+    },
+    {
+      "id": "helena-wiatrolik-1883",
+      "imie": "Helena",
+      "nazwisko": "Wiatrólik",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1883-05-19",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 158
+    },
+    {
+      "id": "marianna-wiatrolik-1885",
+      "imie": "Marianna",
+      "nazwisko": "Wiatrólik",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1885-08-30",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 159
+    },
+    {
+      "id": "bronislaw-wiatrolik-1887",
+      "imie": "Bronisław",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1887-08-10",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 160
+    },
+    {
+      "id": "edward-wiatrolik-1889",
+      "imie": "Edward",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1889-10-13",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 161
+    },
+    {
+      "id": "ignacy-wiatrolik-1893",
+      "imie": "Ignacy",
+      "nazwisko": "Wiatrólik",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1893-07-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 162
+    },
+    {
+      "id": "leona-wiatrolik-1896",
+      "imie": "Leona",
+      "nazwisko": "Wiatrólik",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1896-04-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-wiatrolik-1854",
+      "matkaId": "konstancja-lulkiewicz-1856",
+      "galazId": "julian",
+      "wierszZrodla": 163
+    },
+    {
+      "id": "jozefa-lulkiewicz-1817",
+      "imie": "Józefa",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1817",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "jozefa",
+      "wierszZrodla": 164
+    },
+    {
+      "id": "tomasz-nypczowski",
+      "imie": "Tomasz",
+      "nazwisko": "Nypczowski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "jozefa",
+      "wierszZrodla": 164
+    },
+    {
+      "id": "laurenty-pyszczorecki-1817",
+      "imie": "Laurenty",
+      "nazwisko": "Pyszczorecki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1817",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "jozefa",
+      "wierszZrodla": 164
+    },
+    {
+      "id": "tomasz-nypczowski-1842",
+      "imie": "Tomasz",
+      "nazwisko": "Nypczowski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1842-09-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "tomasz-nypczowski",
+      "matkaId": "jozefa-lulkiewicz-1817",
+      "galazId": "jozefa",
+      "wierszZrodla": 165
+    },
+    {
+      "id": "stanislaw-pyszczorecki-1840",
+      "imie": "Stanisław",
+      "nazwisko": "Pyszczorecki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1840-05-06",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "laurenty-pyszczorecki-1817",
+      "matkaId": "jozefa-lulkiewicz-1817",
+      "galazId": "jozefa",
+      "wierszZrodla": 166
+    },
+    {
+      "id": "wojciech-lulkiewicz-1819",
+      "imie": "Wojciech",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1819",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1852-09-09",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "wojciech",
+      "wierszZrodla": 167
+    },
+    {
+      "id": "elzbieta-hofmanska-1820",
+      "imie": "Elżbieta",
+      "nazwisko": "Hofmańska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1820",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "wojciech",
+      "notatka": "Ojciec: Łukasz Hofmański; matka: Serafina Szelągowska.",
+      "wierszZrodla": 167
+    },
+    {
+      "id": "jan-lulkiewicz-1841",
+      "imie": "Jan",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1841-12-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1841-12-20",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "wierszZrodla": 168
+    },
+    {
+      "id": "julianna-lulkiewicz-1843",
+      "imie": "Julianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1843-01-04",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1843-01-08",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "wierszZrodla": 169
+    },
+    {
+      "id": "wiktor-lulkiewicz-1844",
+      "imie": "Wiktor",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1844-03-02",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "wierszZrodla": 170
+    },
+    {
+      "id": "marianna-meller-adamczewska-1842",
+      "imie": "Marianna",
+      "nazwisko": "Meller-Adamczewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1842",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1882",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "wojciech",
+      "wierszZrodla": 170
+    },
+    {
+      "id": "stanislaw-lulkiewicz-1870",
+      "imie": "Stanisław",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1870-04-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1870-08-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 171
+    },
+    {
+      "id": "marianna-lulkiewicz-1871",
+      "imie": "Marianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1871-08-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 172
+    },
+    {
+      "id": "stanislaw-lulkiewicz-1875",
+      "imie": "Stanisław",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1875-05-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 173
+    },
+    {
+      "id": "wojciech-lulkiewicz-1877",
+      "imie": "Wojciech",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1877-03-24",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 174
+    },
+    {
+      "id": "konstancja-wiktoria-lulkiewicz-1879",
+      "imie": "Konstancja Wiktoria",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1879-08-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 175
+    },
+    {
+      "id": "feliks-lulkiewicz-1882",
+      "imie": "Feliks",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1882-04-15",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1844",
+      "matkaId": "marianna-meller-adamczewska-1842",
+      "galazId": "wojciech",
+      "wierszZrodla": 176
+    },
+    {
+      "id": "koleta-adamczewska-1855",
+      "imie": "Koleta",
+      "nazwisko": "Adamczewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1855",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "wojciech",
+      "notatka": "Ojciec: Ignacy Adamczewski; matka: Urszula Adamczewska.",
+      "wierszZrodla": 177
+    },
+    {
+      "id": "agnieszka-lulkiewicz-1845",
+      "imie": "Agnieszka",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1845-01-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-09-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "niepewne": [
+        "rodzice"
+      ],
+      "wierszZrodla": 178
+    },
+    {
+      "id": "antoni-lulkiewicz-1846",
+      "imie": "Antoni",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1846-05-29",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1847-02-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "niepewne": [
+        "rodzice"
+      ],
+      "wierszZrodla": 179
+    },
+    {
+      "id": "wojciech-lulkiewicz-1848",
+      "imie": "Wojciech",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1848-04-20",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-09-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "niepewne": [
+        "rodzice"
+      ],
+      "wierszZrodla": 180
+    },
+    {
+      "id": "jozef-lulkiewicz-1850",
+      "imie": "Józef",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1850-02-17",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "wojciech-lulkiewicz-1819",
+      "matkaId": "elzbieta-hofmanska-1820",
+      "galazId": "wojciech",
+      "niepewne": [
+        "rodzice"
+      ],
+      "wierszZrodla": 181
+    },
+    {
+      "id": "filip-lulkiewicz-1820",
+      "imie": "Filip",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1820",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "filip",
+      "wierszZrodla": 182
+    },
+    {
+      "id": "teresa-nowicka-1819",
+      "imie": "Teresa",
+      "nazwisko": "Nowicka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1819",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "1852-09-03",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "notatka": "Ojciec: Augustyn Nowicki.",
+      "wierszZrodla": 182
+    },
+    {
+      "id": "julianna-skowronska-1827",
+      "imie": "Julianna",
+      "nazwisko": "Skowrońska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1827",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 182
+    },
+    {
+      "id": "wincenty-lulkiewicz-1846",
+      "imie": "Wincenty",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1846-07-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-09-10",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "teresa-nowicka-1819",
+      "galazId": "filip",
+      "wierszZrodla": 183
+    },
+    {
+      "id": "hipolit-lulkiewicz-1848",
+      "imie": "Hipolit",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1848-08-12",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-11-24",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "teresa-nowicka-1819",
+      "galazId": "filip",
+      "wierszZrodla": 184
+    },
+    {
+      "id": "seweryna-lulkiewicz-1851",
+      "imie": "Seweryna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1851-01-02",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1855-01-29",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "teresa-nowicka-1819",
+      "galazId": "filip",
+      "wierszZrodla": 185
+    },
+    {
+      "id": "mikolaj-lulkiewicz-1853",
+      "imie": "Mikołaj",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1853-12-06",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1853-12-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 186
+    },
+    {
+      "id": "marianna-lulkiewicz-1854",
+      "imie": "Marianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1854-12-14",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1857-01-14",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 187
+    },
+    {
+      "id": "andrzej-lulkiewicz-1857",
+      "imie": "Andrzej",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1857-11-23",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1858-01-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 188
+    },
+    {
+      "id": "julianna-lulkiewicz-1859",
+      "imie": "Julianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1859-01-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 189
+    },
+    {
+      "id": "piotr-grobelny",
+      "imie": "Piotr",
+      "nazwisko": "Grobelny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "notatka": "Ojciec: Wojciech Grobelny; matka: Katarzyna Grobelna.",
+      "wierszZrodla": 189
+    },
+    {
+      "id": "jadwiga-lulkiewicz-1861",
+      "imie": "Jadwiga",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1861-04-06",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1861-04-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 190
+    },
+    {
+      "id": "katarzyna-lulkiewicz-1861",
+      "imie": "Katarzyna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1861-04-06",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1861-04-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 191
+    },
+    {
+      "id": "anna-lulkiewicz-1862",
+      "imie": "Anna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1862-07-21",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "smierc": {
+        "wartosc": "1952-06-13",
+        "dokladnosc": "dokladna",
+        "miejsce": "Dubin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 192
+    },
+    {
+      "id": "jakub-rybacki-1854",
+      "imie": "Jakub",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1854-04-25",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 192
+    },
+    {
+      "id": "franciszek-rybacki-1883",
+      "imie": "Franciszek",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1883-10-01",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 193
+    },
+    {
+      "id": "nn-rybacka",
+      "imie": "",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 193
+    },
+    {
+      "id": "jan-rybacki",
+      "imie": "Jan",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "franciszek-rybacki-1883",
+      "matkaId": "nn-rybacka",
+      "galazId": "filip",
+      "wierszZrodla": 194
+    },
+    {
+      "id": "helena-staniszewska",
+      "imie": "Helena",
+      "nazwisko": "Staniszewska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 194
+    },
+    {
+      "id": "tadeusz-rybacki",
+      "imie": "Tadeusz",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-rybacki",
+      "matkaId": "helena-staniszewska",
+      "galazId": "filip",
+      "wierszZrodla": 195
+    },
+    {
+      "id": "teodor-rybacki-1909",
+      "imie": "Teodor",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1909",
+        "dokladnosc": "rok"
+      },
+      "smierc": {
+        "wartosc": "1980",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "franciszek-rybacki-1883",
+      "matkaId": "nn-rybacka",
+      "galazId": "filip",
+      "wierszZrodla": 196
+    },
+    {
+      "id": "helena-rybacka",
+      "imie": "Helena",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 196
+    },
+    {
+      "id": "stanislawa-rybacka-1884",
+      "imie": "Stanisława",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1884-09-13",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 197
+    },
+    {
+      "id": "helmut-szulc",
+      "imie": "Helmut",
+      "nazwisko": "Szulc",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 197
+    },
+    {
+      "id": "helena-rybacka-1889",
+      "imie": "Helena",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1889-05-04",
+        "dokladnosc": "dokladna",
+        "miejsce": "Dubin"
+      },
+      "smierc": {
+        "dokladnosc": "nieznana",
+        "miejsce": "Mieszków"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 198
+    },
+    {
+      "id": "nn-grzybek",
+      "imie": "",
+      "nazwisko": "Grzybek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "niepewne": [
+        "imie",
+        "plec"
+      ],
+      "wierszZrodla": 198
+    },
+    {
+      "id": "adam-rybacki-1891",
+      "imie": "Adam",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1891-12-16",
+        "dokladnosc": "dokladna",
+        "miejsce": "Dubin"
+      },
+      "smierc": {
+        "dokladnosc": "nieznana",
+        "miejsce": "Dubin"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 199
+    },
+    {
+      "id": "zofia-czaplicka",
+      "imie": "Zofia",
+      "nazwisko": "Czaplicka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 199
+    },
+    {
+      "id": "boleslaw-rybacki",
+      "imie": "Bolesław",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "adam-rybacki-1891",
+      "matkaId": "zofia-czaplicka",
+      "galazId": "filip",
+      "wierszZrodla": 200
+    },
+    {
+      "id": "krystyna-wascinska",
+      "imie": "Krystyna",
+      "nazwisko": "Waścińska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 200
+    },
+    {
+      "id": "zofia-rybacka",
+      "imie": "Zofia",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "boleslaw-rybacki",
+      "matkaId": "krystyna-wascinska",
+      "galazId": "filip",
+      "wierszZrodla": 201
+    },
+    {
+      "id": "piotr-matysiak",
+      "imie": "Piotr",
+      "nazwisko": "Matysiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 201
+    },
+    {
+      "id": "adam-rybacki-1960",
+      "imie": "Adam",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1960",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "boleslaw-rybacki",
+      "matkaId": "krystyna-wascinska",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 202
+    },
+    {
+      "id": "dorota-szwaba-1962",
+      "imie": "Dorota",
+      "nazwisko": "Szwaba",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1962",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 202
+    },
+    {
+      "id": "sebastian-rybacki",
+      "imie": "Sebastian",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "adam-rybacki-1960",
+      "matkaId": "dorota-szwaba-1962",
+      "galazId": "filip",
+      "wierszZrodla": 203
+    },
+    {
+      "id": "zbigniew-rybacki-1963",
+      "imie": "Zbigniew",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1963",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "boleslaw-rybacki",
+      "matkaId": "krystyna-wascinska",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 204
+    },
+    {
+      "id": "urszula-kotwica",
+      "imie": "Urszula",
+      "nazwisko": "Kotwica",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 204
+    },
+    {
+      "id": "marian-rybacki-1922",
+      "imie": "Marian",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1922-03-20",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1979-05-24",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "adam-rybacki-1891",
+      "matkaId": "zofia-czaplicka",
+      "galazId": "filip",
+      "wierszZrodla": 205
+    },
+    {
+      "id": "kazimiera-pospiech-1928",
+      "imie": "Kazimiera",
+      "nazwisko": "Pośpiech",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1928-03-09",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1995-01-07",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 205
+    },
+    {
+      "id": "aleksandra-rybacka-1951",
+      "imie": "Aleksandra",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1951",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "marian-rybacki-1922",
+      "matkaId": "kazimiera-pospiech-1928",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 206
+    },
+    {
+      "id": "henryk-busz",
+      "imie": "Henryk",
+      "nazwisko": "Busz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 206
+    },
+    {
+      "id": "elzbieta-rybacka-1953",
+      "imie": "Elżbieta",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1953",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "marian-rybacki-1922",
+      "matkaId": "kazimiera-pospiech-1928",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 207
+    },
+    {
+      "id": "aleksander-pernak",
+      "imie": "Aleksander",
+      "nazwisko": "Pernak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 207
+    },
+    {
+      "id": "kamila-rybacka-1956",
+      "imie": "Kamila",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1956-07-05",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "marian-rybacki-1922",
+      "matkaId": "kazimiera-pospiech-1928",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 208
+    },
+    {
+      "id": "mieczyslaw-szodkiewicz",
+      "imie": "Mieczysław",
+      "nazwisko": "Szodkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 208
+    },
+    {
+      "id": "kazimiera-rybacka-1924",
+      "imie": "Kazimiera",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1924-02-27",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "2002-04-16",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "adam-rybacki-1891",
+      "matkaId": "zofia-czaplicka",
+      "galazId": "filip",
+      "wierszZrodla": 209
+    },
+    {
+      "id": "stanislaw-grocholski-1922",
+      "imie": "Stanisław",
+      "nazwisko": "Grocholski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1922-02-03",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1999-10-15",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 209
+    },
+    {
+      "id": "ewa-grocholska-1955",
+      "imie": "Ewa",
+      "nazwisko": "Grocholska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1955",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "stanislaw-grocholski-1922",
+      "matkaId": "kazimiera-rybacka-1924",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 210
+    },
+    {
+      "id": "zbigniew-kapala-1951",
+      "imie": "Zbigniew",
+      "nazwisko": "Kapała",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1951",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 210
+    },
+    {
+      "id": "mariusz-kapala-1974",
+      "imie": "Mariusz",
+      "nazwisko": "Kapała",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1974",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "zbigniew-kapala-1951",
+      "matkaId": "ewa-grocholska-1955",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 211
+    },
+    {
+      "id": "grazyna-kapala-1979",
+      "imie": "Grażyna",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1979",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 211
+    },
+    {
+      "id": "karolina-kapala",
+      "imie": "Karolina",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "mariusz-kapala-1974",
+      "matkaId": "grazyna-kapala-1979",
+      "galazId": "filip",
+      "wierszZrodla": 212
+    },
+    {
+      "id": "tomasz-kapala-1977",
+      "imie": "Tomasz",
+      "nazwisko": "Kapała",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1977-12-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "zbigniew-kapala-1951",
+      "matkaId": "ewa-grocholska-1955",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 213
+    },
+    {
+      "id": "jolanta-nowacka",
+      "imie": "Jolanta",
+      "nazwisko": "Nowacka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 213
+    },
+    {
+      "id": "aleksandra-kapala",
+      "imie": "Aleksandra",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "tomasz-kapala-1977",
+      "matkaId": "jolanta-nowacka",
+      "galazId": "filip",
+      "wierszZrodla": 214
+    },
+    {
+      "id": "alicja-kapala",
+      "imie": "Alicja",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "tomasz-kapala-1977",
+      "matkaId": "jolanta-nowacka",
+      "galazId": "filip",
+      "wierszZrodla": 215
+    },
+    {
+      "id": "anna-kapala-1979",
+      "imie": "Anna",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1979",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "zbigniew-kapala-1951",
+      "matkaId": "ewa-grocholska-1955",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 216
+    },
+    {
+      "id": "sebastian-kaczmarek-1977",
+      "imie": "Sebastian",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1977",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 216
+    },
+    {
+      "id": "barbara-kapala-1981",
+      "imie": "Barbara",
+      "nazwisko": "Kapała",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1981",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "zbigniew-kapala-1951",
+      "matkaId": "ewa-grocholska-1955",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 217
+    },
+    {
+      "id": "mateusz-smykowski",
+      "imie": "Mateusz",
+      "nazwisko": "Smykowski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 217
+    },
+    {
+      "id": "nn-smykowska",
+      "imie": "",
+      "nazwisko": "Smykowska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "mateusz-smykowski",
+      "matkaId": "barbara-kapala-1981",
+      "galazId": "filip",
+      "niepewne": [
+        "imie"
+      ],
+      "wierszZrodla": 218
+    },
+    {
+      "id": "genowefa-grocholska-1956",
+      "imie": "Genowefa",
+      "nazwisko": "Grocholska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1956",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "stanislaw-grocholski-1922",
+      "matkaId": "kazimiera-rybacka-1924",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 219
+    },
+    {
+      "id": "leszek-walczak-1954",
+      "imie": "Leszek",
+      "nazwisko": "Walczak",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1954",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 219
+    },
+    {
+      "id": "dawid-walczak",
+      "imie": "Dawid",
+      "nazwisko": "Walczak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "leszek-walczak-1954",
+      "matkaId": "genowefa-grocholska-1956",
+      "galazId": "filip",
+      "wierszZrodla": 220
+    },
+    {
+      "id": "maciej-walczak",
+      "imie": "Maciej",
+      "nazwisko": "Walczak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "leszek-walczak-1954",
+      "matkaId": "genowefa-grocholska-1956",
+      "galazId": "filip",
+      "wierszZrodla": 221
+    },
+    {
+      "id": "maria-walczak",
+      "imie": "Maria",
+      "nazwisko": "Walczak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "leszek-walczak-1954",
+      "matkaId": "genowefa-grocholska-1956",
+      "galazId": "filip",
+      "wierszZrodla": 222
+    },
+    {
+      "id": "roman-grocholski-1958",
+      "imie": "Roman",
+      "nazwisko": "Grocholski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1958-08-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "stanislaw-grocholski-1922",
+      "matkaId": "kazimiera-rybacka-1924",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 223
+    },
+    {
+      "id": "zygmunt-grocholski-1962",
+      "imie": "Zygmunt",
+      "nazwisko": "Grocholski",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1962",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "stanislaw-grocholski-1922",
+      "matkaId": "kazimiera-rybacka-1924",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 224
+    },
+    {
+      "id": "halina-kalka",
+      "imie": "Halina",
+      "nazwisko": "Kalka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 224
+    },
+    {
+      "id": "paulina-grocholska",
+      "imie": "Paulina",
+      "nazwisko": "Grocholska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zygmunt-grocholski-1962",
+      "matkaId": "halina-kalka",
+      "galazId": "filip",
+      "wierszZrodla": 225
+    },
+    {
+      "id": "pawel-grocholski",
+      "imie": "Paweł",
+      "nazwisko": "Grocholski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zygmunt-grocholski-1962",
+      "matkaId": "halina-kalka",
+      "galazId": "filip",
+      "wierszZrodla": 226
+    },
+    {
+      "id": "boniu-grocholski-1963",
+      "imie": "Boniu",
+      "nazwisko": "Grocholski",
+      "plec": "nieznana",
+      "urodzenie": {
+        "wartosc": "1963",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "stanislaw-grocholski-1922",
+      "matkaId": "kazimiera-rybacka-1924",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 227
+    },
+    {
+      "id": "iwona-bruder",
+      "imie": "Iwona",
+      "nazwisko": "Bruder",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 227
+    },
+    {
+      "id": "justyna-grocholska",
+      "imie": "Justyna",
+      "nazwisko": "Grocholska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "boniu-grocholski-1963",
+      "matkaId": "iwona-bruder",
+      "galazId": "filip",
+      "wierszZrodla": 228
+    },
+    {
+      "id": "karolina-grocholska",
+      "imie": "Karolina",
+      "nazwisko": "Grocholska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "boniu-grocholski-1963",
+      "matkaId": "iwona-bruder",
+      "galazId": "filip",
+      "wierszZrodla": 229
+    },
+    {
+      "id": "piotr-grocholski",
+      "imie": "Piotr",
+      "nazwisko": "Grocholski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "boniu-grocholski-1963",
+      "matkaId": "iwona-bruder",
+      "galazId": "filip",
+      "wierszZrodla": 230
+    },
+    {
+      "id": "teresa-rybacka-1931",
+      "imie": "Teresa",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1931-07-30",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "adam-rybacki-1891",
+      "matkaId": "zofia-czaplicka",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 231
+    },
+    {
+      "id": "kazimierz-zybert-1933",
+      "imie": "Kazimierz",
+      "nazwisko": "Zybert",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1933-09-20",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1988-10-16",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 231
+    },
+    {
+      "id": "grazyna-zybert-1956",
+      "imie": "Grażyna",
+      "nazwisko": "Zybert",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1956",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "kazimierz-zybert-1933",
+      "matkaId": "teresa-rybacka-1931",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 232
+    },
+    {
+      "id": "bogdan-langner-1954",
+      "imie": "Bogdan",
+      "nazwisko": "Langner",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1954",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 232
+    },
+    {
+      "id": "izabela-langner-1977",
+      "imie": "Izabela",
+      "nazwisko": "Langner",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1977",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "bogdan-langner-1954",
+      "matkaId": "grazyna-zybert-1956",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 233
+    },
+    {
+      "id": "witold-mroczek-1974",
+      "imie": "Witold",
+      "nazwisko": "Mroczek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1974",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 233
+    },
+    {
+      "id": "katarzyna-mroczek-2000",
+      "imie": "Katarzyna",
+      "nazwisko": "Mroczek",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "2000",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "witold-mroczek-1974",
+      "matkaId": "izabela-langner-1977",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 234
+    },
+    {
+      "id": "marianna-rybacka-1894",
+      "imie": "Marianna",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1894-04-24",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 235
+    },
+    {
+      "id": "jan-czaplicki-1897",
+      "imie": "Jan",
+      "nazwisko": "Czaplicki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1897",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 235
+    },
+    {
+      "id": "krystyna-czaplicka",
+      "imie": "Krystyna",
+      "nazwisko": "Czaplicka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-czaplicki-1897",
+      "matkaId": "marianna-rybacka-1894",
+      "galazId": "filip",
+      "wierszZrodla": 236
+    },
+    {
+      "id": "stanislaw-kaczmarek",
+      "imie": "Stanisław",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 236
+    },
+    {
+      "id": "celestyn-czaplicki",
+      "imie": "Celestyn",
+      "nazwisko": "Czaplicki",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jan-czaplicki-1897",
+      "matkaId": "marianna-rybacka-1894",
+      "galazId": "filip",
+      "wierszZrodla": 237
+    },
+    {
+      "id": "teodor-czaplicki-1930",
+      "imie": "Teodor",
+      "nazwisko": "Czaplicki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1930",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "jan-czaplicki-1897",
+      "matkaId": "marianna-rybacka-1894",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 238
+    },
+    {
+      "id": "halina-nn",
+      "imie": "Halina",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 238
+    },
+    {
+      "id": "bozena-czaplicka-1931",
+      "imie": "Bożena",
+      "nazwisko": "Czaplicka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1931",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": "jan-czaplicki-1897",
+      "matkaId": "marianna-rybacka-1894",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 239
+    },
+    {
+      "id": "zenon-matysiak",
+      "imie": "Zenon",
+      "nazwisko": "Matysiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 239
+    },
+    {
+      "id": "maria-matysiak",
+      "imie": "Maria",
+      "nazwisko": "Matysiak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zenon-matysiak",
+      "matkaId": "bozena-czaplicka-1931",
+      "galazId": "filip",
+      "wierszZrodla": 240
+    },
+    {
+      "id": "janusz-wypych",
+      "imie": "Janusz",
+      "nazwisko": "Wypych",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 240
+    },
+    {
+      "id": "piotr-matysiak-2",
+      "imie": "Piotr",
+      "nazwisko": "Matysiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zenon-matysiak",
+      "matkaId": "bozena-czaplicka-1931",
+      "galazId": "filip",
+      "wierszZrodla": 241
+    },
+    {
+      "id": "zofia-rybacka-1959",
+      "imie": "Zofia",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1959",
+        "dokladnosc": "rok"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 241
+    },
+    {
+      "id": "agnieszka-matysiak",
+      "imie": "Agnieszka",
+      "nazwisko": "Matysiak",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "piotr-matysiak-2",
+      "matkaId": "zofia-rybacka-1959",
+      "galazId": "filip",
+      "wierszZrodla": 242
+    },
+    {
+      "id": "krzysztof-matysiak",
+      "imie": "Krzysztof",
+      "nazwisko": "Matysiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "piotr-matysiak-2",
+      "matkaId": "zofia-rybacka-1959",
+      "galazId": "filip",
+      "wierszZrodla": 243
+    },
+    {
+      "id": "tadeusz-matysiak",
+      "imie": "Tadeusz",
+      "nazwisko": "Matysiak",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "zenon-matysiak",
+      "matkaId": "bozena-czaplicka-1931",
+      "galazId": "filip",
+      "wierszZrodla": 244
+    },
+    {
+      "id": "jozef-rybacki-1896",
+      "imie": "Józef",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1896-03-19",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 245
+    },
+    {
+      "id": "pelagia-gwizdal",
+      "imie": "Pelagia",
+      "nazwisko": "Gwizdał",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 245
+    },
+    {
+      "id": "marynia-rybacka-1899",
+      "imie": "Marynia",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1899-01-21",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 246
+    },
+    {
+      "id": "wincentyna-rybacka-1899",
+      "imie": "Wincentyna",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1899-12-29",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1962-11-09",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 247
+    },
+    {
+      "id": "stanislaw-sliwa-1893",
+      "imie": "Stanisław",
+      "nazwisko": "Śliwa",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1893-05-06",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "wartosc": "1948-07-14",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 247
+    },
+    {
+      "id": "eugenia-sliwa",
+      "imie": "Eugenia",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-sliwa-1893",
+      "matkaId": "wincentyna-rybacka-1899",
+      "galazId": "filip",
+      "wierszZrodla": 248
+    },
+    {
+      "id": "eugeniusz-rogowski",
+      "imie": "Eugeniusz",
+      "nazwisko": "Rogowski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 248
+    },
+    {
+      "id": "longina-rogowska",
+      "imie": "Longina",
+      "nazwisko": "Rogowska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "eugeniusz-rogowski",
+      "matkaId": "eugenia-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 249
+    },
+    {
+      "id": "malgorzata-rogowska",
+      "imie": "Małgorzata",
+      "nazwisko": "Rogowska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "eugeniusz-rogowski",
+      "matkaId": "eugenia-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 250
+    },
+    {
+      "id": "henryk-sliwa",
+      "imie": "Henryk",
+      "nazwisko": "Śliwa",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-sliwa-1893",
+      "matkaId": "wincentyna-rybacka-1899",
+      "galazId": "filip",
+      "wierszZrodla": 251
+    },
+    {
+      "id": "wanda-sliwa",
+      "imie": "Wanda",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 251
+    },
+    {
+      "id": "bronislawa-sliwa",
+      "imie": "Bronisława",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "henryk-sliwa",
+      "matkaId": "wanda-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 252
+    },
+    {
+      "id": "henryka-sliwa",
+      "imie": "Henryka",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "henryk-sliwa",
+      "matkaId": "wanda-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 253
+    },
+    {
+      "id": "wieslaw-szumny",
+      "imie": "Wiesław",
+      "nazwisko": "Szumny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 253
+    },
+    {
+      "id": "karol-szumny",
+      "imie": "Karol",
+      "nazwisko": "Szumny",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wieslaw-szumny",
+      "matkaId": "henryka-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 254
+    },
+    {
+      "id": "kinga-szumny",
+      "imie": "Kinga",
+      "nazwisko": "Szumny",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wieslaw-szumny",
+      "matkaId": "henryka-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 255
+    },
+    {
+      "id": "irena-sliwa",
+      "imie": "Irena",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "henryk-sliwa",
+      "matkaId": "wanda-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 256
+    },
+    {
+      "id": "kazimierz-lorek",
+      "imie": "Kazimierz",
+      "nazwisko": "Lorek",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 256
+    },
+    {
+      "id": "agnieszka-lorek",
+      "imie": "Agnieszka",
+      "nazwisko": "Lorek",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lorek",
+      "matkaId": "irena-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 257
+    },
+    {
+      "id": "alicja-lorek",
+      "imie": "Alicja",
+      "nazwisko": "Lorek",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lorek",
+      "matkaId": "irena-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 258
+    },
+    {
+      "id": "katarzyna-lorek",
+      "imie": "Katarzyna",
+      "nazwisko": "Lorek",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "kazimierz-lorek",
+      "matkaId": "irena-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 259
+    },
+    {
+      "id": "maria-sliwa",
+      "imie": "Maria",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "henryk-sliwa",
+      "matkaId": "wanda-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 260
+    },
+    {
+      "id": "marian-aenski",
+      "imie": "Marian",
+      "nazwisko": "Aenski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 260
+    },
+    {
+      "id": "joanna-aenska",
+      "imie": "Joanna",
+      "nazwisko": "Aenska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marian-aenski",
+      "matkaId": "maria-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 261
+    },
+    {
+      "id": "natalia-sliwa",
+      "imie": "Natalia",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-sliwa-1893",
+      "matkaId": "wincentyna-rybacka-1899",
+      "galazId": "filip",
+      "wierszZrodla": 262
+    },
+    {
+      "id": "euzebiusz-flita",
+      "imie": "Euzebiusz",
+      "nazwisko": "Flita",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 262
+    },
+    {
+      "id": "ryszard-flita",
+      "imie": "Ryszard",
+      "nazwisko": "Flita",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "euzebiusz-flita",
+      "matkaId": "natalia-sliwa",
+      "galazId": "filip",
+      "wierszZrodla": 263
+    },
+    {
+      "id": "zygmunt-sliwa",
+      "imie": "Zygmunt",
+      "nazwisko": "Śliwa",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-sliwa-1893",
+      "matkaId": "wincentyna-rybacka-1899",
+      "galazId": "filip",
+      "wierszZrodla": 264
+    },
+    {
+      "id": "zofia-sliwa",
+      "imie": "Zofia",
+      "nazwisko": "Śliwa",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 264
+    },
+    {
+      "id": "antoni-rybacki-1903",
+      "imie": "Antoni",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1903-01-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 265
+    },
+    {
+      "id": "agnieszka-rybacka-1903",
+      "imie": "Agnieszka",
+      "nazwisko": "Rybacka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1903-01-07",
+        "dokladnosc": "dokladna"
+      },
+      "smierc": {
+        "dokladnosc": "nieznana",
+        "miejsce": "Borek"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 266
+    },
+    {
+      "id": "stanislaw-zemboldt-1906",
+      "imie": "Stanisław",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1906-05-02",
+        "dokladnosc": "dokladna",
+        "miejsce": "Dubin"
+      },
+      "smierc": {
+        "wartosc": "1981-04-11",
+        "dokladnosc": "dokladna",
+        "miejsce": "Rawicz"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 266
+    },
+    {
+      "id": "wladyslaw-zemboldt-1933",
+      "imie": "Władysław",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1933",
+        "dokladnosc": "okolo"
+      },
+      "smierc": {
+        "wartosc": "2006-07-18",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "stanislaw-zemboldt-1906",
+      "matkaId": "agnieszka-rybacka-1903",
+      "galazId": "filip",
+      "wierszZrodla": 267
+    },
+    {
+      "id": "anna-zyto",
+      "imie": "Anna",
+      "nazwisko": "Żyto",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 267
+    },
+    {
+      "id": "jerzy-zemboldt",
+      "imie": "Jerzy",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wladyslaw-zemboldt-1933",
+      "matkaId": "anna-zyto",
+      "galazId": "filip",
+      "wierszZrodla": 268
+    },
+    {
+      "id": "alina-zemboldt",
+      "imie": "Alina",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 268
+    },
+    {
+      "id": "aukasz-zemboldt",
+      "imie": "Łukasz",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jerzy-zemboldt",
+      "matkaId": "alina-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 269
+    },
+    {
+      "id": "tomasz-zemboldt",
+      "imie": "Tomasz",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "jerzy-zemboldt",
+      "matkaId": "alina-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 270
+    },
+    {
+      "id": "marek-zemboldt",
+      "imie": "Marek",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "wladyslaw-zemboldt-1933",
+      "matkaId": "anna-zyto",
+      "galazId": "filip",
+      "wierszZrodla": 271
+    },
+    {
+      "id": "jolanta-barteczka",
+      "imie": "Jolanta",
+      "nazwisko": "Barteczka",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 271
+    },
+    {
+      "id": "marcin-zemboldt",
+      "imie": "Marcin",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "marek-zemboldt",
+      "matkaId": "jolanta-barteczka",
+      "galazId": "filip",
+      "wierszZrodla": 272
+    },
+    {
+      "id": "beata-zemoldt-1966",
+      "imie": "Beata",
+      "nazwisko": "Zemoldt",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1966-11-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Trzebnica, Polska"
+      },
+      "ojciecId": "wladyslaw-zemboldt-1933",
+      "matkaId": "anna-zyto",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 273
+    },
+    {
+      "id": "piotr-tatara",
+      "imie": "Piotr",
+      "nazwisko": "Tatara",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 273
+    },
+    {
+      "id": "wojciech-tatara",
+      "imie": "Wojciech",
+      "nazwisko": "Tatara",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "piotr-tatara",
+      "matkaId": "beata-zemoldt-1966",
+      "galazId": "filip",
+      "wierszZrodla": 274
+    },
+    {
+      "id": "antoni-zemboldt-1936",
+      "imie": "Antoni",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1936",
+        "dokladnosc": "rok"
+      },
+      "smierc": {
+        "wartosc": "2007-06-22",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "stanislaw-zemboldt-1906",
+      "matkaId": "agnieszka-rybacka-1903",
+      "galazId": "filip",
+      "wierszZrodla": 275
+    },
+    {
+      "id": "barbara-zemboldt",
+      "imie": "Barbara",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 275
+    },
+    {
+      "id": "danuta-zemboldt",
+      "imie": "Danuta",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-zemboldt-1936",
+      "matkaId": "barbara-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 276
+    },
+    {
+      "id": "krzysztof-zemboldt",
+      "imie": "Krzysztof",
+      "nazwisko": "Zemboldt",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-zemboldt-1936",
+      "matkaId": "barbara-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 277
+    },
+    {
+      "id": "ewelina-nijaka-1962",
+      "imie": "Ewelina",
+      "nazwisko": "Nijaka",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1962-11-14",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 277
+    },
+    {
+      "id": "lucyna-nn",
+      "imie": "Lucyna",
+      "nazwisko": "",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 277
+    },
+    {
+      "id": "anna-zemboldt-1988",
+      "imie": "Anna",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1988-04-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "krzysztof-zemboldt",
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 278
+    },
+    {
+      "id": "marta-zemboldt-1990",
+      "imie": "Marta",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1990-02-19",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "krzysztof-zemboldt",
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 279
+    },
+    {
+      "id": "teresa-zemboldt",
+      "imie": "Teresa",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "antoni-zemboldt-1936",
+      "matkaId": "barbara-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 280
+    },
+    {
+      "id": "stanislaw-tomaszewski",
+      "imie": "Stanisław",
+      "nazwisko": "Tomaszewski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "wierszZrodla": 280
+    },
+    {
+      "id": "iwona-tomaszewska",
+      "imie": "Iwona",
+      "nazwisko": "Tomaszewska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-tomaszewski",
+      "matkaId": "teresa-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 281
+    },
+    {
+      "id": "nn-ciechon",
+      "imie": "",
+      "nazwisko": "Ciechoń",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "niepewne": [
+        "imie",
+        "plec"
+      ],
+      "wierszZrodla": 281
+    },
+    {
+      "id": "agata-tomaszewska",
+      "imie": "Agata",
+      "nazwisko": "Tomaszewska",
+      "plec": "K",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-tomaszewski",
+      "matkaId": "teresa-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 282
+    },
+    {
+      "id": "pawel-tomaszewski",
+      "imie": "Paweł",
+      "nazwisko": "Tomaszewski",
+      "plec": "M",
+      "urodzenie": {
+        "dokladnosc": "nieznana"
+      },
+      "ojciecId": "stanislaw-tomaszewski",
+      "matkaId": "teresa-zemboldt",
+      "galazId": "filip",
+      "wierszZrodla": 283
+    },
+    {
+      "id": "czeslawa-zemboldt-1942",
+      "imie": "Czesława",
+      "nazwisko": "Zemboldt",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1942-07-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Miejska Górka"
+      },
+      "ojciecId": "stanislaw-zemboldt-1906",
+      "matkaId": "agnieszka-rybacka-1903",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 284
+    },
+    {
+      "id": "franciszek-gregor-1939",
+      "imie": "Franciszek",
+      "nazwisko": "Gregor",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1939-10-09",
+        "dokladnosc": "dokladna",
+        "miejsce": "Miejska Górka, Wielkopolska"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 284
+    },
+    {
+      "id": "pawel-gregor-1963",
+      "imie": "Paweł",
+      "nazwisko": "Gregor",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1963-06-03",
+        "dokladnosc": "dokladna",
+        "miejsce": "Jutrosin"
+      },
+      "ojciecId": "franciszek-gregor-1939",
+      "matkaId": "czeslawa-zemboldt-1942",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 285
+    },
+    {
+      "id": "wioletta-aazinska-1969",
+      "imie": "Wioletta",
+      "nazwisko": "Aazińska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1969-08-13",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 285
+    },
+    {
+      "id": "martyna-hop-1990",
+      "imie": "Martyna",
+      "nazwisko": "Hop",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1990-04-28",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "pawel-gregor-1963",
+      "matkaId": "wioletta-aazinska-1969",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 286
+    },
+    {
+      "id": "tomasz-nn-2006",
+      "imie": "Tomasz",
+      "nazwisko": "",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "2006-04-12",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": "martyna-hop-1990",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "niepewne": [
+        "nazwisko"
+      ],
+      "wierszZrodla": 287
+    },
+    {
+      "id": "anna-gregor-1964",
+      "imie": "Anna",
+      "nazwisko": "Gregor",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1964-07-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Jutrosin"
+      },
+      "ojciecId": "franciszek-gregor-1939",
+      "matkaId": "czeslawa-zemboldt-1942",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 288
+    },
+    {
+      "id": "czeslaw-kaczmarek-1967",
+      "imie": "Czesław",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1967-02-08",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 288
+    },
+    {
+      "id": "dawid-kaczmarek-1989",
+      "imie": "Dawid",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1989-07-27",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "czeslaw-kaczmarek-1967",
+      "matkaId": "anna-gregor-1964",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 289
+    },
+    {
+      "id": "dariusz-kaczmarek-1990",
+      "imie": "Dariusz",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1990-08-02",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "czeslaw-kaczmarek-1967",
+      "matkaId": "anna-gregor-1964",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 290
+    },
+    {
+      "id": "mateusz-kaczmarek-1993",
+      "imie": "Mateusz",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1993-08-24",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "czeslaw-kaczmarek-1967",
+      "matkaId": "anna-gregor-1964",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 291
+    },
+    {
+      "id": "karol-kaczmarek-2001",
+      "imie": "Karol",
+      "nazwisko": "Kaczmarek",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "2001-11-21",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "czeslaw-kaczmarek-1967",
+      "matkaId": "anna-gregor-1964",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 292
+    },
+    {
+      "id": "ryszard-gregor-1968",
+      "imie": "Ryszard",
+      "nazwisko": "Gregor",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1968-03-26",
+        "dokladnosc": "dokladna",
+        "miejsce": "Rawicz"
+      },
+      "ojciecId": "franciszek-gregor-1939",
+      "matkaId": "czeslawa-zemboldt-1942",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 293
+    },
+    {
+      "id": "elzbieta-malec-1972",
+      "imie": "Elżbieta",
+      "nazwisko": "Malec",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1972-06-08",
+        "dokladnosc": "dokladna",
+        "miejsce": "Poznań"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 293
+    },
+    {
+      "id": "artur-gregor-1996",
+      "imie": "Artur",
+      "nazwisko": "Gregor",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1996-07-19",
+        "dokladnosc": "dokladna",
+        "miejsce": "Poznań"
+      },
+      "ojciecId": "ryszard-gregor-1968",
+      "matkaId": "elzbieta-malec-1972",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 294
+    },
+    {
+      "id": "krzysztof-gregor-2008",
+      "imie": "Krzysztof",
+      "nazwisko": "Gregor",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "2008-04-22",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "ryszard-gregor-1968",
+      "matkaId": "elzbieta-malec-1972",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 295
+    },
+    {
+      "id": "honorata-gregor-1971",
+      "imie": "Honorata",
+      "nazwisko": "Gregor",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1971-08-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Rawicz"
+      },
+      "ojciecId": "franciszek-gregor-1939",
+      "matkaId": "czeslawa-zemboldt-1942",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 296
+    },
+    {
+      "id": "pawel-gotter-1968",
+      "imie": "Paweł",
+      "nazwisko": "Gotter",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1968-03-28",
+        "dokladnosc": "dokladna",
+        "miejsce": "Milicz"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 296
+    },
+    {
+      "id": "agnieszka-gotter-1992",
+      "imie": "Agnieszka",
+      "nazwisko": "Gotter",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1992-11-01",
+        "dokladnosc": "dokladna",
+        "miejsce": "Milicz"
+      },
+      "ojciecId": "pawel-gotter-1968",
+      "matkaId": "honorata-gregor-1971",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 297
+    },
+    {
+      "id": "tomasz-gotter-1994",
+      "imie": "Tomasz",
+      "nazwisko": "Gotter",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1994-09-05",
+        "dokladnosc": "dokladna",
+        "miejsce": "Milicz"
+      },
+      "ojciecId": "pawel-gotter-1968",
+      "matkaId": "honorata-gregor-1971",
+      "galazId": "filip",
+      "ukryjDaty": true,
+      "wierszZrodla": 298
+    },
+    {
+      "id": "jan-rybacki-1905",
+      "imie": "Jan",
+      "nazwisko": "Rybacki",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1905-03-06",
+        "dokladnosc": "dokladna"
+      },
+      "ojciecId": "jakub-rybacki-1854",
+      "matkaId": "anna-lulkiewicz-1862",
+      "galazId": "filip",
+      "wierszZrodla": 299
+    },
+    {
+      "id": "jozef-lulkiewicz-1865",
+      "imie": "Józef",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1865-11-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 300
+    },
+    {
+      "id": "mateusz-lulkiewicz-1868",
+      "imie": "Mateusz",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1868-09-18",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "ojciecId": "filip-lulkiewicz-1820",
+      "matkaId": "julianna-skowronska-1827",
+      "galazId": "filip",
+      "wierszZrodla": 301
+    },
+    {
+      "id": "jozef-lulkiewicz-1823",
+      "imie": "Józef",
+      "nazwisko": "Lulkiewicz",
+      "plec": "M",
+      "urodzenie": {
+        "wartosc": "1823",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": "wiktor-lulkiewicz-1780",
+      "matkaId": "kungeunda-pernaczynska-1785",
+      "galazId": "jozef",
+      "wierszZrodla": 302
+    },
+    {
+      "id": "antonina-pawlewska-1826",
+      "imie": "Antonina",
+      "nazwisko": "Pawlewska",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1826",
+        "dokladnosc": "okolo"
+      },
+      "ojciecId": null,
+      "matkaId": null,
+      "galazId": "jozef",
+      "notatka": "Ojciec: Bartłomiej Pawlewski; matka: Justyna Smolińska.",
+      "wierszZrodla": 302
+    },
+    {
+      "id": "julianna-lulkiewicz-1850",
+      "imie": "Julianna",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1850-04-13",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin, Polska"
+      },
+      "smierc": {
+        "wartosc": "1852-12-22",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-lulkiewicz-1823",
+      "matkaId": "antonina-pawlewska-1826",
+      "galazId": "jozef",
+      "wierszZrodla": 303
+    },
+    {
+      "id": "urszula-lulkiewicz-1853",
+      "imie": "Urszula",
+      "nazwisko": "Lulkiewicz",
+      "plec": "K",
+      "urodzenie": {
+        "wartosc": "1853-10-19",
+        "dokladnosc": "dokladna",
+        "miejsce": "Kobylin"
+      },
+      "ojciecId": "jozef-lulkiewicz-1823",
+      "matkaId": "antonina-pawlewska-1826",
+      "galazId": "jozef",
+      "wierszZrodla": 304
+    }
+  ],
+  "malzenstwa": [
+    {
+      "osobaAId": "sebastian-lulkiewicz",
+      "osobaBId": "anna-lulkiewicz",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wiktor-lulkiewicz-1780",
+      "osobaBId": "kungeunda-pernaczynska-1785",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "antoni-lulkiewicz-1807",
+      "osobaBId": "helena-galusinska-1806",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wiktor-lulkiewicz-1834",
+      "osobaBId": "seweryna-ginter-1839",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "helena-lulkiewicz",
+      "osobaBId": "nn-paterek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "teodor-lulkiewicz-1857",
+      "osobaBId": "dorota-merczynska-1861",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "maria-lulkiewicz-1889",
+      "osobaBId": "nn-lasota",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "ignacy-lulkiewicz-1893",
+      "osobaBId": "zofia-kaminska",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "kazimierz-lulkiewicz-2",
+      "osobaBId": "irena-furmankiewicz",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "liliana-lulkiewicz",
+      "osobaBId": "marcel-wlodarczyk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "agnieszka-wlodarczyk",
+      "osobaBId": "piotr-rolnik",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "malgorzata-wlodarczyk",
+      "osobaBId": "pawel-gorynia",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wioleta-lulkiewicz",
+      "osobaBId": "zdzislaw-gawel",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "sabina-lulkiewicz-1959",
+      "osobaBId": "wieslaw-kupczyk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "katarzyna-kupczyk",
+      "osobaBId": "szymon-wojtyczka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "rafal-kupczyk",
+      "osobaBId": "anna-kupczyk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "stanislaw-lulkiewicz-1961",
+      "osobaBId": "mieczyslawa-nn",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zbigniew-lulkiewicz-1971",
+      "osobaBId": "teresa-nn-1973",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "edyta-lulkiewicz-1975",
+      "osobaBId": "przemyslaw-walczuk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "lucja-lulkiewicz",
+      "osobaBId": "franciszek-welzer",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "barbara-welzer",
+      "osobaBId": "antoni-grobelny",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "agnieszka-grobelny",
+      "osobaBId": "jarek-mackowiak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "karol-grobelny",
+      "osobaBId": "gizela-nn",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "halina-welzer",
+      "osobaBId": "jan-mackowiak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "ireneusz-welzer",
+      "osobaBId": "hanna-nn",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "mariola-welzer",
+      "osobaBId": "bogdan-wojtkowiak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "mila-welzer",
+      "osobaBId": "nn-mocek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "maria-lulkiewicz-2",
+      "osobaBId": "andrzej-rusiecki",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "miroslawa-rusiecka",
+      "osobaBId": "jan-wilda",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "renata-rusiecka",
+      "osobaBId": "miroslaw-mania",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "antoni-lulkiewicz-1899",
+      "osobaBId": "zofia-lopaczyk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "maria-lulkiewicz-3",
+      "osobaBId": "nn-skalski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jan-lulkiewicz-1899",
+      "osobaBId": "rozalia-kajnata",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-lulkiewicz-2",
+      "osobaBId": "sylwester-stanislawski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-lulkiewicz-2",
+      "osobaBId": "antoni-skrzypczak",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "danuta-stanislawska",
+      "osobaBId": "leszek-skrzypczak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zbigniew-stanislawski",
+      "osobaBId": "urszula-zietek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "tekla-lulkiewicz-1860",
+      "osobaBId": "stanislaw-bystrzynski-1850",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozef-bystrzynski-1891",
+      "osobaBId": "helena-pastyka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "agnieszka-lulkiewicz-1863",
+      "osobaBId": "stanislaw-warchalewski-1849",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "leonarda-warchalewska-1888",
+      "osobaBId": "stanislaw-zwitala-1887",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "pelagia-warchalewska-1893",
+      "osobaBId": "stanislaw-nowaczyk",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "stanislawa-warchalewska-1895",
+      "osobaBId": "richard-thiele",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "marianna-lulkiewicz-1866",
+      "osobaBId": "maksymilian-wabinski-1863",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "michal-lulkiewicz-1868",
+      "osobaBId": "stanislawa-leopold",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozefa-lulkiewicz-1898",
+      "osobaBId": "stanislaw-rozycki",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "stanislawa-lulkiewicz-1871",
+      "osobaBId": "wladyslaw-biskupski-1868",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "helena-biskupska-1893",
+      "osobaBId": "wiech-gerber",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "weronika-lulkiewicz-1874",
+      "osobaBId": "jozef-piskorek-1868",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-lulkiewicz-1878",
+      "osobaBId": "jan-werner-1867",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "leonarda-lulkiewicz-1881",
+      "osobaBId": "maksymilian-wabinski-1863",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "aniela-lulkiewicz-1884",
+      "osobaBId": "sylwester-siberna-1851",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-lulkiewicz-1845",
+      "osobaBId": "walenty-siberna-1815",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "agnieszka-marianna-siberna-1863",
+      "osobaBId": "jan-nepomucen-szelagowski-1855",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "julian-lulkiewicz-1813",
+      "osobaBId": "honorata-orlicka-1820",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "elzbieta-lulkiewicz-1838",
+      "osobaBId": "wawrzyniec-jarczynski-1830",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "makary-lulkiewicz-1840",
+      "osobaBId": "marianna-hofmanska",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "cecylia-lulkiewicz-1851",
+      "osobaBId": "piotr-buczkiewicz-1847",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "konstancja-lulkiewicz-1856",
+      "osobaBId": "jozef-wiatrolik-1854",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozefa-lulkiewicz-1817",
+      "osobaBId": "tomasz-nypczowski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozefa-lulkiewicz-1817",
+      "osobaBId": "laurenty-pyszczorecki-1817",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "wojciech-lulkiewicz-1819",
+      "osobaBId": "elzbieta-hofmanska-1820",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wiktor-lulkiewicz-1844",
+      "osobaBId": "marianna-meller-adamczewska-1842",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wiktor-lulkiewicz-1844",
+      "osobaBId": "koleta-adamczewska-1855",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "filip-lulkiewicz-1820",
+      "osobaBId": "teresa-nowicka-1819",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "filip-lulkiewicz-1820",
+      "osobaBId": "julianna-skowronska-1827",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "julianna-lulkiewicz-1859",
+      "osobaBId": "piotr-grobelny",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-lulkiewicz-1862",
+      "osobaBId": "jakub-rybacki-1854",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "franciszek-rybacki-1883",
+      "osobaBId": "nn-rybacka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jan-rybacki",
+      "osobaBId": "helena-staniszewska",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "teodor-rybacki-1909",
+      "osobaBId": "helena-rybacka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "stanislawa-rybacka-1884",
+      "osobaBId": "helmut-szulc",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "helena-rybacka-1889",
+      "osobaBId": "nn-grzybek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "adam-rybacki-1891",
+      "osobaBId": "zofia-czaplicka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "boleslaw-rybacki",
+      "osobaBId": "krystyna-wascinska",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zofia-rybacka",
+      "osobaBId": "piotr-matysiak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "adam-rybacki-1960",
+      "osobaBId": "dorota-szwaba-1962",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zbigniew-rybacki-1963",
+      "osobaBId": "urszula-kotwica",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "marian-rybacki-1922",
+      "osobaBId": "kazimiera-pospiech-1928",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "aleksandra-rybacka-1951",
+      "osobaBId": "henryk-busz",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "elzbieta-rybacka-1953",
+      "osobaBId": "aleksander-pernak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "kamila-rybacka-1956",
+      "osobaBId": "mieczyslaw-szodkiewicz",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "kazimiera-rybacka-1924",
+      "osobaBId": "stanislaw-grocholski-1922",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "ewa-grocholska-1955",
+      "osobaBId": "zbigniew-kapala-1951",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "mariusz-kapala-1974",
+      "osobaBId": "grazyna-kapala-1979",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "tomasz-kapala-1977",
+      "osobaBId": "jolanta-nowacka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-kapala-1979",
+      "osobaBId": "sebastian-kaczmarek-1977",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "barbara-kapala-1981",
+      "osobaBId": "mateusz-smykowski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "genowefa-grocholska-1956",
+      "osobaBId": "leszek-walczak-1954",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zygmunt-grocholski-1962",
+      "osobaBId": "halina-kalka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "boniu-grocholski-1963",
+      "osobaBId": "iwona-bruder",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "teresa-rybacka-1931",
+      "osobaBId": "kazimierz-zybert-1933",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "grazyna-zybert-1956",
+      "osobaBId": "bogdan-langner-1954",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "izabela-langner-1977",
+      "osobaBId": "witold-mroczek-1974",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "marianna-rybacka-1894",
+      "osobaBId": "jan-czaplicki-1897",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "krystyna-czaplicka",
+      "osobaBId": "stanislaw-kaczmarek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "teodor-czaplicki-1930",
+      "osobaBId": "halina-nn",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "bozena-czaplicka-1931",
+      "osobaBId": "zenon-matysiak",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "maria-matysiak",
+      "osobaBId": "janusz-wypych",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "piotr-matysiak-2",
+      "osobaBId": "zofia-rybacka-1959",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozef-rybacki-1896",
+      "osobaBId": "pelagia-gwizdal",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wincentyna-rybacka-1899",
+      "osobaBId": "stanislaw-sliwa-1893",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "eugenia-sliwa",
+      "osobaBId": "eugeniusz-rogowski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "henryk-sliwa",
+      "osobaBId": "wanda-sliwa",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "henryka-sliwa",
+      "osobaBId": "wieslaw-szumny",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "irena-sliwa",
+      "osobaBId": "kazimierz-lorek",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "maria-sliwa",
+      "osobaBId": "marian-aenski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "natalia-sliwa",
+      "osobaBId": "euzebiusz-flita",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "zygmunt-sliwa",
+      "osobaBId": "zofia-sliwa",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "agnieszka-rybacka-1903",
+      "osobaBId": "stanislaw-zemboldt-1906",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "wladyslaw-zemboldt-1933",
+      "osobaBId": "anna-zyto",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jerzy-zemboldt",
+      "osobaBId": "alina-zemboldt",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "marek-zemboldt",
+      "osobaBId": "jolanta-barteczka",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "beata-zemoldt-1966",
+      "osobaBId": "piotr-tatara",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "antoni-zemboldt-1936",
+      "osobaBId": "barbara-zemboldt",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "krzysztof-zemboldt",
+      "osobaBId": "ewelina-nijaka-1962",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "krzysztof-zemboldt",
+      "osobaBId": "lucyna-nn",
+      "kolejnosc": 2
+    },
+    {
+      "osobaAId": "teresa-zemboldt",
+      "osobaBId": "stanislaw-tomaszewski",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "iwona-tomaszewska",
+      "osobaBId": "nn-ciechon",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "czeslawa-zemboldt-1942",
+      "osobaBId": "franciszek-gregor-1939",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "pawel-gregor-1963",
+      "osobaBId": "wioletta-aazinska-1969",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "anna-gregor-1964",
+      "osobaBId": "czeslaw-kaczmarek-1967",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "ryszard-gregor-1968",
+      "osobaBId": "elzbieta-malec-1972",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "honorata-gregor-1971",
+      "osobaBId": "pawel-gotter-1968",
+      "kolejnosc": 1
+    },
+    {
+      "osobaAId": "jozef-lulkiewicz-1823",
+      "osobaBId": "antonina-pawlewska-1826",
+      "kolejnosc": 1
+    }
+  ]
+}
