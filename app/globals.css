@@ -1,26 +1,126 @@
 @import "tailwindcss";
+@import "@fontsource-variable/eb-garamond/wght.css";
+@import "@fontsource-variable/eb-garamond/wght-italic.css";
+@import "@fontsource-variable/source-sans-3/wght.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-serif: "EB Garamond Variable", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+
+  /* Papier i atrament. Kontrast tekstu do tła: atrament 13:1, sepia 7:1 (WCAG AA/AAA). */
+  --color-papier: #f3ead6;
+  --color-papier-jasny: #fbf6ea;
+  --color-papier-ciemny: #e8dcc0;
+  --color-atrament: #2b2118;
+  --color-sepia: #5a4332;
+  --color-kreska: #a08a6c;
+  --color-bordo: #7a2331;
+  --color-zielen: #1f4d3a;
+  --color-zloto: #806210;
+  --color-zloto-jasne: #c9a227;
+
+  --shadow-karta: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 1px 2px rgba(43, 33, 24, 0.12), 0 3px 8px -4px rgba(43, 33, 24, 0.25);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: var(--color-papier);
+  color: var(--color-atrament);
+  font-family: var(--font-sans);
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  /* Delikatna faktura papieru – bez plików graficznych. */
+  background-image:
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(255, 252, 240, 0.75), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.27 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed, scroll;
+}
+
+h1, h2, h3, .szeryf {
+  font-family: var(--font-serif);
+  font-feature-settings: "liga", "onum";
+}
+
+a, button, input, select, summary, [tabindex] {
+  outline-offset: 2px;
+}
+:focus-visible {
+  outline: 2px solid var(--color-bordo);
+}
+
+/* Etykieta archiwalna: cienka ramka, wewnętrzna ramka, lekki cień. */
+.etykieta {
+  position: relative;
+  background-color: var(--color-papier-jasny);
+  border: 1px solid color-mix(in srgb, var(--color-kreska) 85%, transparent);
+  box-shadow: var(--shadow-karta);
+}
+.etykieta::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-kreska) 35%, transparent);
+  pointer-events: none;
+}
+
+.link {
+  color: var(--color-bordo);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  text-decoration-thickness: 2px;
+}
+
+@keyframes podswietlenie {
+  0%, 100% { box-shadow: 0 0 0 3px var(--color-zloto-jasne), 0 0 0 8px rgba(201, 162, 39, 0); }
+  50% { box-shadow: 0 0 0 3px var(--color-zloto-jasne), 0 0 0 10px rgba(201, 162, 39, 0.35); }
+}
+.podswietlona {
+  animation: podswietlenie 1.1s ease-in-out 3;
+}
+
+@keyframes wysun {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes wjedz {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* React Flow w barwach księgi. */
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-edge-stroke: var(--color-kreska);
+  --xy-edge-stroke-width: 1;
+  --xy-minimap-background-color: var(--color-papier-jasny);
+  --xy-minimap-mask-background-color: rgba(90, 67, 50, 0.18);
+  --xy-attribution-background-color: transparent;
+}
+.react-flow__minimap {
+  border: 1px solid var(--color-kreska);
+  box-shadow: var(--shadow-karta);
+}
+.react-flow__node {
+  cursor: grab;
+}
+.react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+.react-flow__attribution a {
+  color: var(--color-sepia);
 }

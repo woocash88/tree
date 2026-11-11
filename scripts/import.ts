@@ -592,7 +592,11 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
   }
 
   // ── poprawki ręczne ──
-  let wynikOsoby: Osoba[] = osoby.map(({ pokolenie: _p, ...o }) => o);
+  let wynikOsoby: Osoba[] = osoby.map((robocza) => {
+    const o: Partial<OsobaRobocza> = { ...robocza };
+    delete o.pokolenie;
+    return o as Osoba;
+  });
   let wynikMalzenstwa = malzenstwa;
   for (const { zostaw, usun } of poprawki.scal ?? []) {
     if (!poId.has(zostaw) || !poId.has(usun)) throw new Error(`data/poprawki.json → scal: nie ma osoby „${poId.has(zostaw) ? usun : zostaw}”.`);
