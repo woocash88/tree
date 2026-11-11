@@ -61,37 +61,36 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
   const k = useContext(KontekstPlotna)!;
   const j = k.las.jednostki.get(data.jednostkaId)!;
   const uklad = useMemo(() => kartyJednostki(j), [j]);
-  const glownaY = uklad.karty.find((x) => x.rola === "glowna")!.y;
+  const glownaX = uklad.karty.find((x) => x.rola === "glowna")!.x;
   const rozwinieta = k.rozwiniete.has(j.id);
   const pierwszeDziecko = j.dzieci.length ? k.las.jednostki.get(j.dzieci[0])! : null;
-  const yPrzycisku = pierwszeDziecko && pierwszeDziecko.zPartnerem >= 0 ? uklad.uchwyty[pierwszeDziecko.zPartnerem] : uklad.uchwytGlownej;
+  const xPrzycisku = pierwszeDziecko && pierwszeDziecko.zPartnerem >= 0 ? uklad.uchwyty[pierwszeDziecko.zPartnerem] : uklad.uchwytGlownej;
   const partnerzyZDziecmi = new Set(j.dzieci.map((d) => k.las.jednostki.get(d)!.zPartnerem));
   const glowna = k.osoby.get(j.glowna)!;
 
   return (
-    <div className="pointer-events-auto relative" style={{ width: KARTA_SZER, height: uklad.wysokosc }}>
-      <Handle type="target" position={Position.Left} id="lewo" style={{ top: uklad.uchwytGlownej }} isConnectable={false} />
+    <div className="pointer-events-auto relative" style={{ width: uklad.szerokosc, height: KARTA_WYS }}>
+      <Handle type="target" position={Position.Top} id="gora" style={{ left: glownaX + KARTA_SZER / 2 }} isConnectable={false} />
 
-      {/* Łączniki małżeńskie (małżonkowie stoją jeden pod drugim) */}
+      {/* Łączniki małżeńskie */}
       {uklad.karty.map((karta) => {
         if (karta.rola !== "partner") return null;
-        const sasiad = Math.abs(karta.y - glownaY) === KARTA_WYS + ODSTEP_PARY;
-        const gora = Math.min(karta.y, glownaY) + KARTA_WYS;
+        const sasiad = Math.abs(karta.x - glownaX) === KARTA_SZER + ODSTEP_PARY;
+        const lewo = Math.min(karta.x, glownaX) + KARTA_SZER;
         const nrPartnera = j.partnerzy.findIndex((p) => p.id === karta.osobaId);
         return sasiad ? (
           <div key={`l-${karta.osobaId}`} aria-hidden="true">
-            <div className="absolute w-[5px] border-x border-tekst-2" style={{ left: KARTA_SZER / 2 - 2, top: gora, height: ODSTEP_PARY }} />
+            <div className="absolute h-[5px] border-y border-tekst-2" style={{ left: lewo, width: ODSTEP_PARY, top: KARTA_WYS / 2 - 2 }} />
             {j.partnerzy.length > 1 && (
-              <span className="absolute z-10 flex size-4 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst" style={{ left: KARTA_SZER / 2 - 8, top: gora + ODSTEP_PARY / 2 - 8 }}>
+              <span className="absolute z-10 flex size-4 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst" style={{ left: lewo + ODSTEP_PARY / 2 - 8, top: KARTA_WYS / 2 - 8 }}>
                 {karta.kolejnosc}
               </span>
             )}
-            {/* odnoga od pary w stronę dzieci */}
-            {partnerzyZDziecmi.has(nrPartnera) && <div className="absolute h-px bg-tekst-2" style={{ left: KARTA_SZER / 2, width: KARTA_SZER / 2, top: uklad.uchwyty[nrPartnera] }} />}
+            {partnerzyZDziecmi.has(nrPartnera) && <div className="absolute w-px bg-tekst-2" style={{ left: uklad.uchwyty[nrPartnera], top: KARTA_WYS / 2 + 3, height: KARTA_WYS / 2 - 3 }} />}
           </div>
         ) : (
-          <div key={`l-${karta.osobaId}`} aria-hidden="true" className="absolute w-2.5 border-y border-l border-tekst-2" style={{ left: -10, top: Math.min(karta.y, glownaY) + KARTA_WYS / 2, height: Math.abs(karta.y - glownaY) }}>
-            <span className="absolute -left-2 top-1/2 flex size-4 -translate-y-1/2 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst">{karta.kolejnosc}</span>
+          <div key={`l-${karta.osobaId}`} aria-hidden="true" className="absolute h-2.5 border-x border-t border-tekst-2" style={{ left: glownaX + KARTA_SZER / 2, width: karta.x - glownaX, top: -10 }}>
+            <span className="absolute -top-2 left-1/2 flex size-4 -translate-x-1/2 items-center justify-center rounded-full border border-tekst-2 bg-lita text-[10px] leading-none text-tekst">{karta.kolejnosc}</span>
           </div>
         );
       })}
@@ -109,8 +108,8 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
             aria-label={`${pelneImie(o)}${o.lata ? `, ${o.lata}` : ""}${karta.rola === "partner" ? `, małżonek osoby ${pelneImie(glowna)}` : ""}${karta.odsylacz ? " (odsyłacz do własnej karty)" : ""}`}
             title={pelneImie(o)}
             // Karta na płótnie: półprzezroczyste tło BEZ rozmycia (kart są setki).
-            className={`panel absolute left-0 block cursor-pointer !rounded-xl border-l-4 px-2.5 py-1.5 text-left transition-colors hover:bg-najazd ${karta.odsylacz ? "border-dashed" : ""} ${wybrana ? "z-20 ring-2 ring-akcent" : ""} ${k.podswietlona === o.id ? "podswietlona z-20" : ""}`}
-            style={{ top: karta.y, width: KARTA_SZER, height: KARTA_WYS, borderLeftColor: k.kolory.get(o.galazId) }}
+            className={`panel absolute top-0 block cursor-pointer !rounded-xl border-l-4 px-2.5 py-1.5 text-left transition-colors hover:bg-najazd ${karta.odsylacz ? "border-dashed" : ""} ${wybrana ? "z-20 ring-2 ring-akcent" : ""} ${k.podswietlona === o.id ? "podswietlona z-20" : ""}`}
+            style={{ left: karta.x, width: KARTA_SZER, height: KARTA_WYS, borderLeftColor: k.kolory.get(o.galazId) }}
           >
             <span className="block truncate text-[14px] font-semibold leading-[1.2]">
               {o.imie || "NN"}
@@ -122,10 +121,10 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
         );
       })}
 
-      {uklad.uchwyty.map((y, i) => (
-        <Handle key={i} type="source" position={Position.Right} id={`p${i}`} style={{ top: y }} isConnectable={false} />
+      {uklad.uchwyty.map((x, i) => (
+        <Handle key={i} type="source" position={Position.Bottom} id={`p${i}`} style={{ left: x }} isConnectable={false} />
       ))}
-      <Handle type="source" position={Position.Right} id="g" style={{ top: uklad.uchwytGlownej }} isConnectable={false} />
+      <Handle type="source" position={Position.Bottom} id="g" style={{ left: uklad.uchwytGlownej }} isConnectable={false} />
 
       {j.dzieci.length > 0 && (
         <button
@@ -134,10 +133,10 @@ const Jednostka_ = memo(function WezelJednostkiWidok({ data }: NodeProps<WezelJe
           aria-expanded={rozwinieta}
           aria-label={`${rozwinieta ? "Zwiń" : "Rozwiń"} potomków: ${pelneImie(glowna)} (${j.potomkow} ${odmienOsoby(j.potomkow)})`}
           title={rozwinieta ? "Zwiń potomków" : `Rozwiń potomków (${j.potomkow} ${odmienOsoby(j.potomkow)})`}
-          className={`absolute z-30 flex h-[24px] min-w-[24px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border px-1.5 text-[12px] font-bold leading-none tabular-nums shadow-sm ${
+          className={`absolute z-30 flex h-[24px] min-w-[24px] -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border px-1.5 text-[12px] font-bold leading-none tabular-nums shadow-sm ${
             rozwinieta ? "border-tekst-2 bg-lita text-tekst hover:bg-najazd" : "border-akcent bg-akcent text-akcent-tekst hover:brightness-110"
           }`}
-          style={{ left: KARTA_SZER + 8, top: yPrzycisku }}
+          style={{ left: xPrzycisku, top: KARTA_WYS + 6 }}
         >
           {rozwinieta ? "−" : `+${j.potomkow}`}
         </button>
@@ -261,9 +260,9 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
       const H = el.clientHeight;
       const granice = (lista: Pozycja[]) => ({
         x0: Math.min(...lista.map((p) => p.x)),
-        x1: Math.max(...lista.map((p) => p.x + p.szerokosc)) + 40, // miejsce na przycisk zwijania
+        x1: Math.max(...lista.map((p) => p.x + p.szerokosc)),
         y0: Math.min(...lista.map((p) => p.y)),
-        y1: Math.max(...lista.map((p) => p.y + p.wysokosc)),
+        y1: Math.max(...lista.map((p) => p.y)) + KARTA_WYS + 34,
       });
       const zFit = (g: ReturnType<typeof granice>) => Math.min((W - 2 * MARGINES) / (g.x1 - g.x0), (H - 2 * MARGINES) / (g.y1 - g.y0));
       const opcje = animuj ? { duration: 400 } : undefined;
@@ -273,8 +272,7 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
       const zCalosci = zFit(calosc);
       if (zCalosci >= minimum) {
         const zoom = Math.min(1, zCalosci);
-        // Układ poziomy: drzewo przy lewej krawędzi, od góry (bez pustego pola nad nim).
-        rf.setViewport({ x: MARGINES - calosc.x0 * zoom, y: MARGINES - calosc.y0 * zoom, zoom }, opcje);
+        rf.setViewport({ x: (W - (calosc.x1 - calosc.x0) * zoom) / 2 - calosc.x0 * zoom, y: MARGINES - calosc.y0 * zoom, zoom }, opcje);
         setKomunikat(null);
         return;
       }
@@ -292,10 +290,8 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
       idz(fokusPoz.id);
       const g = granice(poddrzewo);
       const zoom = Math.max(minimum, Math.min(1, zFit(g)));
-      // Poddrzewo przy lewej krawędzi; w pionie od góry, a gdy jest za wysokie – wyśrodkowane na wybranej osobie.
-      const miesciSie = (g.y1 - g.y0) * zoom <= H - 2 * MARGINES;
-      const y = miesciSie ? MARGINES - g.y0 * zoom : H / 2 - (fokusPoz.y + fokusPoz.wysokosc / 2) * zoom;
-      rf.setViewport({ x: MARGINES - g.x0 * zoom, y, zoom }, opcje);
+      const srodekX = (g.x1 - g.x0) * zoom <= W - 2 * MARGINES ? (g.x0 + g.x1) / 2 : fokusPoz.x + fokusPoz.szerokosc / 2;
+      rf.setViewport({ x: W / 2 - srodekX * zoom, y: MARGINES - fokusPoz.y * zoom, zoom }, opcje);
       const nazwa = pelneImie(mapaOsob.get(las.jednostki.get(fokusPoz.id)!.glowna)!);
       setKomunikat(`Całe drzewo nie mieści się w czytelnym powiększeniu – widok dopasowano do osoby: ${nazwa}. Użyj wyszukiwarki lub zwijania pokoleń.`);
     },
@@ -329,7 +325,7 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
       const telefon = window.innerWidth < 640;
       const przesuniecieY = telefon ? 110 / zoom : 0;
       const przesuniecieX = telefon ? 0 : 180 / zoom; // połowa szerokości panelu bocznego
-      rf.setCenter(p.x + KARTA_SZER / 2 + przesuniecieX, p.y + (karta?.y ?? 0) + KARTA_WYS / 2 + przesuniecieY, { zoom: Math.min(zoom, 1.25), duration: 700 });
+      rf.setCenter(p.x + (karta?.x ?? 0) + KARTA_SZER / 2 + przesuniecieX, p.y + KARTA_WYS / 2 + przesuniecieY, { zoom: Math.min(zoom, 1.25), duration: 700 });
     }
   }, [licznikUkladu, gotowe, mapaPozycji, las, rf, dopasuj]);
 
@@ -374,7 +370,7 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
         position: { x: p.x, y: p.y },
         data: { jednostkaId: p.id },
         width: p.szerokosc,
-        height: p.wysokosc,
+        height: KARTA_WYS,
         draggable: false,
         selectable: false,
         focusable: false,
@@ -392,7 +388,7 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
         source: j.rodzicId,
         target: j.id,
         sourceHandle: j.zPartnerem >= 0 ? `p${j.zPartnerem}` : "g",
-        targetHandle: "lewo",
+        targetHandle: "gora",
         type: "smoothstep",
         pathOptions: { borderRadius: 5 },
         focusable: false,
