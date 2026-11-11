@@ -631,7 +631,7 @@
       "wierszZrodla": 27
     },
     {
-      "id": "joachim-gawel-1994",
+      "id": "joachim-gawel",
       "imie": "Joachim",
       "nazwisko": "Gaweł",
       "plec": "M",
@@ -647,7 +647,7 @@
       "wierszZrodla": 28
     },
     {
-      "id": "sabina-lulkiewicz-1959",
+      "id": "sabina-lulkiewicz",
       "imie": "Sabina",
       "nazwisko": "Lulkiewicz",
       "plec": "K",
@@ -684,7 +684,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "wieslaw-kupczyk",
-      "matkaId": "sabina-lulkiewicz-1959",
+      "matkaId": "sabina-lulkiewicz",
       "galazId": "antoni",
       "wierszZrodla": 30
     },
@@ -723,7 +723,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "wieslaw-kupczyk",
-      "matkaId": "sabina-lulkiewicz-1959",
+      "matkaId": "sabina-lulkiewicz",
       "galazId": "antoni",
       "wierszZrodla": 32
     },
@@ -741,7 +741,7 @@
       "wierszZrodla": 32
     },
     {
-      "id": "stanislaw-lulkiewicz-1961",
+      "id": "stanislaw-lulkiewicz",
       "imie": "Stanisław",
       "nazwisko": "Lulkiewicz",
       "plec": "M",
@@ -772,7 +772,7 @@
       "wierszZrodla": 33
     },
     {
-      "id": "zbigniew-lulkiewicz-1971",
+      "id": "zbigniew-lulkiewicz",
       "imie": "Zbigniew",
       "nazwisko": "Lulkiewicz",
       "plec": "M",
@@ -787,7 +787,7 @@
       "wierszZrodla": 34
     },
     {
-      "id": "teresa-nn-1973",
+      "id": "teresa-nn",
       "imie": "Teresa",
       "nazwisko": "",
       "plec": "K",
@@ -805,7 +805,7 @@
       "wierszZrodla": 34
     },
     {
-      "id": "marcin-lulkiewicz-1996",
+      "id": "marcin-lulkiewicz",
       "imie": "Marcin",
       "nazwisko": "Lulkiewicz",
       "plec": "M",
@@ -813,14 +813,14 @@
         "wartosc": "1996",
         "dokladnosc": "rok"
       },
-      "ojciecId": "zbigniew-lulkiewicz-1971",
-      "matkaId": "teresa-nn-1973",
+      "ojciecId": "zbigniew-lulkiewicz",
+      "matkaId": "teresa-nn",
       "galazId": "antoni",
       "ukryjDaty": true,
       "wierszZrodla": 35
     },
     {
-      "id": "edyta-lulkiewicz-1975",
+      "id": "edyta-lulkiewicz",
       "imie": "Edyta",
       "nazwisko": "Lulkiewicz",
       "plec": "K",
@@ -856,7 +856,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "przemyslaw-walczuk",
-      "matkaId": "edyta-lulkiewicz-1975",
+      "matkaId": "edyta-lulkiewicz",
       "galazId": "antoni",
       "wierszZrodla": 37
     },
@@ -869,7 +869,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "przemyslaw-walczuk",
-      "matkaId": "edyta-lulkiewicz-1975",
+      "matkaId": "edyta-lulkiewicz",
       "galazId": "antoni",
       "wierszZrodla": 38
     },
@@ -4162,7 +4162,7 @@
       "wierszZrodla": 201
     },
     {
-      "id": "adam-rybacki-1960",
+      "id": "adam-rybacki",
       "imie": "Adam",
       "nazwisko": "Rybacki",
       "plec": "M",
@@ -4177,7 +4177,7 @@
       "wierszZrodla": 202
     },
     {
-      "id": "dorota-szwaba-1962",
+      "id": "dorota-szwaba",
       "imie": "Dorota",
       "nazwisko": "Szwaba",
       "plec": "K",
@@ -4199,13 +4199,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "adam-rybacki-1960",
-      "matkaId": "dorota-szwaba-1962",
+      "ojciecId": "adam-rybacki",
+      "matkaId": "dorota-szwaba",
       "galazId": "filip",
       "wierszZrodla": 203
     },
     {
-      "id": "zbigniew-rybacki-1963",
+      "id": "zbigniew-rybacki",
       "imie": "Zbigniew",
       "nazwisko": "Rybacki",
       "plec": "M",
@@ -4269,7 +4269,7 @@
       "wierszZrodla": 205
     },
     {
-      "id": "aleksandra-rybacka-1951",
+      "id": "aleksandra-rybacka",
       "imie": "Aleksandra",
       "nazwisko": "Rybacka",
       "plec": "K",
@@ -4297,7 +4297,7 @@
       "wierszZrodla": 206
     },
     {
-      "id": "elzbieta-rybacka-1953",
+      "id": "elzbieta-rybacka",
       "imie": "Elżbieta",
       "nazwisko": "Rybacka",
       "plec": "K",
@@ -4325,7 +4325,7 @@
       "wierszZrodla": 207
     },
     {
-      "id": "kamila-rybacka-1956",
+      "id": "kamila-rybacka",
       "imie": "Kamila",
       "nazwisko": "Rybacka",
       "plec": "K",
@@ -4389,7 +4389,7 @@
       "wierszZrodla": 209
     },
     {
-      "id": "ewa-grocholska-1955",
+      "id": "ewa-grocholska",
       "imie": "Ewa",
       "nazwisko": "Grocholska",
       "plec": "K",
@@ -4404,7 +4404,7 @@
       "wierszZrodla": 210
     },
     {
-      "id": "zbigniew-kapala-1951",
+      "id": "zbigniew-kapala",
       "imie": "Zbigniew",
       "nazwisko": "Kapała",
       "plec": "M",
@@ -4419,7 +4419,7 @@
       "wierszZrodla": 210
     },
     {
-      "id": "mariusz-kapala-1974",
+      "id": "mariusz-kapala",
       "imie": "Mariusz",
       "nazwisko": "Kapała",
       "plec": "M",
@@ -4427,14 +4427,14 @@
         "wartosc": "1974",
         "dokladnosc": "rok"
       },
-      "ojciecId": "zbigniew-kapala-1951",
-      "matkaId": "ewa-grocholska-1955",
+      "ojciecId": "zbigniew-kapala",
+      "matkaId": "ewa-grocholska",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 211
     },
     {
-      "id": "grazyna-kapala-1979",
+      "id": "grazyna-kapala",
       "imie": "Grażyna",
       "nazwisko": "Kapała",
       "plec": "K",
@@ -4456,13 +4456,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "mariusz-kapala-1974",
-      "matkaId": "grazyna-kapala-1979",
+      "ojciecId": "mariusz-kapala",
+      "matkaId": "grazyna-kapala",
       "galazId": "filip",
       "wierszZrodla": 212
     },
     {
-      "id": "tomasz-kapala-1977",
+      "id": "tomasz-kapala",
       "imie": "Tomasz",
       "nazwisko": "Kapała",
       "plec": "M",
@@ -4470,8 +4470,8 @@
         "wartosc": "1977-12-06",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "zbigniew-kapala-1951",
-      "matkaId": "ewa-grocholska-1955",
+      "ojciecId": "zbigniew-kapala",
+      "matkaId": "ewa-grocholska",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 213
@@ -4497,7 +4497,7 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "tomasz-kapala-1977",
+      "ojciecId": "tomasz-kapala",
       "matkaId": "jolanta-nowacka",
       "galazId": "filip",
       "wierszZrodla": 214
@@ -4510,13 +4510,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "tomasz-kapala-1977",
+      "ojciecId": "tomasz-kapala",
       "matkaId": "jolanta-nowacka",
       "galazId": "filip",
       "wierszZrodla": 215
     },
     {
-      "id": "anna-kapala-1979",
+      "id": "anna-kapala",
       "imie": "Anna",
       "nazwisko": "Kapała",
       "plec": "K",
@@ -4524,14 +4524,14 @@
         "wartosc": "1979",
         "dokladnosc": "rok"
       },
-      "ojciecId": "zbigniew-kapala-1951",
-      "matkaId": "ewa-grocholska-1955",
+      "ojciecId": "zbigniew-kapala",
+      "matkaId": "ewa-grocholska",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 216
     },
     {
-      "id": "sebastian-kaczmarek-1977",
+      "id": "sebastian-kaczmarek",
       "imie": "Sebastian",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -4546,7 +4546,7 @@
       "wierszZrodla": 216
     },
     {
-      "id": "barbara-kapala-1981",
+      "id": "barbara-kapala",
       "imie": "Barbara",
       "nazwisko": "Kapała",
       "plec": "K",
@@ -4554,8 +4554,8 @@
         "wartosc": "1981",
         "dokladnosc": "rok"
       },
-      "ojciecId": "zbigniew-kapala-1951",
-      "matkaId": "ewa-grocholska-1955",
+      "ojciecId": "zbigniew-kapala",
+      "matkaId": "ewa-grocholska",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 217
@@ -4582,7 +4582,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "mateusz-smykowski",
-      "matkaId": "barbara-kapala-1981",
+      "matkaId": "barbara-kapala",
       "galazId": "filip",
       "niepewne": [
         "imie"
@@ -4590,7 +4590,7 @@
       "wierszZrodla": 218
     },
     {
-      "id": "genowefa-grocholska-1956",
+      "id": "genowefa-grocholska",
       "imie": "Genowefa",
       "nazwisko": "Grocholska",
       "plec": "K",
@@ -4605,7 +4605,7 @@
       "wierszZrodla": 219
     },
     {
-      "id": "leszek-walczak-1954",
+      "id": "leszek-walczak",
       "imie": "Leszek",
       "nazwisko": "Walczak",
       "plec": "M",
@@ -4627,8 +4627,8 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "leszek-walczak-1954",
-      "matkaId": "genowefa-grocholska-1956",
+      "ojciecId": "leszek-walczak",
+      "matkaId": "genowefa-grocholska",
       "galazId": "filip",
       "wierszZrodla": 220
     },
@@ -4640,8 +4640,8 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "leszek-walczak-1954",
-      "matkaId": "genowefa-grocholska-1956",
+      "ojciecId": "leszek-walczak",
+      "matkaId": "genowefa-grocholska",
       "galazId": "filip",
       "wierszZrodla": 221
     },
@@ -4653,13 +4653,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "leszek-walczak-1954",
-      "matkaId": "genowefa-grocholska-1956",
+      "ojciecId": "leszek-walczak",
+      "matkaId": "genowefa-grocholska",
       "galazId": "filip",
       "wierszZrodla": 222
     },
     {
-      "id": "roman-grocholski-1958",
+      "id": "roman-grocholski",
       "imie": "Roman",
       "nazwisko": "Grocholski",
       "plec": "M",
@@ -4674,7 +4674,7 @@
       "wierszZrodla": 223
     },
     {
-      "id": "zygmunt-grocholski-1962",
+      "id": "zygmunt-grocholski",
       "imie": "Zygmunt",
       "nazwisko": "Grocholski",
       "plec": "M",
@@ -4709,7 +4709,7 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "zygmunt-grocholski-1962",
+      "ojciecId": "zygmunt-grocholski",
       "matkaId": "halina-kalka",
       "galazId": "filip",
       "wierszZrodla": 225
@@ -4722,13 +4722,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "zygmunt-grocholski-1962",
+      "ojciecId": "zygmunt-grocholski",
       "matkaId": "halina-kalka",
       "galazId": "filip",
       "wierszZrodla": 226
     },
     {
-      "id": "boniu-grocholski-1963",
+      "id": "boniu-grocholski",
       "imie": "Boniu",
       "nazwisko": "Grocholski",
       "plec": "nieznana",
@@ -4763,7 +4763,7 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "boniu-grocholski-1963",
+      "ojciecId": "boniu-grocholski",
       "matkaId": "iwona-bruder",
       "galazId": "filip",
       "wierszZrodla": 228
@@ -4776,7 +4776,7 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "boniu-grocholski-1963",
+      "ojciecId": "boniu-grocholski",
       "matkaId": "iwona-bruder",
       "galazId": "filip",
       "wierszZrodla": 229
@@ -4789,13 +4789,13 @@
       "urodzenie": {
         "dokladnosc": "nieznana"
       },
-      "ojciecId": "boniu-grocholski-1963",
+      "ojciecId": "boniu-grocholski",
       "matkaId": "iwona-bruder",
       "galazId": "filip",
       "wierszZrodla": 230
     },
     {
-      "id": "teresa-rybacka-1931",
+      "id": "teresa-rybacka",
       "imie": "Teresa",
       "nazwisko": "Rybacka",
       "plec": "K",
@@ -4828,7 +4828,7 @@
       "wierszZrodla": 231
     },
     {
-      "id": "grazyna-zybert-1956",
+      "id": "grazyna-zybert",
       "imie": "Grażyna",
       "nazwisko": "Zybert",
       "plec": "K",
@@ -4837,13 +4837,13 @@
         "dokladnosc": "rok"
       },
       "ojciecId": "kazimierz-zybert-1933",
-      "matkaId": "teresa-rybacka-1931",
+      "matkaId": "teresa-rybacka",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 232
     },
     {
-      "id": "bogdan-langner-1954",
+      "id": "bogdan-langner",
       "imie": "Bogdan",
       "nazwisko": "Langner",
       "plec": "M",
@@ -4858,7 +4858,7 @@
       "wierszZrodla": 232
     },
     {
-      "id": "izabela-langner-1977",
+      "id": "izabela-langner",
       "imie": "Izabela",
       "nazwisko": "Langner",
       "plec": "K",
@@ -4866,14 +4866,14 @@
         "wartosc": "1977",
         "dokladnosc": "rok"
       },
-      "ojciecId": "bogdan-langner-1954",
-      "matkaId": "grazyna-zybert-1956",
+      "ojciecId": "bogdan-langner",
+      "matkaId": "grazyna-zybert",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 233
     },
     {
-      "id": "witold-mroczek-1974",
+      "id": "witold-mroczek",
       "imie": "Witold",
       "nazwisko": "Mroczek",
       "plec": "M",
@@ -4888,7 +4888,7 @@
       "wierszZrodla": 233
     },
     {
-      "id": "katarzyna-mroczek-2000",
+      "id": "katarzyna-mroczek",
       "imie": "Katarzyna",
       "nazwisko": "Mroczek",
       "plec": "K",
@@ -4896,8 +4896,8 @@
         "wartosc": "2000",
         "dokladnosc": "rok"
       },
-      "ojciecId": "witold-mroczek-1974",
-      "matkaId": "izabela-langner-1977",
+      "ojciecId": "witold-mroczek",
+      "matkaId": "izabela-langner",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 234
@@ -4970,7 +4970,7 @@
       "wierszZrodla": 237
     },
     {
-      "id": "teodor-czaplicki-1930",
+      "id": "teodor-czaplicki",
       "imie": "Teodor",
       "nazwisko": "Czaplicki",
       "plec": "M",
@@ -5001,7 +5001,7 @@
       "wierszZrodla": 238
     },
     {
-      "id": "bozena-czaplicka-1931",
+      "id": "bozena-czaplicka",
       "imie": "Bożena",
       "nazwisko": "Czaplicka",
       "plec": "K",
@@ -5037,7 +5037,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "zenon-matysiak",
-      "matkaId": "bozena-czaplicka-1931",
+      "matkaId": "bozena-czaplicka",
       "galazId": "filip",
       "wierszZrodla": 240
     },
@@ -5063,12 +5063,12 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "zenon-matysiak",
-      "matkaId": "bozena-czaplicka-1931",
+      "matkaId": "bozena-czaplicka",
       "galazId": "filip",
       "wierszZrodla": 241
     },
     {
-      "id": "zofia-rybacka-1959",
+      "id": "zofia-rybacka-2",
       "imie": "Zofia",
       "nazwisko": "Rybacka",
       "plec": "K",
@@ -5091,7 +5091,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "piotr-matysiak-2",
-      "matkaId": "zofia-rybacka-1959",
+      "matkaId": "zofia-rybacka-2",
       "galazId": "filip",
       "wierszZrodla": 242
     },
@@ -5104,7 +5104,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "piotr-matysiak-2",
-      "matkaId": "zofia-rybacka-1959",
+      "matkaId": "zofia-rybacka-2",
       "galazId": "filip",
       "wierszZrodla": 243
     },
@@ -5117,7 +5117,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "zenon-matysiak",
-      "matkaId": "bozena-czaplicka-1931",
+      "matkaId": "bozena-czaplicka",
       "galazId": "filip",
       "wierszZrodla": 244
     },
@@ -5685,7 +5685,7 @@
       "wierszZrodla": 272
     },
     {
-      "id": "beata-zemoldt-1966",
+      "id": "beata-zemoldt",
       "imie": "Beata",
       "nazwisko": "Zemoldt",
       "plec": "K",
@@ -5722,7 +5722,7 @@
         "dokladnosc": "nieznana"
       },
       "ojciecId": "piotr-tatara",
-      "matkaId": "beata-zemoldt-1966",
+      "matkaId": "beata-zemoldt",
       "galazId": "filip",
       "wierszZrodla": 274
     },
@@ -5784,7 +5784,7 @@
       "wierszZrodla": 277
     },
     {
-      "id": "ewelina-nijaka-1962",
+      "id": "ewelina-nijaka",
       "imie": "Ewelina",
       "nazwisko": "Nijaka",
       "plec": "K",
@@ -5815,7 +5815,7 @@
       "wierszZrodla": 277
     },
     {
-      "id": "anna-zemboldt-1988",
+      "id": "anna-zemboldt",
       "imie": "Anna",
       "nazwisko": "Zemboldt",
       "plec": "K",
@@ -5830,7 +5830,7 @@
       "wierszZrodla": 278
     },
     {
-      "id": "marta-zemboldt-1990",
+      "id": "marta-zemboldt",
       "imie": "Marta",
       "nazwisko": "Zemboldt",
       "plec": "K",
@@ -5927,7 +5927,7 @@
       "wierszZrodla": 283
     },
     {
-      "id": "czeslawa-zemboldt-1942",
+      "id": "czeslawa-zemboldt",
       "imie": "Czesława",
       "nazwisko": "Zemboldt",
       "plec": "K",
@@ -5943,7 +5943,7 @@
       "wierszZrodla": 284
     },
     {
-      "id": "franciszek-gregor-1939",
+      "id": "franciszek-gregor",
       "imie": "Franciszek",
       "nazwisko": "Gregor",
       "plec": "M",
@@ -5959,7 +5959,7 @@
       "wierszZrodla": 284
     },
     {
-      "id": "pawel-gregor-1963",
+      "id": "pawel-gregor",
       "imie": "Paweł",
       "nazwisko": "Gregor",
       "plec": "M",
@@ -5968,14 +5968,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Jutrosin"
       },
-      "ojciecId": "franciszek-gregor-1939",
-      "matkaId": "czeslawa-zemboldt-1942",
+      "ojciecId": "franciszek-gregor",
+      "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 285
     },
     {
-      "id": "wioletta-aazinska-1969",
+      "id": "wioletta-aazinska",
       "imie": "Wioletta",
       "nazwisko": "Aazińska",
       "plec": "K",
@@ -5990,7 +5990,7 @@
       "wierszZrodla": 285
     },
     {
-      "id": "martyna-hop-1990",
+      "id": "martyna-hop",
       "imie": "Martyna",
       "nazwisko": "Hop",
       "plec": "K",
@@ -5998,14 +5998,14 @@
         "wartosc": "1990-04-28",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "pawel-gregor-1963",
-      "matkaId": "wioletta-aazinska-1969",
+      "ojciecId": "pawel-gregor",
+      "matkaId": "wioletta-aazinska",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 286
     },
     {
-      "id": "tomasz-nn-2006",
+      "id": "tomasz-nn",
       "imie": "Tomasz",
       "nazwisko": "",
       "plec": "M",
@@ -6014,7 +6014,7 @@
         "dokladnosc": "dokladna"
       },
       "ojciecId": null,
-      "matkaId": "martyna-hop-1990",
+      "matkaId": "martyna-hop",
       "galazId": "filip",
       "ukryjDaty": true,
       "niepewne": [
@@ -6023,7 +6023,7 @@
       "wierszZrodla": 287
     },
     {
-      "id": "anna-gregor-1964",
+      "id": "anna-gregor",
       "imie": "Anna",
       "nazwisko": "Gregor",
       "plec": "K",
@@ -6032,14 +6032,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Jutrosin"
       },
-      "ojciecId": "franciszek-gregor-1939",
-      "matkaId": "czeslawa-zemboldt-1942",
+      "ojciecId": "franciszek-gregor",
+      "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 288
     },
     {
-      "id": "czeslaw-kaczmarek-1967",
+      "id": "czeslaw-kaczmarek",
       "imie": "Czesław",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -6054,7 +6054,7 @@
       "wierszZrodla": 288
     },
     {
-      "id": "dawid-kaczmarek-1989",
+      "id": "dawid-kaczmarek",
       "imie": "Dawid",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -6062,14 +6062,14 @@
         "wartosc": "1989-07-27",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "czeslaw-kaczmarek-1967",
-      "matkaId": "anna-gregor-1964",
+      "ojciecId": "czeslaw-kaczmarek",
+      "matkaId": "anna-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 289
     },
     {
-      "id": "dariusz-kaczmarek-1990",
+      "id": "dariusz-kaczmarek",
       "imie": "Dariusz",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -6077,14 +6077,14 @@
         "wartosc": "1990-08-02",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "czeslaw-kaczmarek-1967",
-      "matkaId": "anna-gregor-1964",
+      "ojciecId": "czeslaw-kaczmarek",
+      "matkaId": "anna-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 290
     },
     {
-      "id": "mateusz-kaczmarek-1993",
+      "id": "mateusz-kaczmarek",
       "imie": "Mateusz",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -6092,14 +6092,14 @@
         "wartosc": "1993-08-24",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "czeslaw-kaczmarek-1967",
-      "matkaId": "anna-gregor-1964",
+      "ojciecId": "czeslaw-kaczmarek",
+      "matkaId": "anna-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 291
     },
     {
-      "id": "karol-kaczmarek-2001",
+      "id": "karol-kaczmarek",
       "imie": "Karol",
       "nazwisko": "Kaczmarek",
       "plec": "M",
@@ -6107,14 +6107,14 @@
         "wartosc": "2001-11-21",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "czeslaw-kaczmarek-1967",
-      "matkaId": "anna-gregor-1964",
+      "ojciecId": "czeslaw-kaczmarek",
+      "matkaId": "anna-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 292
     },
     {
-      "id": "ryszard-gregor-1968",
+      "id": "ryszard-gregor",
       "imie": "Ryszard",
       "nazwisko": "Gregor",
       "plec": "M",
@@ -6123,14 +6123,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Rawicz"
       },
-      "ojciecId": "franciszek-gregor-1939",
-      "matkaId": "czeslawa-zemboldt-1942",
+      "ojciecId": "franciszek-gregor",
+      "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 293
     },
     {
-      "id": "elzbieta-malec-1972",
+      "id": "elzbieta-malec",
       "imie": "Elżbieta",
       "nazwisko": "Malec",
       "plec": "K",
@@ -6146,7 +6146,7 @@
       "wierszZrodla": 293
     },
     {
-      "id": "artur-gregor-1996",
+      "id": "artur-gregor",
       "imie": "Artur",
       "nazwisko": "Gregor",
       "plec": "M",
@@ -6155,14 +6155,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Poznań"
       },
-      "ojciecId": "ryszard-gregor-1968",
-      "matkaId": "elzbieta-malec-1972",
+      "ojciecId": "ryszard-gregor",
+      "matkaId": "elzbieta-malec",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 294
     },
     {
-      "id": "krzysztof-gregor-2008",
+      "id": "krzysztof-gregor",
       "imie": "Krzysztof",
       "nazwisko": "Gregor",
       "plec": "M",
@@ -6170,14 +6170,14 @@
         "wartosc": "2008-04-22",
         "dokladnosc": "dokladna"
       },
-      "ojciecId": "ryszard-gregor-1968",
-      "matkaId": "elzbieta-malec-1972",
+      "ojciecId": "ryszard-gregor",
+      "matkaId": "elzbieta-malec",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 295
     },
     {
-      "id": "honorata-gregor-1971",
+      "id": "honorata-gregor",
       "imie": "Honorata",
       "nazwisko": "Gregor",
       "plec": "K",
@@ -6186,14 +6186,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Rawicz"
       },
-      "ojciecId": "franciszek-gregor-1939",
-      "matkaId": "czeslawa-zemboldt-1942",
+      "ojciecId": "franciszek-gregor",
+      "matkaId": "czeslawa-zemboldt",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 296
     },
     {
-      "id": "pawel-gotter-1968",
+      "id": "pawel-gotter",
       "imie": "Paweł",
       "nazwisko": "Gotter",
       "plec": "M",
@@ -6209,7 +6209,7 @@
       "wierszZrodla": 296
     },
     {
-      "id": "agnieszka-gotter-1992",
+      "id": "agnieszka-gotter",
       "imie": "Agnieszka",
       "nazwisko": "Gotter",
       "plec": "K",
@@ -6218,14 +6218,14 @@
         "dokladnosc": "dokladna",
         "miejsce": "Milicz"
       },
-      "ojciecId": "pawel-gotter-1968",
-      "matkaId": "honorata-gregor-1971",
+      "ojciecId": "pawel-gotter",
+      "matkaId": "honorata-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 297
     },
     {
-      "id": "tomasz-gotter-1994",
+      "id": "tomasz-gotter",
       "imie": "Tomasz",
       "nazwisko": "Gotter",
       "plec": "M",
@@ -6234,8 +6234,8 @@
         "dokladnosc": "dokladna",
         "miejsce": "Milicz"
       },
-      "ojciecId": "pawel-gotter-1968",
-      "matkaId": "honorata-gregor-1971",
+      "ojciecId": "pawel-gotter",
+      "matkaId": "honorata-gregor",
       "galazId": "filip",
       "ukryjDaty": true,
       "wierszZrodla": 298
@@ -6416,7 +6416,7 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "sabina-lulkiewicz-1959",
+      "osobaAId": "sabina-lulkiewicz",
       "osobaBId": "wieslaw-kupczyk",
       "kolejnosc": 1
     },
@@ -6431,17 +6431,17 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "stanislaw-lulkiewicz-1961",
+      "osobaAId": "stanislaw-lulkiewicz",
       "osobaBId": "mieczyslawa-nn",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "zbigniew-lulkiewicz-1971",
-      "osobaBId": "teresa-nn-1973",
+      "osobaAId": "zbigniew-lulkiewicz",
+      "osobaBId": "teresa-nn",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "edyta-lulkiewicz-1975",
+      "osobaAId": "edyta-lulkiewicz",
       "osobaBId": "przemyslaw-walczuk",
       "kolejnosc": 1
     },
@@ -6731,12 +6731,12 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "adam-rybacki-1960",
-      "osobaBId": "dorota-szwaba-1962",
+      "osobaAId": "adam-rybacki",
+      "osobaBId": "dorota-szwaba",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "zbigniew-rybacki-1963",
+      "osobaAId": "zbigniew-rybacki",
       "osobaBId": "urszula-kotwica",
       "kolejnosc": 1
     },
@@ -6746,17 +6746,17 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "aleksandra-rybacka-1951",
+      "osobaAId": "aleksandra-rybacka",
       "osobaBId": "henryk-busz",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "elzbieta-rybacka-1953",
+      "osobaAId": "elzbieta-rybacka",
       "osobaBId": "aleksander-pernak",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "kamila-rybacka-1956",
+      "osobaAId": "kamila-rybacka",
       "osobaBId": "mieczyslaw-szodkiewicz",
       "kolejnosc": 1
     },
@@ -6766,58 +6766,58 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "ewa-grocholska-1955",
-      "osobaBId": "zbigniew-kapala-1951",
+      "osobaAId": "ewa-grocholska",
+      "osobaBId": "zbigniew-kapala",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "mariusz-kapala-1974",
-      "osobaBId": "grazyna-kapala-1979",
+      "osobaAId": "mariusz-kapala",
+      "osobaBId": "grazyna-kapala",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "tomasz-kapala-1977",
+      "osobaAId": "tomasz-kapala",
       "osobaBId": "jolanta-nowacka",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "anna-kapala-1979",
-      "osobaBId": "sebastian-kaczmarek-1977",
+      "osobaAId": "anna-kapala",
+      "osobaBId": "sebastian-kaczmarek",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "barbara-kapala-1981",
+      "osobaAId": "barbara-kapala",
       "osobaBId": "mateusz-smykowski",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "genowefa-grocholska-1956",
-      "osobaBId": "leszek-walczak-1954",
+      "osobaAId": "genowefa-grocholska",
+      "osobaBId": "leszek-walczak",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "zygmunt-grocholski-1962",
+      "osobaAId": "zygmunt-grocholski",
       "osobaBId": "halina-kalka",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "boniu-grocholski-1963",
+      "osobaAId": "boniu-grocholski",
       "osobaBId": "iwona-bruder",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "teresa-rybacka-1931",
+      "osobaAId": "teresa-rybacka",
       "osobaBId": "kazimierz-zybert-1933",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "grazyna-zybert-1956",
-      "osobaBId": "bogdan-langner-1954",
+      "osobaAId": "grazyna-zybert",
+      "osobaBId": "bogdan-langner",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "izabela-langner-1977",
-      "osobaBId": "witold-mroczek-1974",
+      "osobaAId": "izabela-langner",
+      "osobaBId": "witold-mroczek",
       "kolejnosc": 1
     },
     {
@@ -6831,12 +6831,12 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "teodor-czaplicki-1930",
+      "osobaAId": "teodor-czaplicki",
       "osobaBId": "halina-nn",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "bozena-czaplicka-1931",
+      "osobaAId": "bozena-czaplicka",
       "osobaBId": "zenon-matysiak",
       "kolejnosc": 1
     },
@@ -6847,7 +6847,7 @@
     },
     {
       "osobaAId": "piotr-matysiak-2",
-      "osobaBId": "zofia-rybacka-1959",
+      "osobaBId": "zofia-rybacka-2",
       "kolejnosc": 1
     },
     {
@@ -6916,7 +6916,7 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "beata-zemoldt-1966",
+      "osobaAId": "beata-zemoldt",
       "osobaBId": "piotr-tatara",
       "kolejnosc": 1
     },
@@ -6927,7 +6927,7 @@
     },
     {
       "osobaAId": "krzysztof-zemboldt",
-      "osobaBId": "ewelina-nijaka-1962",
+      "osobaBId": "ewelina-nijaka",
       "kolejnosc": 1
     },
     {
@@ -6946,28 +6946,28 @@
       "kolejnosc": 1
     },
     {
-      "osobaAId": "czeslawa-zemboldt-1942",
-      "osobaBId": "franciszek-gregor-1939",
+      "osobaAId": "czeslawa-zemboldt",
+      "osobaBId": "franciszek-gregor",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "pawel-gregor-1963",
-      "osobaBId": "wioletta-aazinska-1969",
+      "osobaAId": "pawel-gregor",
+      "osobaBId": "wioletta-aazinska",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "anna-gregor-1964",
-      "osobaBId": "czeslaw-kaczmarek-1967",
+      "osobaAId": "anna-gregor",
+      "osobaBId": "czeslaw-kaczmarek",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "ryszard-gregor-1968",
-      "osobaBId": "elzbieta-malec-1972",
+      "osobaAId": "ryszard-gregor",
+      "osobaBId": "elzbieta-malec",
       "kolejnosc": 1
     },
     {
-      "osobaAId": "honorata-gregor-1971",
-      "osobaBId": "pawel-gotter-1968",
+      "osobaAId": "honorata-gregor",
+      "osobaBId": "pawel-gotter",
       "kolejnosc": 1
     },
     {

@@ -88,7 +88,7 @@ describe("import drzewa Lulkiewiczów", () => {
     expect(poId.get("mikolaj-welzer")!.niepewne).toEqual(["wpis"]);
     expect(poId.get("stanislaw-bystrzynski-1850")!.niepewne).toEqual(["miejsce"]);
     // Krzysztof Zemboldt ma dwa związki, a dzieci nie mają wariantu a/b.
-    expect(poId.get("anna-zemboldt-1988")).toMatchObject({ ojciecId: "krzysztof-zemboldt", matkaId: null });
+    expect(poId.get("anna-zemboldt")).toMatchObject({ ojciecId: "krzysztof-zemboldt", matkaId: null });
   });
 
   it("obsługuje wiersz „2nd Wife of Wiktor Lulkiewicz” bez numeru", () => {
@@ -117,7 +117,9 @@ describe("import drzewa Lulkiewiczów", () => {
       expect(!!o.ukryjDaty, o.id).toBe(rok !== null && rok > 1925 && !o.smierc);
     }
     expect(poId.get("kazimiera-pospiech-1928")!.ukryjDaty).toBeUndefined(); // zm. 1995
-    expect(poId.get("teresa-rybacka-1931")!.ukryjDaty).toBe(true);
+    expect(poId.get("teresa-rybacka")!.ukryjDaty).toBe(true);
+    // Rok urodzenia osoby żyjącej nie może wyciekać przez id (adres URL).
+    for (const o of rodzina.osoby) if (o.ukryjDaty) expect(o.id).not.toContain(o.urodzenie.wartosc!.slice(0, 4));
   });
 
   it("nakłada poprawki ręczne i nie zmienia przy tym id", () => {

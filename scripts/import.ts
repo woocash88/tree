@@ -250,7 +250,9 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
   const galezie: Galaz[] = [PIEN];
 
   const noweId = (f: FragmentOsoby): string => {
-    const rok = f.urodzenie.wartosc?.slice(0, 4);
+    // Rok urodzenia osób żyjących nie może trafić do adresu URL.
+    const rokUr = f.urodzenie.wartosc?.slice(0, 4);
+    const rok = rokUr && Number(rokUr) > ROK_GRANICZNY_ZYJACYCH && !f.smierc ? undefined : rokUr;
     const baza = [slug(f.imie) || "nn", slug(f.nazwisko) || "nn", rok].filter(Boolean).join("-");
     const n = (zajeteId.get(baza) ?? 0) + 1;
     zajeteId.set(baza, n);

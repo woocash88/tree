@@ -18,7 +18,7 @@ export function KartaOsoby({ osoba, kolor, podpis, mala = false }: { osoba: Osob
         {osoba.niepewne?.includes("wpis") && <span title="Wpis niepewny w źródle"> (?)</span>}
       </span>
       {osoba.nazwiskoRodowe && <span className="block text-sm text-sepia">z d. {osoba.nazwiskoRodowe}</span>}
-      <span className="block min-h-5 text-sm tabular-nums text-sepia">{lata || (osoba.ukryjDaty ? "" : "brak dat")}</span>
+      {lata && <span className="block text-sm tabular-nums text-sepia">{lata}</span>}
     </Link>
   );
 }

@@ -43,36 +43,41 @@ h1, h2, h3, .szeryf {
   font-feature-settings: "liga", "onum";
 }
 
-a, button, input, select, summary, [tabindex] {
-  outline-offset: 2px;
-}
-:focus-visible {
-  outline: 2px solid var(--color-bordo);
-}
-
-/* Etykieta archiwalna: cienka ramka, wewnętrzna ramka, lekki cień. */
-.etykieta {
-  position: relative;
-  background-color: var(--color-papier-jasny);
-  border: 1px solid color-mix(in srgb, var(--color-kreska) 85%, transparent);
-  box-shadow: var(--shadow-karta);
-}
-.etykieta::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border: 1px solid color-mix(in srgb, var(--color-kreska) 35%, transparent);
-  pointer-events: none;
+@layer base {
+  a, button, input, select, summary, [tabindex] {
+    outline-offset: 2px;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-bordo);
+  }
 }
 
-.link {
-  color: var(--color-bordo);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-.link:hover {
-  text-decoration-thickness: 2px;
+/* Własne klasy leżą w warstwie components, aby narzędzia Tailwinda (np. absolute, border-l-4) mogły je nadpisywać. */
+@layer components {
+  /* Etykieta archiwalna: cienka ramka, wewnętrzna ramka, lekki cień. */
+  .etykieta {
+    position: relative;
+    background-color: var(--color-papier-jasny);
+    border: 1px solid color-mix(in srgb, var(--color-kreska) 85%, transparent);
+    box-shadow: var(--shadow-karta);
+  }
+  .etykieta::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid color-mix(in srgb, var(--color-kreska) 35%, transparent);
+    pointer-events: none;
+  }
+
+  .link {
+    color: var(--color-bordo);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 @keyframes podswietlenie {

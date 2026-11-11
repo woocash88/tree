@@ -30,7 +30,7 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 
 - **Wiersz 119:** Maksymilian Wabiński z odsyłaczem „[1]” występuje też w wierszu 108 (to samo imię, nazwisko i data urodzenia). Potraktowano jako JEDNĄ osobę („maksymilian-wabinski-1863”) z kolejnym małżeństwem. Kolejność związków przyjęto według kolejności wierszy – źródło jej nie podaje.
 - **Wiersz 147:** Józef Buczkiewicz, ur. 1880-03-05 („jozef-buczkiewicz-1880-2”) – to samo imię, nazwisko i data urodzenia co w wierszu 146 („jozef-buczkiewicz-1880”). Zachowano oba wpisy.
-- **Wiersz 241:** Para „Piotr Matysiak + Zofia Rybacka” występuje też w wierszu 201. Być może to te same osoby (małżeństwo dwojga potomków): „piotr-matysiak-2” ≟ „piotr-matysiak”, „zofia-rybacka-1959” ≟ „zofia-rybacka”. Nie scalono – w razie potrzeby użyj sekcji „scal” w data/poprawki.json.
+- **Wiersz 241:** Para „Piotr Matysiak + Zofia Rybacka” występuje też w wierszu 201. Być może to te same osoby (małżeństwo dwojga potomków): „piotr-matysiak-2” ≟ „piotr-matysiak”, „zofia-rybacka-2” ≟ „zofia-rybacka”. Nie scalono – w razie potrzeby użyj sekcji „scal” w data/poprawki.json.
 
 ## Podejrzane literówki i utracone polskie znaki
 
@@ -50,13 +50,13 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 
 ## Niejednoznaczni rodzice
 
-- **Wiersz 278:** Anna Zemboldt („anna-zemboldt-1988”): rodzic Krzysztof Zemboldt ma 2 związki, a wiersz nie ma wariantu a/b. Drugi rodzic pozostał pusty.
-- **Wiersz 279:** Marta Zemboldt („marta-zemboldt-1990”): rodzic Krzysztof Zemboldt ma 2 związki, a wiersz nie ma wariantu a/b. Drugi rodzic pozostał pusty.
+- **Wiersz 278:** Anna Zemboldt („anna-zemboldt”): rodzic Krzysztof Zemboldt ma 2 związki, a wiersz nie ma wariantu a/b. Drugi rodzic pozostał pusty.
+- **Wiersz 279:** Marta Zemboldt („marta-zemboldt”): rodzic Krzysztof Zemboldt ma 2 związki, a wiersz nie ma wariantu a/b. Drugi rodzic pozostał pusty.
 
 ## Sprzeczności i nietypowe dane
 
 - **Wiersz 166:** Dziecko ze związku nr 2 (ur. 1840-05-06) jest starsze niż dziecko ze związku nr 1 (ur. 1842-09-18) – rodzic „jozefa-lulkiewicz-1817”. Być może numery związków są zamienione.
-- **Wiersz 286:** Martyna Hop („martyna-hop-1990”) nosi inne nazwisko niż rodzice (Paweł Gregor i Wioletta Aazińska).
+- **Wiersz 286:** Martyna Hop („martyna-hop”) nosi inne nazwisko niż rodzice (Paweł Gregor i Wioletta Aazińska).
 
 ## Wpisy oznaczone w źródle jako niepewne ("??", "?")
 
@@ -96,7 +96,7 @@ Poprawki wpisuj do `data/poprawki.json` (opis w README), a następnie uruchom im
 - **Wiersz 152:** NN Buczkiewicz („nn-buczkiewicz-1889”): płci nie da się ustalić z imienia ani nazwiska.
 - **Wiersz 153:** NN Buczkiewicz („nn-buczkiewicz-1891”): płci nie da się ustalić z imienia ani nazwiska.
 - **Wiersz 198:** NN Grzybek („nn-grzybek”): płeć przyjęta jako przeciwna do płci małżonka (Helena Rybacka).
-- **Wiersz 227:** Boniu Grocholski („boniu-grocholski-1963”): płci nie da się ustalić z imienia ani nazwiska.
+- **Wiersz 227:** Boniu Grocholski („boniu-grocholski”): płci nie da się ustalić z imienia ani nazwiska.
 - **Wiersz 281:** NN Ciechoń („nn-ciechon”): płeć przyjęta jako przeciwna do płci małżonka (Iwona Tomaszewska).
 
 ## Pozostałe uwagi parsera
