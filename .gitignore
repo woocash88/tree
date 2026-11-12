@@ -42,3 +42,6 @@ next-env.d.ts
 
 # wygenerowane dane testowe
 /data/testowe/
+
+# logi emulatorów Firebase
+*-debug.log
