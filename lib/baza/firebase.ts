@@ -18,6 +18,8 @@ const KONFIG = {
  * Uwaga: reCAPTCHA ładuje skrypt Google u każdego odwiedzającego, dlatego jest opt-in.
  */
 export const KLUCZ_APP_CHECK = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_KEY || "";
+// "enterprise" (klucz z Google Cloud / reCAPTCHA Enterprise) albo "v3" (klucz klasyczny).
+const TYP_APP_CHECK = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_TYP === "v3" ? "v3" : "enterprise";
 /** Tryb testów lokalnych na emulatorach Firebase (npm run test:e2e). */
 const EMULATOR = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR === "1";
 
@@ -34,8 +36,9 @@ export function pobierzFirebase(): Promise<Firebase> {
     const app = getApps()[0] ?? initializeApp({ apiKey: KONFIG.apiKey ?? "klucz-emulatora", authDomain: KONFIG.authDomain ?? `${projectId}.firebaseapp.com`, projectId, appId: KONFIG.appId ?? "1:0:web:0" });
     if (KLUCZ_APP_CHECK && !EMULATOR) {
       // App Check musi być zainicjowany przed pierwszym użyciem Firestore i Auth.
-      const { initializeAppCheck, ReCaptchaV3Provider } = await import("firebase/app-check");
-      initializeAppCheck(app, { provider: new ReCaptchaV3Provider(KLUCZ_APP_CHECK), isTokenAutoRefreshEnabled: true });
+      const { initializeAppCheck, ReCaptchaV3Provider, ReCaptchaEnterpriseProvider } = await import("firebase/app-check");
+      const provider = TYP_APP_CHECK === "v3" ? new ReCaptchaV3Provider(KLUCZ_APP_CHECK) : new ReCaptchaEnterpriseProvider(KLUCZ_APP_CHECK);
+      initializeAppCheck(app, { provider, isTokenAutoRefreshEnabled: true });
     }
     const auth = getAuth(app);
     const db = getFirestore(app);

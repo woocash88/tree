@@ -281,10 +281,11 @@ Konto można prowadzić hasłem, przez Google albo oboma sposobami naraz – wci
 Reguły chronią dane, ale nie ograniczają ruchu: skrypt spoza strony mógłby w pętli czytać publiczne drzewa i zużyć dzienny limit odczytów
 (wtedy strona do końca doby zgłasza błędy). **Firebase App Check** sprawia, że baza przyjmuje tylko żądania z Twojej strony.
 
-1. Wejdź na <https://www.google.com/recaptcha/admin> i utwórz klucz **reCAPTCHA v3** (typ: Score based) z domenami `familytree-bab4e.web.app`
-   i `familytree-bab4e.firebaseapp.com` (oraz własną, jeśli ją dodasz). Zapisz **klucz witryny** (site key) i **klucz tajny** (secret key).
-2. W konsoli Firebase: *Build → App Check → Apps* → wybierz aplikację internetową → **reCAPTCHA** → wklej **klucz tajny** → *Save*.
-3. W GitHubie (*Settings → Secrets and variables → Actions → Variables*) dodaj `FIREBASE_APPCHECK_KEY` = **klucz witryny**. Wdróż stronę.
+1. Klasyczna konsola reCAPTCHA jest wycofana. W Google Cloud (projekt `familytree-bab4e`) włącz *reCAPTCHA Enterprise API* (obecnie „Fraud Defense”)
+   i utwórz klucz typu **witryna internetowa** z domenami `familytree-bab4e.web.app` i `familytree-bab4e.firebaseapp.com`.
+   Skopiuj jego **identyfikator** – to klucz witryny.
+2. W konsoli Firebase: *Build → App Check → Apps* → aplikacja internetowa → **reCAPTCHA Enterprise** → wklej ten klucz → *Save*.
+3. W GitHubie (*Settings → Secrets and variables → Actions → Variables*) dodaj `FIREBASE_APPCHECK_KEY` = **klucz witryny**. Dla starego klucza klasycznego v3 dodaj jeszcze `FIREBASE_APPCHECK_TYP` = `v3`. Wdróż stronę.
 4. Odczekaj dobę i w *App Check → APIs → Cloud Firestore* sprawdź wykres: żądania mają być „zweryfikowane”. **Dopiero wtedy** kliknij **Enforce**.
    Włączenie od razu zablokuje każdego, kto ma jeszcze starą wersję strony w przeglądarce.
 

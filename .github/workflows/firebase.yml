@@ -41,6 +41,7 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           NEXT_PUBLIC_FIREBASE_APPCHECK_KEY: ${{ vars.FIREBASE_APPCHECK_KEY }}
+          NEXT_PUBLIC_FIREBASE_APPCHECK_TYP: ${{ vars.FIREBASE_APPCHECK_TYP }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN || format('{0}.firebaseapp.com', vars.FIREBASE_PROJECT_ID) }}
       - name: Sprawdź konfigurację Firebase (nie wypisuje sekretu)
         env:
