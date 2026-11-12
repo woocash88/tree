@@ -54,11 +54,14 @@ function Poziom({ tytul, children, className = "" }: { tytul: string; children: 
   );
 }
 
-const LINIA = "border-tekst-2/60";
+const LINIA = "border-[color:var(--linia)]";
+const KROPKA = "absolute size-2 rounded-full bg-akcent";
+const SIATKA = "grid-cols-[1fr_minmax(20rem,1fr)_1fr]";
 
 /**
- * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): pozioma belka pod rodzicami,
- * z której schodzą linie do kolumny rodzeństwa i do karty osoby. Kolumny i odstęp odpowiadają siatce poniżej.
+ * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): belka pod rodzicami z zaokrąglonymi
+ * kolankami, z której schodzą linie do kolumny rodzeństwa i do karty osoby; na końcach kropki.
+ * Kolumny i odstęp odpowiadają siatce poniżej.
  */
 function LacznikRodzenstwa() {
   return (
@@ -66,14 +69,14 @@ function LacznikRodzenstwa() {
       <div className="lg:hidden">
         <Lacznik />
       </div>
-      <div aria-hidden="true" className="hidden h-6 grid-cols-[1fr_minmax(22rem,1.25fr)_1fr] gap-6 lg:grid">
+      <div aria-hidden="true" className={`mb-3 hidden h-7 gap-6 lg:grid ${SIATKA}`}>
         <div className="relative">
-          <span className={`absolute left-1/2 right-[-1.5rem] top-0 border-t ${LINIA}`} />
-          <span className={`absolute inset-y-0 left-1/2 border-l ${LINIA}`} />
+          <span className={`absolute inset-y-0 left-1/2 right-[-1.5rem] rounded-tl-2xl border-l-2 border-t-2 ${LINIA}`} />
+          <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div className="relative">
-          <span className={`absolute left-[-1.5rem] right-1/2 top-0 border-t ${LINIA}`} />
-          <span className={`absolute inset-y-0 left-1/2 border-l ${LINIA}`} />
+          <span className={`absolute inset-y-0 left-[-1.5rem] right-1/2 rounded-tr-2xl border-r-2 border-t-2 ${LINIA}`} />
+          <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div />
       </div>
@@ -82,7 +85,7 @@ function LacznikRodzenstwa() {
 }
 
 function Lacznik() {
-  return <div aria-hidden="true" className="mx-auto h-6 w-px bg-kreska" />;
+  return <div aria-hidden="true" className="mx-auto h-6 w-0.5 rounded-full bg-[var(--linia)]" />;
 }
 
 export default async function StronaOsoby({ params }: Props) {
@@ -175,23 +178,23 @@ export default async function StronaOsoby({ params }: Props) {
           </>
         )}
 
-        <div className={`grid gap-6 ${rodzenstwo.length || zwiazki.length ? "lg:grid-cols-[1fr_minmax(22rem,1.25fr)_1fr]" : ""} lg:items-start`}>
-          <article className="szklo px-6 py-6 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
+        <div className={`grid gap-6 ${rodzenstwo.length || zwiazki.length ? "lg:grid-cols-[1fr_minmax(20rem,1fr)_1fr]" : ""} lg:items-start`}>
+          <article className="szklo px-5 py-4 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">
               Pokolenie {d.pokolenie.get(o.id)} ·{" "}
               <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="link">
                 {galaz.wspolna ? "Całe drzewo" : galaz.nazwa}
               </Link>
             </p>
-            <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">{pelneImie(o)}</h1>
+            <h1 className="mt-1.5 text-2xl leading-tight sm:text-3xl">{pelneImie(o)}</h1>
             {o.nazwiskoRodowe && <p className="mt-1 text-lg text-tekst-2">z domu {o.nazwiskoRodowe}</p>}
-            {lata && <p className="mt-2 text-xl font-medium tabular-nums text-tekst-2">{lata}</p>}
+            {lata && <p className="mt-1 text-lg font-medium tabular-nums text-tekst-2">{lata}</p>}
 
             {o.ukryjDaty ? (
               <p className="mt-4 text-sm text-tekst-2">Daty i miejsca osób żyjących nie są publikowane.</p>
             ) : (
               (opisZdarzenia(o.urodzenie) || smierc || ileLat || o.miejsce) && (
-                <dl className="mx-auto mt-5 grid max-w-sm grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-left text-[15px]">
+                <dl className="mx-auto mt-3 grid max-w-xs grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-left text-[15px]">
                   {opisZdarzenia(o.urodzenie) && (
                     <>
                       <dt className="text-tekst-2">Urodzenie</dt>
@@ -225,7 +228,7 @@ export default async function StronaOsoby({ params }: Props) {
             {o.notatka && !o.ukryjDaty && <p className="mx-auto mt-4 max-w-sm border-t border-kreska pt-3 text-[15px] italic">{o.notatka}</p>}
             {!!o.niepewne?.length && <p className="mt-3 text-sm text-tekst-2">W źródle: {o.niepewne.map((n) => NIEPEWNE[n]).join(", ")}.</p>}
 
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="przycisk przycisk-glowny">
                 Pokaż na liście
               </Link>
@@ -241,8 +244,8 @@ export default async function StronaOsoby({ params }: Props) {
                 {zwiazki.map((z) => (
                   <li key={z.osoba.id} className="relative">
                     {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
-                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-px w-6 -translate-y-1/2 items-center justify-center bg-tekst-2/60 lg:flex">
-                      <span className="flex size-6 items-center justify-center rounded-full border border-tekst-2 bg-lita text-base font-bold leading-none text-tekst">+</span>
+                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-0.5 w-6 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
+                      <span className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
                     </span>
                     {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}
                   </li>
