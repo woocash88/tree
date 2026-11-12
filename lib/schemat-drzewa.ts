@@ -20,11 +20,11 @@ export const SchematDrzewa = z
     opis: z.string().min(1),
     zakresLat: z.strictObject({ od: z.number().int().min(1000).max(2200), do: z.number().int().min(1000).max(2200) }),
     region: z.string().min(1),
-    zrodlo: z.strictObject({ nazwa: z.string().min(1), url: z.url() }),
+    zrodlo: z.strictObject({ nazwa: z.string().min(1), url: z.url() }).optional(),
     autor: z.strictObject({ nazwa: z.string().min(1), url: z.url().optional() }),
     /** Data ostatniej aktualizacji danych, RRRR-MM-DD. */
     zaktualizowano: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data w formacie RRRR-MM-DD"),
-    widocznosc: z.enum(["publiczne"]),
+    widocznosc: z.enum(["publiczne", "prywatne"]),
     politykaDatZyjacych: z.enum(POLITYKI_DAT).default("ukryj"),
     /** Drzewo fikcyjne, pokazywane z wyraźnym oznaczeniem. */
     przykladowe: z.boolean().optional(),

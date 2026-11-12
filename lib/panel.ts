@@ -7,7 +7,7 @@ import type { OsobaDrzewa } from "./drzewo";
 import { formatDaty, lataZycia, rokZdarzenia, wiek } from "./format";
 import type { DataZdarzenia, Osoba } from "./schemat";
 
-export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rodowe?: string; notatka?: string; ukryta: boolean };
+export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rodowe?: string; notatka?: string; ukryta: boolean; zyjaca?: boolean };
 
 /** Minimalny kształt osoby wystarczający do zbudowania OsobaPanelu (pasuje do Osoba i do osoby po okrojeniu dat). */
 export type ZrodloPanelu = Pick<Osoba, "id" | "imie" | "nazwisko" | "plec" | "urodzenie" | "ojciecId" | "matkaId" | "galazId"> & Partial<Pick<Osoba, "nazwiskoRodowe" | "smierc" | "notatka" | "niepewne" | "zyjaca">> & { ukryjDaty?: boolean };
@@ -47,5 +47,6 @@ export function osobaPanelu(o: ZrodloPanelu, pokolenie: number): OsobaPanelu {
     ...(o.nazwiskoRodowe ? { rodowe: o.nazwiskoRodowe } : {}),
     ...(o.notatka ? { notatka: o.notatka } : {}),
     ukryta: !!o.ukryjDaty,
+    ...(o.zyjaca ? { zyjaca: true } : {}),
   };
 }

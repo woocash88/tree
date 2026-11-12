@@ -17,10 +17,13 @@ export type PatchOsoby = {
   urodzenie?: DataZdarzenia;
   smierc?: DataZdarzenia | null;
   notatka?: string | null;
+  plec?: Osoba["plec"];
+  /** Osoba żyjąca – jej dane podlegają polityce dat drzewa. `null` zdejmuje flagę. */
+  zyjaca?: boolean | null;
 };
 
 /** Dopisana osoba – dokładnie w formacie osoby z rodzina.json. */
-export type NowaOsoba = Pick<Osoba, "id" | "imie" | "nazwisko" | "plec" | "urodzenie" | "ojciecId" | "matkaId" | "galazId"> & Partial<Pick<Osoba, "nazwiskoRodowe" | "smierc" | "notatka">>;
+export type NowaOsoba = Pick<Osoba, "id" | "imie" | "nazwisko" | "plec" | "urodzenie" | "ojciecId" | "matkaId" | "galazId"> & Partial<Pick<Osoba, "nazwiskoRodowe" | "smierc" | "notatka" | "zyjaca">>;
 
 export type Edycje = { osoby: Record<string, PatchOsoby>; dodane: NowaOsoba[] };
 export const PUSTE_EDYCJE: Edycje = { osoby: {}, dodane: [] };
@@ -98,6 +101,7 @@ export function naPanelu(bazowe: OsobaPanelu[], e: Edycje): OsobaPanelu[] {
     const nowa: OsobaPanelu = { ...o };
     // Ręcznie wpisane imię lub nazwisko przestaje być „niepewne”.
     if (p.imie !== undefined || p.nazwisko !== undefined) nowa.niepewna = false;
+    if (p.plec !== undefined) nowa.plec = p.plec;
     if (p.imie !== undefined) nowa.imie = p.imie;
     if (p.nazwisko !== undefined) nowa.nazwisko = p.nazwisko;
     if (p.nazwiskoRodowe !== undefined) {

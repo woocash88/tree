@@ -1,0 +1,116 @@
+rules_version = '2';
+
+// Reguły dostępu serwisu „Przodkowie”. Wdrażane razem ze stroną (workflow) albo wklejane w konsoli Firebase.
+// Model: właściciel drzewa i kolaboranci edytują dane; „dane/publiczne” to kopia okrojona wg polityki dat
+// (żyjące osoby), „dane/pelne” widzą tylko zarządzający. Administrator = dokument admini/{uid}
+// (tworzony ręcznie w konsoli – klient nie może go zapisać).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function zalogowany() { return request.auth != null; }
+    function jestAdmin() { return zalogowany() && exists(/databases/$(database)/documents/admini/$(request.auth.uid)); }
+    function zablokowany() { return zalogowany() && exists(/databases/$(database)/documents/blokady/$(request.auth.uid)); }
+    // Zapisy do wspólnych danych wymagają potwierdzonego adresu e-mail (Google potwierdza go automatycznie).
+    function weryfikowany() { return zalogowany() && request.auth.token.email_verified == true && !zablokowany(); }
+    function tekst(v, maks) { return v is string && v.size() <= maks; }
+    function niepusty(v, maks) { return v is string && v.size() > 0 && v.size() <= maks; }
+
+    // ── administratorzy i blokady ──
+    match /admini/{uid} {
+      allow get: if zalogowany() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    match /blokady/{uid} {
+      allow get: if zalogowany() && (request.auth.uid == uid || jestAdmin());
+      allow list, write: if jestAdmin();
+    }
+
+    // ── profile użytkowników (prywatne) ──
+    match /uzytkownicy/{uid} {
+      allow get: if zalogowany() && (request.auth.uid == uid || jestAdmin());
+      allow list: if jestAdmin();
+      allow create: if zalogowany() && !zablokowany() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['imie', 'nazwisko', 'email', 'utworzono'])
+        && request.resource.data.keys().hasAll(['imie', 'nazwisko', 'email', 'utworzono'])
+        && niepusty(request.resource.data.imie, 80) && niepusty(request.resource.data.nazwisko, 80)
+        && request.resource.data.email == request.auth.token.email
+        && tekst(request.resource.data.utworzono, 40);
+      allow update: if (zalogowany() && !zablokowany() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['imie', 'nazwisko'])
+        && niepusty(request.resource.data.imie, 80) && niepusty(request.resource.data.nazwisko, 80)) || jestAdmin();
+      allow delete: if zalogowany() && (request.auth.uid == uid || jestAdmin());
+    }
+
+    // ── wyszukiwanie kolaboranta po adresie e-mail (tylko pojedynczy odczyt, bez listowania) ──
+    match /adresy/{email} {
+      allow get: if weryfikowany();
+      allow list: if false;
+      allow create: if weryfikowany() && email == request.auth.token.email.lower()
+        && request.resource.data.keys().hasOnly(['uid', 'nazwa'])
+        && request.resource.data.uid == request.auth.uid && tekst(request.resource.data.nazwa, 170);
+      allow update: if weryfikowany() && resource.data.uid == request.auth.uid && email == request.auth.token.email.lower()
+        && request.resource.data.keys().hasOnly(['uid', 'nazwa'])
+        && request.resource.data.uid == request.auth.uid && tekst(request.resource.data.nazwa, 170);
+      allow delete: if zalogowany() && (resource.data.uid == request.auth.uid || jestAdmin());
+    }
+
+    // ── drzewa ──
+    function czlonek(m) { return zalogowany() && (m.wlascicielId == request.auth.uid || request.auth.uid in m.kolaboranci); }
+
+    function metaPoprawna(m) {
+      return m.keys().hasOnly(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
+                               'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano'])
+        && m.keys().hasAll(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
+                            'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano'])
+        && niepusty(m.nazwa, 120) && tekst(m.opis, 1000) && tekst(m.region, 120)
+        && m.widocznosc in ['publiczne', 'prywatne']
+        && m.politykaDatZyjacych in ['ukryj', 'tylko-rok', 'pokaz']
+        && tekst(m.wlascicielId, 128) && tekst(m.wlascicielNazwa, 170)
+        && m.kolaboranci is list && m.kolaboranci.size() <= 20
+        && m.kolaboranciInfo is map && m.statystyki is map
+        && (m.zakresLat == null || m.zakresLat is map)
+        && tekst(m.utworzono, 40) && tekst(m.zaktualizowano, 40);
+    }
+
+    match /drzewa/{id} {
+      allow get, list: if resource.data.widocznosc == 'publiczne' || czlonek(resource.data) || jestAdmin();
+
+      allow create: if weryfikowany() && metaPoprawna(request.resource.data)
+        && request.resource.data.wlascicielId == request.auth.uid
+        && request.resource.data.kolaboranci.size() == 0;
+
+      // Właściciel i administrator zmieniają wszystko oprócz właściciela; kolaborant tylko statystyki po edycji osób.
+      allow update: if metaPoprawna(request.resource.data)
+        && request.resource.data.wlascicielId == resource.data.wlascicielId
+        && (jestAdmin()
+            || (weryfikowany() && resource.data.wlascicielId == request.auth.uid)
+            || (weryfikowany() && request.auth.uid in resource.data.kolaboranci
+                && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['zakresLat', 'statystyki', 'zaktualizowano']))
+            // kolaborant może opuścić drzewo (usunąć wyłącznie siebie)
+            || (zalogowany() && request.auth.uid in resource.data.kolaboranci
+                && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kolaboranci', 'kolaboranciInfo'])
+                && !(request.auth.uid in request.resource.data.kolaboranci)
+                && request.resource.data.kolaboranci.size() == resource.data.kolaboranci.size() - 1
+                && request.resource.data.kolaboranci.hasAll(resource.data.kolaboranci.removeAll([request.auth.uid]))));
+
+      allow delete: if jestAdmin() || (weryfikowany() && resource.data.wlascicielId == request.auth.uid);
+
+      match /dane/{wersja} {
+        function meta() { return get(/databases/$(database)/documents/drzewa/$(id)).data; }
+
+        allow get: if (wersja == 'publiczne' && (meta().widocznosc == 'publiczne' || czlonek(meta()) || jestAdmin()))
+                   || (wersja == 'pelne' && (czlonek(meta()) || jestAdmin()));
+        allow list: if false;
+
+        allow create, update: if (wersja == 'pelne' || wersja == 'publiczne')
+          && (jestAdmin() || (weryfikowany() && czlonek(meta())))
+          && request.resource.data.keys().hasOnly(['galezie', 'osoby', 'malzenstwa'])
+          && request.resource.data.galezie is list && request.resource.data.osoby is list && request.resource.data.malzenstwa is list
+          && request.resource.data.osoby.size() <= 2000 && request.resource.data.galezie.size() <= 100;
+
+        allow delete: if jestAdmin() || (weryfikowany() && meta().wlascicielId == request.auth.uid);
+      }
+    }
+  }
+}
