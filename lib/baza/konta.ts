@@ -29,7 +29,13 @@ const KOMUNIKATY: Record<string, string> = {
   "auth/popup-blocked": "Przeglądarka zablokowała okno logowania Google. Zezwól na wyskakujące okna dla tej strony.",
   "auth/network-request-failed": "Brak połączenia z internetem albo z serwerem.",
   "auth/requires-recent-login": "Ze względów bezpieczeństwa zaloguj się ponownie i spróbuj jeszcze raz.",
-  "auth/operation-not-allowed": "Ten sposób logowania nie jest włączony w serwisie.",
+  "auth/operation-not-allowed": "Ten sposób logowania nie jest włączony w projekcie Firebase (Authentication → Metoda logowania).",
+  "auth/unauthorized-domain": "Ta domena nie jest dozwolona w projekcie Firebase (Authentication → Ustawienia → Autoryzowane domeny).",
+  "auth/internal-error": "Błąd wewnętrzny logowania. Zwykle pomaga włączenie logowania Google w konsoli Firebase albo wyłączenie blokady wyskakujących okien i ciasteczek innych firm.",
+  "auth/account-exists-with-different-credential": "Konto z tym adresem e-mail istnieje, ale zostało założone innym sposobem logowania (np. hasłem). Zaloguj się nim.",
+  "auth/web-storage-unsupported": "Przeglądarka blokuje pamięć strony, której potrzebuje logowanie. Wyłącz tryb prywatny albo zezwól na dane stron.",
+  "auth/invalid-api-key": "Nieprawidłowy klucz API Firebase w konfiguracji strony (zmienna FIREBASE_API_KEY).",
+  "auth/app-not-authorized": "Ta aplikacja nie jest autoryzowana w projekcie Firebase.",
   "permission-denied": "Brak uprawnień do tej operacji.",
   unavailable: "Serwer jest chwilowo niedostępny. Spróbuj ponownie.",
 };
@@ -39,7 +45,8 @@ export function komunikatBledu(e: unknown): string {
   const kod = (e as { code?: string })?.code;
   if (kod && KOMUNIKATY[kod]) return KOMUNIKATY[kod];
   if (e instanceof Error && !kod) return e.message;
-  return "Coś poszło nie tak. Spróbuj ponownie.";
+  // Nieznany błąd: pokazujemy jego kod, żeby dało się go zdiagnozować.
+  return `Coś poszło nie tak${kod ? ` (${kod})` : ""}. Spróbuj ponownie.`;
 }
 
 export type DaneRejestracji = { imie: string; nazwisko: string; email: string; haslo: string };
