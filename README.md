@@ -331,14 +331,42 @@ w oknie 1440×900.
 
 ## Wdrożenie
 
-Wynikiem `npm run build` jest katalog `out/` z samymi plikami statycznymi.
+Wynikiem `npm run build` jest katalog `out/` z samymi plikami statycznymi. Domyślny sposób publikacji to
+**Firebase Hosting**: każda zmiana na gałęzi `main` (także zrobiona w przeglądarce na github.com) uruchamia
+workflow `.github/workflows/firebase.yml`, który uruchamia testy, buduje stronę i wdraża ją. Jeśli testy lub
+walidacja danych nie przejdą, strona **nie** jest aktualizowana, a w zakładce *Actions* widać komunikat błędu.
 
-- **Vercel**: zaimportuj repozytorium; ustawienia domyślne wystarczą.
-- **GitHub Pages**: workflow `.github/workflows/pages.yml` ustawia `NEXT_PUBLIC_BASE_PATH=/<nazwa-repozytorium>`.
-  Włącz *Settings → Pages → Source: GitHub Actions* i wypchnij gałąź `main`.
-- **Własna domena**: usuń `NEXT_PUBLIC_BASE_PATH` i ustaw `NEXT_PUBLIC_SITE_URL=https://twoja-domena.pl`
-  (adresy w `sitemap.xml`, `robots.txt` i metadanych Open Graph). Domyślnie jest `https://woocash88.github.io`.
-- **Dowolny serwer plików**: skopiuj zawartość `out/`.
+### Wdrożenie na Firebase – jednorazowa konfiguracja (wszystko w przeglądarce)
+
+1. W <https://console.firebase.google.com> utwórz projekt (plan Spark, darmowy) i zapisz jego **identyfikator**
+   (Ustawienia projektu → Ogólne → „Identyfikator projektu”, np. `nasi-przodkowie`).
+2. Wejdź w **Build → Hosting** i kliknij „Rozpocznij”; kroki z instalacją CLI możesz pominąć, ale zakończ kreator,
+   żeby Hosting został włączony.
+3. **Klucz konta serwisowego**: w Google Cloud (<https://console.cloud.google.com/iam-admin/serviceaccounts>,
+   ten sam projekt) utwórz konto serwisowe z rolą **Firebase Hosting Admin**, potem *Klucze → Dodaj klucz →
+   JSON* i pobierz plik.
+4. W repozytorium na GitHubie: *Settings → Secrets and variables → Actions*:
+   - zakładka **Secrets** → *New repository secret* o nazwie `FIREBASE_SERVICE_ACCOUNT`, wartość: **cała zawartość**
+     pobranego pliku JSON,
+   - zakładka **Variables** → *New repository variable* o nazwie `FIREBASE_PROJECT_ID`, wartość: identyfikator projektu.
+   - (opcjonalnie, przy własnej domenie) zmienna `SITE_URL`, np. `https://przodkowie.example.org`.
+5. Scal zmiany do `main` (albo uruchom ręcznie: *Actions → Wdrożenie na Firebase → Run workflow*).
+   Po minucie strona jest pod adresem `https://<identyfikator>.web.app`.
+6. Po wdrożeniu usuń pobrany plik JSON z komputera; klucz zostaje tylko w sekretach GitHuba.
+
+Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardową*.
+
+### Jak aktualizować stronę bez IDE
+
+- **Dane** (`data/drzewa/<slug>/…`, `data/serwis.json`): na github.com otwórz plik, kliknij ołówek, zapisz
+  („Commit changes”) na `main`. Wdrożenie ruszy samo.
+- **Zmiany z panelu `/admin/`**: pobrane pliki JSON stosuje się skryptami (`zastosuj-edycje`, `zastosuj-zmiany-drzew`),
+  więc wymagają terminala – np. GitHub Codespaces (przycisk *Code → Codespaces* w repozytorium) albo sesja Claude Code.
+- Własna domena i pozostałe sposoby hostingu: Vercel (import repozytorium, ustawienia domyślne), dowolny serwer
+  plików (zawartość `out/`). Dla GitHub Pages potrzebny jest workflow z `NEXT_PUBLIC_BASE_PATH=/<repozytorium>`
+  (strona działa wtedy w podkatalogu).
+- Adresy w `sitemap.xml`, `robots.txt` i metadanych bierze się ze zmiennej `NEXT_PUBLIC_SITE_URL`
+  (domyślnie `https://woocash88.github.io`).
 
 ## Struktura repozytorium
 
