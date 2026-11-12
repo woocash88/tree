@@ -57,19 +57,19 @@ function Poziom({ tytul, children, className = "" }: { tytul: string; children: 
 const KROPKA = "absolute size-2 rounded-full bg-akcent";
 const SIATKA = "grid-cols-[1fr_minmax(20rem,1fr)_1fr]";
 
-/** Krzywa schodząca od środka belki do kolumny: ćwiartka elipsy rozciągnięta na szerokość kolumny. */
-function Krzywa({ strona }: { strona: "lewa" | "prawa" }) {
-  const sciezka = strona === "lewa" ? "M100 0C70 0 50 22 50 56" : "M0 0C30 0 50 22 50 56";
+/** Krzywa odgałęziająca się od linii rodzic → osoba w stronę kolumny rodzeństwa (ćwiartka elipsy). */
+function KrzywaDoRodzenstwa() {
   return (
     <svg aria-hidden="true" viewBox="0 0 100 56" preserveAspectRatio="none" fill="none" className="absolute inset-0 h-full w-full overflow-visible text-[color:var(--linia)]">
-      <path d={sciezka} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <path d="M100 0C70 0 50 22 50 56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
 
 /**
- * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): dwie gładkie krzywe wychodzące spod
- * rodziców w stronę kolumny rodzeństwa i karty osoby, zakończone kropkami. Kolumny i odstęp odpowiadają siatce poniżej.
+ * Łącznik od rodziców (na szerokim ekranie): prosta linia schodzi spod rodziców do karty osoby, a od niej
+ * odgałęzia się gładka krzywa do kolumny rodzeństwa. Obie kończą się kropką. Kolumny i odstęp odpowiadają
+ * siatce poniżej.
  */
 function LacznikRodzenstwa() {
   return (
@@ -79,12 +79,13 @@ function LacznikRodzenstwa() {
       </div>
       <div aria-hidden="true" className={`mb-3 hidden h-14 gap-6 lg:grid ${SIATKA}`}>
         <div className="relative">
-          <Krzywa strona="lewa" />
-          <span className="absolute left-full top-0 w-6 border-t-[2.5px] border-[color:var(--linia)]" />
+          <KrzywaDoRodzenstwa />
           <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div className="relative">
-          <Krzywa strona="prawa" />
+          {/* odcinek poziomy z miejsca rozgałęzienia do krzywej rodzeństwa (obejmuje odstęp między kolumnami) */}
+          <span className="absolute left-[-1.5rem] right-1/2 top-0 border-t-[2.5px] border-[color:var(--linia)]" />
+          <span className="absolute inset-y-0 left-1/2 w-[2.5px] -translate-x-1/2 rounded-full bg-[var(--linia)]" />
           <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div />
@@ -252,12 +253,12 @@ export default async function StronaOsoby({ params }: Props) {
           </div>
 
           {zwiazki.length > 0 && (
-            <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3">
+            <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3 lg:pl-10">
               <ul className="grid gap-2">
                 {zwiazki.map((z) => (
                   <li key={z.osoba.id} className="relative">
                     {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
-                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-[2.5px] w-6 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
+                    <span aria-hidden="true" className="absolute -left-16 top-1/2 hidden h-[2.5px] w-16 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
                       <span className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
                     </span>
                     {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}
