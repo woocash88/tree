@@ -36,7 +36,7 @@ const uruchom = (plik) =>
 
 serwer.listen(4180, async () => {
   let kod = 0;
-  for (const scenariusz of (process.env.E2E_ONLY ? process.env.E2E_ONLY.split(",") : ["przeplyw.cjs", "konta.cjs", "wspolpraca.cjs"])) if ((await uruchom(scenariusz)) !== 0) kod = 1;
+  for (const scenariusz of (process.env.E2E_ONLY ? process.env.E2E_ONLY.split(",") : ["przeplyw.cjs", "konta.cjs", "wspolpraca.cjs", "wymiana.cjs"])) if ((await uruchom(scenariusz)) !== 0) kod = 1;
   serwer.close();
   process.exit(kod);
 });

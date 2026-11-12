@@ -1,0 +1,55 @@
+# Jednorazowe przeniesienie drzewa z repozytorium (data/drzewa/<slug>/) do bazy jako drzewo wskazanego użytkownika.
+# Uruchamiane ręcznie: Actions → „Przenieś drzewo do bazy” → Run workflow.
+# Wymaga tego samego sekretu i zmiennej co wdrożenie (FIREBASE_SERVICE_ACCOUNT, FIREBASE_PROJECT_ID).
+name: Przenieś drzewo do bazy
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Drzewo z katalogu data/drzewa/ (np. lulkiewicz)"
+        required: true
+        default: lulkiewicz
+      imie:
+        description: "Imię właściciela (zgodne z profilem w serwisie)"
+        required: false
+      nazwisko:
+        description: "Nazwisko właściciela (zgodne z profilem w serwisie)"
+        required: false
+      uid:
+        description: "Zamiast imienia i nazwiska: UID właściciela (Firebase → Authentication → Users)"
+        required: false
+      zastap:
+        description: "Nadpisz dane, jeśli drzewo jest już w bazie"
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  przenies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Przenieś drzewo do bazy
+        env:
+          KLUCZ: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          SLUG: ${{ inputs.slug }}
+          IMIE: ${{ inputs.imie }}
+          NAZWISKO: ${{ inputs.nazwisko }}
+          UID_WLASCICIELA: ${{ inputs.uid }}
+          ZASTAP: ${{ inputs.zastap }}
+        run: |
+          printf '%s' "$KLUCZ" > "$RUNNER_TEMP/klucz.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/klucz.json"
+          ARGS=(--slug "$SLUG")
+          [ -n "$UID_WLASCICIELA" ] && ARGS+=(--uid "$UID_WLASCICIELA")
+          [ -n "$IMIE" ] && ARGS+=(--imie "$IMIE")
+          [ -n "$NAZWISKO" ] && ARGS+=(--nazwisko "$NAZWISKO")
+          [ "$ZASTAP" = "true" ] && ARGS+=(--zastap)
+          npx tsx scripts/przenies-do-bazy.ts "${ARGS[@]}"
+          rm -f "$RUNNER_TEMP/klucz.json"

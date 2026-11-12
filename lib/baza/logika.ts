@@ -56,9 +56,25 @@ export function zakresLatDanych(publiczne: DaneDb): MetaDb["zakresLat"] {
   return lata.length ? { od: Math.min(...lata), do: Math.max(...lata) } : null;
 }
 
+const u8 = (s: string) => new TextEncoder().encode(s).length;
+
+/** Szacunek rozmiaru dokumentu Firestore (reguły z dokumentacji: nazwa pola + 1, string + 1, liczba 8, bool/null 1, dokument + 32). */
+export function szacunekRozmiaru(v: unknown): number {
+  if (v === null || v === undefined) return 1;
+  if (typeof v === "string") return u8(v) + 1;
+  if (typeof v === "number") return 8;
+  if (typeof v === "boolean") return 1;
+  if (Array.isArray(v)) return v.reduce((s: number, x) => s + szacunekRozmiaru(x), 0);
+  return Object.entries(v as Record<string, unknown>).reduce((s, [k, x]) => s + u8(k) + 1 + szacunekRozmiaru(x), 0);
+}
+
+/** Dokument Firestore może mieć 1 MiB; zostawiamy zapas na różnice w liczeniu i dane przyszłych wersji. */
+export const MAKS_ROZMIAR_DANYCH = 900 * 1024;
+
 /** Sprawdza spójność danych tym samym schematem co build. Puste drzewo jest dozwolone. Rzuca Error z listą błędów. */
 export function sprawdzDane(d: DaneDb): void {
   if (d.osoby.length > MAKS_OSOB) throw new Error(`Drzewo może mieć najwyżej ${MAKS_OSOB} osób.`);
+  if (szacunekRozmiaru(d) + 32 > MAKS_ROZMIAR_DANYCH) throw new Error("Drzewo jest zbyt duże (limit ok. 900 KB danych). Skróć najdłuższe notatki albo podziel drzewo na dwa.");
   if (!d.osoby.length) return;
   try {
     walidujRodzine(d);

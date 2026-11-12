@@ -5,27 +5,24 @@ HTML, hosting Firebase), ale **każdy użytkownik może założyć konto i prowa
 użytkowników trzymane są w Firebase (Authentication + Cloud Firestore) i obsługiwane w przeglądarce, a dostępu
 pilnują reguły bazy (`firestore.rules`). Bez śledzenia i zewnętrznych skryptów.
 
-Są dwa rodzaje drzew:
-
-- **drzewa z repozytorium** (`data/drzewa/<slug>/`) – wbudowane w stronę, zarządzane przez administratora w kodzie
-  (Lulkiewiczowie, przykład),
-- **drzewa użytkowników** (`/d/?id=…`) – tworzone i edytowane przez zarejestrowanych użytkowników w przeglądarce,
-  zapisywane w bazie.
+Wszystkie drzewa, które widać na stronie, są **drzewami użytkowników** (`/d/?id=…`): tworzą je i edytują zarejestrowani
+użytkownicy w przeglądarce, a dane leżą w bazie. Repozytorium dodatkowo przechowuje **kopie źródłowe** w `data/drzewa/<slug>/`
+(oznaczone `"archiwalne": true` w `drzewo.json`, więc **nie są publikowane na stronie**). Serwis nadal potrafi publikować
+drzewa z repozytorium jako statyczne strony (`/drzewa/<slug>/…`), jeśli usuniesz z nich flagę `archiwalne`.
 
 Konta włączają się dopiero po skonfigurowaniu Firebase (sekcja „Konta, role i prywatność”). Bez konfiguracji
-serwis działa jak dotąd, tylko z drzewami z repozytorium.
+serwis nie ma żadnych drzew, dopóki nie opublikujesz drzew z repozytorium.
 
-W repozytorium są dwa wbudowane drzewa:
+Kopie źródłowe w repozytorium:
 
 | slug | drzewo | uwagi |
 |---|---|---|
-| `lulkiewicz` | Rodzina Lulkiewiczów (427 osób, 10 pokoleń) | dane ze strony genealogia.okiem.pl |
-| `przyklad` | Rodzina Przykładowskich (41 osób, 5 pokoleń, 2 gałęzie) | **fikcyjne**, oznaczone jako przykładowe; można je usunąć jednym commitem (`git rm -r data/drzewa/przyklad`) |
+| `lulkiewicz` | Rodzina Lulkiewiczów (427 osób, 10 pokoleń) | dane ze strony genealogia.okiem.pl; **przeniesione do bazy** jako drzewo właściciela serwisu (workflow „Przenieś drzewo do bazy”); kopia źródłowa i wzorzec importu (`npm run import`) |
+| `przyklad` | Rodzina Przykładowskich (41 osób, 5 pokoleń, 2 gałęzie) | **fikcyjne**; nie jest publikowane, służy jako dane testowe (testy listy, wyszukiwarki, edycji) |
 
-> **Zanim opublikujesz drzewo Lulkiewiczów:** jego dane pochodzą ze strony
-> <https://genealogia.okiem.pl/drzewo/238/lulkiewicz>. Sprawdź regulamin tego serwisu
+> **Dane Lulkiewiczów** pochodzą ze strony <https://genealogia.okiem.pl/drzewo/238/lulkiewicz>. Sprawdź regulamin tego serwisu
 > (zasady kopiowania i ponownego publikowania danych) i w razie potrzeby uzyskaj zgodę opiekuna drzewa.
-> Źródło i opiekun są na stronie drzewa i w stopce widoczne zawsze; to nie zastępuje zgody.
+> Źródło jest zapisane w opisie drzewa; to nie zastępuje zgody.
 
 ## Adresy
 
@@ -101,7 +98,7 @@ zmienić zmienną `DRZEWA_KATALOG` (używa jej test wydajności).
 
 - `slug` – zgodny z nazwą katalogu; małe litery bez polskich znaków, cyfry i łączniki.
 - `zakresLat` – lata skrajne w danych (test pilnuje, żeby żadna data nie wychodziła poza zakres).
-- `autor.url`, `przykladowe` (`true` oznacza drzewo fikcyjne – pokazywane z plakietką) i `wyrozniane`
+- `archiwalne` (`true` = kopia źródłowa, niepublikowana na stronie), `autor.url`, `przykladowe` (`true` oznacza drzewo fikcyjne – pokazywane z plakietką) i `wyrozniane`
   (`true` = pokaż na stronie głównej) są opcjonalne.
 - `widocznosc` – na razie jedyna wartość to `"publiczne"`.
 - `politykaDatZyjacych` – co pokazać przy osobach z flagą `"zyjaca": true`:
@@ -288,6 +285,35 @@ serwerowych (plan Blaze). Dlatego administrator usuwa dane użytkownika i **blok
 całkowicie, usuń je dodatkowo w konsoli (Authentication → Users). Użytkownik usuwający własne konto jest usuwany
 w całości. Reguły chronią dane, ale w statycznej stronie nie ma limitów szybkości (ochrona przed nadużyciami
 to w Firebase App Check – patrz „Dalsze kroki”).
+
+### Eksport i import drzewa
+
+W ustawieniach drzewa (właściciel i administrator) jest sekcja „Eksport i import”:
+
+- **Kopia zapasowa JSON** (`przodkowie-<nazwa>-<data>.json`): pełna wierność – wszystkie pola osób, gałęzie, kolejność
+  związków, oznaczenia osób żyjących i niepewności z importu. Format to dokładnie schemat danych serwisu
+  (`format: "przodkowie-drzewo"`, `wersja: 1`, listy `galezie`, `osoby`, `malzenstwa` i ustawienia `drzewo`), więc przy imporcie plik
+  jest sprawdzany tym samym walidatorem co build (brakujący rodzic, cykl, duplikaty id → czytelny błąd).
+- **GEDCOM 5.5.1** (`.ged`, UTF-8): standard wymiany z innymi programami (Ancestry, MyHeritage, Gramps, Geneanet). Przenosi
+  osoby, imiona i nazwiska (także rodowe), płeć, daty i miejsca urodzenia i śmierci, notatki, małżeństwa i dzieci. Nie przenosi
+  gałęzi ani oznaczeń osób żyjących (przy imporcie obowiązuje reguła: urodzony po 1925 r. bez daty śmierci = żyjący). Daty
+  zapisane w sposób, którego serwis nie obsługuje (przedziały, same miesiące), są upraszczane, a import raportuje to
+  w ostrzeżeniach.
+- **Import** ma dwie drogi: przy tworzeniu nowego drzewa (profil → „Utwórz nowe drzewo” → „Wypełnij z pliku”) albo jako
+  **zastąpienie zawartości** istniejącego drzewa (ustawienia → „Import z pliku”). Przed zastąpieniem serwis sam pobiera kopię
+  zapasową obecnego drzewa, a podgląd pokazuje liczbę osób i ostrzeżenia. Widoczność i prywatność z pliku nie są
+  przejmowane (nowe drzewo startuje jako prywatne), żeby import nie opublikował niechcący drzewa.
+- **Uwaga na prywatność:** plik zawiera **pełne dane, także osób żyjących**, niezależnie od ustawień drzewa. Przechowuj go
+  ostrożnie i nie wrzucaj do publicznego repozytorium. Limit pliku to 5 MB, a drzewa ok. 900 KB danych (ok. 2000 osób).
+
+### Przeniesienie drzewa z repozytorium do bazy
+
+Workflow **„Przenieś drzewo do bazy”** (*Actions → Run workflow*) kopiuje drzewo z `data/drzewa/<slug>/` do bazy jako drzewo
+wskazanego użytkownika: podajesz slug oraz imię i nazwisko właściciela (tak jak w jego profilu, bez względu na wielkość liter
+i polskie znaki) albo jego UID. Osoba musi być wcześniej zarejestrowana. Drzewo zachowuje ustawienia z `drzewo.json`
+(widoczność, polityka dat osób żyjących), a źródło danych trafia do opisu. Workflow jest bezpieczny do ponownego uruchomienia
+(nic nie dubluje, chyba że zaznaczysz „zastąp”), a w logu nie ma adresów e-mail. Ta sama logika działa lokalnie na
+emulatorach: `npx tsx scripts/przenies-do-bazy.ts --slug lulkiewicz --imie Jan --nazwisko Kowalski`.
 
 ### Administrator drzew z repozytorium
 
@@ -484,7 +510,7 @@ tests/                  testy (vitest); tests/reguly – reguły Firestore na em
 `npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
 i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
 kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, usuwanie użytkownika
-i drzewa, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
+i drzewa, eksport i import JSON/GEDCOM, przeniesienie drzewa z repozytorium do bazy, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
 i zachowanie drzewa po usunięciu konta, opuszczanie drzewa, zmiana adresu e-mail, logowanie hasłem do konta Google. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
 Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google
 (dostępne tylko w buildzie testowym); działanie samego okna Google trzeba sprawdzić ręcznie na wdrożonej stronie.

@@ -30,6 +30,8 @@ export const SchematDrzewa = z
     przykladowe: z.boolean().optional(),
     /** Czy pokazać na stronie głównej. */
     wyrozniane: z.boolean().optional(),
+    /** Kopia źródłowa w repozytorium, która NIE jest publikowana na stronie (np. drzewo przeniesione do bazy albo dane testowe). */
+    archiwalne: z.boolean().optional(),
   })
   .superRefine((d, ctx) => {
     if (d.zakresLat.od > d.zakresLat.do) ctx.addIssue({ code: "custom", path: ["zakresLat"], message: '"od" nie może być późniejsze niż "do"' });

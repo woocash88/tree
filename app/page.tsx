@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { KartaDrzewa } from "@/components/KartaDrzewa";
 import { Naglowek } from "@/components/Naglowek";
+import { PolecaneDrzewa } from "@/components/PolecaneDrzewa";
 import { HeroKonta } from "@/components/konta/HeroKonta";
 import { Stopka } from "@/components/Stopka";
 import { SzukajDrzew } from "@/components/SzukajDrzew";
@@ -9,8 +9,6 @@ import { sciezkaIndeksuDrzew } from "@/lib/sciezki";
 
 export default async function StronaGlowna() {
   const drzewa = await pobierzDrzewa();
-  const wyrozniane = drzewa.filter((d) => d.meta.wyrozniane);
-  const polecane = wyrozniane.length ? wyrozniane : drzewa.slice(0, 3);
 
   return (
     <>
@@ -28,23 +26,12 @@ export default async function StronaGlowna() {
           </div>
           <p className="mt-6">
             <Link href={sciezkaIndeksuDrzew()} className="przycisk przycisk-glowny !min-h-11 !px-5">
-              Wszystkie drzewa ({drzewa.length})
+              Wszystkie drzewa
             </Link>
           </p>
         </section>
 
-        <section aria-labelledby="wyrozniane" className="mt-4">
-          <h2 id="wyrozniane" className="text-2xl">
-            Wyróżnione drzewa
-          </h2>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {polecane.map((d) => (
-              <li key={d.meta.slug}>
-                <KartaDrzewa drzewo={d} />
-              </li>
-            ))}
-          </ul>
-        </section>
+        <PolecaneDrzewa zRepozytorium={drzewa} />
       </main>
       <Stopka />
     </>

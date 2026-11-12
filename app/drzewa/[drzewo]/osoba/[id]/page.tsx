@@ -15,7 +15,8 @@ export async function generateStaticParams() {
     const d = (await pobierzDrzewo(meta.slug))!;
     for (const o of d.osobyLista) wynik.push({ drzewo: meta.slug, id: o.id });
   }
-  return wynik;
+  // Zastępcza strona 404, gdy nie ma opublikowanych drzew (patrz app/drzewa/[drzewo]/layout.tsx).
+  return wynik.length ? wynik : [{ drzewo: "brak", id: "brak" }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

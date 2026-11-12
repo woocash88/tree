@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import type { PodsumowanieDrzewa } from "@/lib/dane";
+import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
 import { ileOsob } from "@/lib/format";
 import { sciezkaDrzewa, sciezkaIndeksuDrzew } from "@/lib/sciezki";
 import { filtrujDrzewa } from "@/lib/szukaj-drzew";
+import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
 /** Wyszukiwarka drzew na stronie głównej: wyniki pojawiają się pod polem. */
-export function SzukajDrzew({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
+export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
+  const zBazy = useDrzewaPubliczne();
+  const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
   const wynik = useMemo(() => (q.trim() ? filtrujDrzewa(drzewa, q).slice(0, 6) : []), [drzewa, q]);
   return (

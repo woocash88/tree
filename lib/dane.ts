@@ -32,7 +32,7 @@ export async function pobierzDrzewa(): Promise<PodsumowanieDrzewa[]> {
   const { listaSlugow } = await import("./drzewa-pliki");
   const drzewa = await Promise.all(listaSlugow().map(zaladuj));
   return drzewa
-    .filter((d): d is Drzewo => !!d && d.meta.widocznosc === "publiczne")
+    .filter((d): d is Drzewo => !!d && d.meta.widocznosc === "publiczne" && !d.meta.archiwalne)
     .map(podsumuj)
     .sort((a, b) => a.meta.nazwa.localeCompare(b.meta.nazwa, "pl"));
 }

@@ -7,7 +7,10 @@ type Props = { children: React.ReactNode; params: Promise<{ drzewo: string }> };
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return (await pobierzDrzewa()).map(({ meta }) => ({ drzewo: meta.slug }));
+  const lista = (await pobierzDrzewa()).map(({ meta }) => ({ drzewo: meta.slug }));
+  // Eksport statyczny wymaga co najmniej jednej strony. Gdy w repozytorium nie ma opublikowanych drzew
+  // (wszystkie są w bazie), powstaje jedna strona zastępcza, która odpowiada 404.
+  return lista.length ? lista : [{ drzewo: "brak" }];
 }
 
 /** Układ wszystkich stron jednego drzewa: nagłówek z nazwą drzewa i wyszukiwarką jego osób. */

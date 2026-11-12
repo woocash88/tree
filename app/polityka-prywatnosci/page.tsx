@@ -81,6 +81,9 @@ export default function PolitykaPrywatnosci() {
             <p>
               Współpracownik wskazany przez właściciela może dodawać, zmieniać i usuwać osoby w drzewie, ale nie zmienia ustawień prywatności ani nie usuwa drzewa. Możesz też sam poprosić o dołączenie do cudzego drzewa: prośba zawiera tylko Twoje imię i nazwisko, widzi ją właściciel drzewa i znika po jego decyzji. Właściciel może przekazać drzewo jednemu ze swoich współpracowników – wtedy drzewo zostaje w serwisie, nawet jeśli dotychczasowy właściciel usunie konto.
             </p>
+            <p>
+              Właściciel drzewa może pobrać jego kopię (pliki JSON lub GEDCOM). Taki plik zawiera pełne dane, także osób żyjących, niezależnie od ustawień prywatności – za jego przechowywanie odpowiada osoba, która go pobrała.
+            </p>
             <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) właściciela drzewa polegający na dokumentowaniu historii rodziny, a w przypadku konta – umowa o świadczenie usługi (art. 6 ust. 1 lit. b RODO).</p>
           </Sekcja>
 

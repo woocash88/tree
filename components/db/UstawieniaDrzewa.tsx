@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import { dodajKolaboranta, listaProsbDrzewa, przekazWlasnosc, usunDrzewo, usunKolaboranta, usunProsbe, zapiszUstawienia, zatwierdzProsbe } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
-import type { Dostep, MetaDb, Prosba, Widocznosc } from "@/lib/baza/typy";
+import type { DaneDb, Dostep, MetaDb, Prosba, Widocznosc } from "@/lib/baza/typy";
+import { WymianaDanych } from "./WymianaDanych";
 import { MAKS_KOLABORANTOW } from "@/lib/baza/typy";
 import { POLITYKI_DAT, type PolitykaDat } from "@/lib/schemat-drzewa";
 import { ADRES_SERWISU, sciezkaDrzewa } from "@/lib/sciezki";
@@ -16,7 +17,7 @@ const OPISY_POLITYK: Record<PolitykaDat, { tytul: string; opis: string }> = {
 };
 
 /** Ustawienia drzewa: dane podstawowe, widoczność, prywatność osób żyjących, kolaboranci, usunięcie. */
-export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoId: string; meta: MetaDb; dostep: Dostep; naZmiane: () => Promise<void> }) {
+export function UstawieniaDrzewa({ drzewoId, meta, dane, dostep, naZmiane }: { drzewoId: string; meta: MetaDb; dane: DaneDb | null; dostep: Dostep; naZmiane: () => Promise<void> }) {
   const id = useId();
   const router = useRouter();
   const [nazwa, setNazwa] = useState(meta.nazwa);
@@ -261,6 +262,8 @@ export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoI
           )}
         </section>
       )}
+
+      <WymianaDanych drzewoId={drzewoId} meta={meta} dane={dane} naZmiane={naZmiane} />
 
       <section className="szklo space-y-3 border-blad p-6" aria-label="Usuwanie drzewa">
         <h2 className="text-2xl text-blad">Usuń drzewo</h2>

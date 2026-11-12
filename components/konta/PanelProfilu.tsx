@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
-import { listaMoich, listaProsbDrzewa, opuscDrzewo, utworzDrzewo, type WpisDrzewa } from "@/lib/baza/api";
+import { listaMoich, listaProsbDrzewa, opuscDrzewo, utworzDrzewo, zapiszDane, type WpisDrzewa } from "@/lib/baza/api";
+import { wczytajPlikDrzewa } from "@/lib/baza/plik";
+import type { WynikImportu } from "@/lib/baza/wymiana";
 import { czyKontoUsuwane, komunikatBledu, usunWlasneKonto, wyloguj, wyslijWeryfikacje, zakonczUsuwanieKonta, zapiszProfil } from "@/lib/baza/konta";
 import { POLITYKI_DAT, type PolitykaDat } from "@/lib/schemat-drzewa";
 import type { Widocznosc } from "@/lib/baza/typy";
@@ -64,6 +66,7 @@ function NoweDrzewo({ uid, nazwaWlasciciela, mozeTworzyc }: { uid: string; nazwa
   const [polityka, setPolityka] = useState<PolitykaDat>("ukryj");
   const [blad, setBlad] = useState("");
   const [trwa, setTrwa] = useState(false);
+  const [zPliku, setZPliku] = useState<{ plik: string; wynik: WynikImportu } | null>(null);
 
   if (!otwarte) {
     return (
@@ -82,6 +85,7 @@ function NoweDrzewo({ uid, nazwaWlasciciela, mozeTworzyc }: { uid: string; nazwa
         setTrwa(true);
         try {
           const nowe = await utworzDrzewo({ nazwa, opis, region, widocznosc, politykaDatZyjacych: polityka }, uid, nazwaWlasciciela);
+          if (zPliku) await zapiszDane(nowe, () => zPliku.wynik.dane);
           router.push(sciezkaDrzewa(slugDb(nowe)));
         } catch (err) {
           setBlad(komunikatBledu(err));
@@ -131,7 +135,40 @@ function NoweDrzewo({ uid, nazwaWlasciciela, mozeTworzyc }: { uid: string; nazwa
           </select>
         </div>
       </div>
-      <p className="text-xs text-tekst-2">Te ustawienia możesz później zmienić. Ty i kolaboranci zawsze widzicie pełne dane.</p>
+      <div>
+        <label className="block text-sm text-tekst-2" htmlFor={`${id}-i`}>
+          Wypełnij z pliku (opcjonalnie): kopia .json z serwisu albo GEDCOM .ged
+        </label>
+        <input
+          id={`${id}-i`}
+          type="file"
+          accept=".json,.ged,.gedcom,application/json"
+          className="mt-1 block text-sm"
+          onChange={async (e) => {
+            const plik = e.target.files?.[0];
+            setZPliku(null);
+            setBlad("");
+            if (!plik) return;
+            try {
+              const wynik = await wczytajPlikDrzewa(plik);
+              setZPliku({ plik: plik.name, wynik });
+              setNazwa((n) => n || wynik.ustawienia.nazwa || "");
+              setOpis((o) => o || wynik.ustawienia.opis || "");
+              setRegion((r) => r || wynik.ustawienia.region || "");
+            } catch (err) {
+              setBlad(komunikatBledu(err));
+              e.target.value = "";
+            }
+          }}
+        />
+        {zPliku && (
+          <p className="mt-1 text-sm" role="status">
+            {zPliku.plik}: {zPliku.wynik.dane.osoby.length} osób, {zPliku.wynik.dane.malzenstwa.length} małżeństw zostanie zaimportowanych do nowego drzewa.
+            {zPliku.wynik.ostrzezenia.length > 0 && <span className="block text-tekst-2">Uwagi: {zPliku.wynik.ostrzezenia.join(" ")}</span>}
+          </p>
+        )}
+      </div>
+      <p className="text-xs text-tekst-2">Te ustawienia możesz później zmienić. Ty i kolaboranci zawsze widzicie pełne dane. Widoczność i prywatność z pliku nie są przejmowane – obowiązują ustawienia powyżej.</p>
       {blad && (
         <p role="alert" className="text-sm font-semibold text-blad">
           {blad}

@@ -209,7 +209,7 @@ export function WidokDrzewaDb() {
   if (w === "ustawienia") {
     tresc = (
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-8 pt-8">
-        <UstawieniaDrzewa key={id} drzewoId={id} meta={meta} dostep={dostep} naZmiane={przeladuj} />
+        <UstawieniaDrzewa key={id} drzewoId={id} meta={meta} dane={dane} dostep={dostep} naZmiane={przeladuj} />
       </main>
     );
   } else if (!drzewo) {

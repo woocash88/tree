@@ -354,30 +354,34 @@ export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
       <SekcjaUzytkownikow />
       <SekcjaDrzewUzytkownikow />
 
-      <h2 className="mt-10 text-2xl">Drzewa z repozytorium ({drzewa.length})</h2>
-      <section className="panel mt-3 p-4 text-sm" aria-label="Jak opublikować zmiany drzew z repozytorium">
-        <p>
-          Te drzewa są częścią kodu serwisu (pliki w <code>data/drzewa/</code>). Zmiany z tego panelu zapisują się najpierw tylko w tej przeglądarce – pobierz plik, zastosuj go w repozytorium i wdróż stronę:
-        </p>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>drzewa (edycja, usunięcie): <code>npm run zastosuj-zmiany-drzew -- zmiany-drzew.json</code></li>
-          <li>osoby: <code>npm run zastosuj-edycje -- &lt;slug&gt; edycje-&lt;slug&gt;.json</code></li>
-        </ul>
-        {api.liczba > 0 ? (
-          <p className="mt-3 flex flex-wrap items-center gap-2">
-            <strong>Zmiany drzew do opublikowania: {api.liczba}.</strong>
-            <button type="button" className="przycisk przycisk-glowny !min-h-8" onClick={api.pobierz}>Pobierz zmiany drzew (JSON)</button>
-            <button type="button" className="przycisk !min-h-8" onClick={() => { if (window.confirm("Cofnąć wszystkie niezapisane zmiany drzew?")) api.wyczysc(); }}>Cofnij wszystkie</button>
-          </p>
-        ) : (
-          <p className="mt-3 text-tekst-2">Brak niezapisanych zmian drzew.</p>
-        )}
-      </section>
-      <ul className="mt-4 grid gap-4">
-        {drzewa.map((d) => (
-          <WierszDrzewa key={d.meta.slug} drzewo={d} api={api} />
-        ))}
-      </ul>
+      {drzewa.length > 0 && (
+        <>
+          <h2 className="mt-10 text-2xl">Drzewa z repozytorium ({drzewa.length})</h2>
+          <section className="panel mt-3 p-4 text-sm" aria-label="Jak opublikować zmiany drzew z repozytorium">
+            <p>
+              Te drzewa są częścią kodu serwisu (pliki w <code>data/drzewa/</code>). Zmiany z tego panelu zapisują się najpierw tylko w tej przeglądarce – pobierz plik, zastosuj go w repozytorium i wdróż stronę:
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              <li>drzewa (edycja, usunięcie): <code>npm run zastosuj-zmiany-drzew -- zmiany-drzew.json</code></li>
+              <li>osoby: <code>npm run zastosuj-edycje -- &lt;slug&gt; edycje-&lt;slug&gt;.json</code></li>
+            </ul>
+            {api.liczba > 0 ? (
+              <p className="mt-3 flex flex-wrap items-center gap-2">
+                <strong>Zmiany drzew do opublikowania: {api.liczba}.</strong>
+                <button type="button" className="przycisk przycisk-glowny !min-h-8" onClick={api.pobierz}>Pobierz zmiany drzew (JSON)</button>
+                <button type="button" className="przycisk !min-h-8" onClick={() => { if (window.confirm("Cofnąć wszystkie niezapisane zmiany drzew?")) api.wyczysc(); }}>Cofnij wszystkie</button>
+              </p>
+            ) : (
+              <p className="mt-3 text-tekst-2">Brak niezapisanych zmian drzew.</p>
+            )}
+          </section>
+          <ul className="mt-4 grid gap-4">
+            {drzewa.map((d) => (
+              <WierszDrzewa key={d.meta.slug} drzewo={d} api={api} />
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

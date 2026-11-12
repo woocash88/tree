@@ -8,7 +8,9 @@ export const dynamicParams = false;
 type Props = { params: Promise<{ plik: string }> };
 
 export async function generateStaticParams() {
-  return (await pobierzDrzewa()).map(({ meta }) => ({ plik: `szukaj-${meta.slug}.json` }));
+  const lista = (await pobierzDrzewa()).map(({ meta }) => ({ plik: `szukaj-${meta.slug}.json` }));
+  // Eksport statyczny wymaga co najmniej jednego pliku; bez opublikowanych drzew jest to pusty indeks.
+  return lista.length ? lista : [{ plik: "szukaj-brak.json" }];
 }
 
 export async function GET(_zadanie: Request, { params }: Props) {
