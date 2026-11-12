@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { KartaOsoby } from "@/components/KartaOsoby";
+import { LinieRodziny } from "@/components/LinieRodziny";
 import { Stopka } from "@/components/Stopka";
 import { czyZmarla, opisZdarzenia, pobierzDrzewa, pobierzDrzewo, sciezkaPochodzenia, type OsobaWidoczna } from "@/lib/dane";
 import { lataZycia, pelneImie, wiek } from "@/lib/format";
@@ -45,52 +46,12 @@ const NIEPEWNE: Record<string, string> = {
   plec: "płeć przyjęta z kontekstu",
 };
 
-function Poziom({ tytul, children, className = "" }: { tytul: string; children: React.ReactNode; className?: string }) {
+function Poziom({ tytul, children, className = "", linia }: { tytul: string; children: React.ReactNode; className?: string; linia?: string }) {
   return (
-    <section className={className}>
+    <section className={className} data-linia={linia}>
       <h2 className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">{tytul}</h2>
       {children}
     </section>
-  );
-}
-
-const KROPKA = "absolute size-2 rounded-full bg-akcent";
-const SIATKA = "grid-cols-[1fr_minmax(20rem,1fr)_1fr]";
-
-/** Krzywa odgałęziająca się od linii rodzic → osoba w stronę kolumny rodzeństwa (ćwiartka elipsy). */
-function KrzywaDoRodzenstwa() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 100 56" preserveAspectRatio="none" fill="none" className="absolute inset-0 h-full w-full overflow-visible text-[color:var(--linia)]">
-      <path d="M100 0C70 0 50 22 50 56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-    </svg>
-  );
-}
-
-/**
- * Łącznik od rodziców (na szerokim ekranie): prosta linia schodzi spod rodziców do karty osoby, a od niej
- * odgałęzia się gładka krzywa do kolumny rodzeństwa. Obie kończą się kropką. Kolumny i odstęp odpowiadają
- * siatce poniżej.
- */
-function LacznikRodzenstwa() {
-  return (
-    <>
-      <div className="lg:hidden">
-        <Lacznik />
-      </div>
-      <div aria-hidden="true" className={`mb-3 hidden h-14 gap-6 lg:grid ${SIATKA}`}>
-        <div className="relative">
-          <KrzywaDoRodzenstwa />
-          <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
-        </div>
-        <div className="relative">
-          {/* odcinek poziomy z miejsca rozgałęzienia do krzywej rodzeństwa (obejmuje odstęp między kolumnami) */}
-          <span className="absolute left-[-1.5rem] right-1/2 top-0 border-t-[2.5px] border-[color:var(--linia)]" />
-          <span className="absolute inset-y-0 left-1/2 w-[2.5px] -translate-x-1/2 rounded-full bg-[var(--linia)]" />
-          <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
-        </div>
-        <div />
-      </div>
-    </>
   );
 }
 
@@ -175,22 +136,26 @@ export default async function StronaOsoby({ params }: Props) {
           </>
         )}
 
+        <LinieRodziny maDzieci={dzieci.length > 0}>
         {(ojciec || matka) && (
           <>
             <Poziom tytul="Rodzice">
-              <ul className={`mx-auto grid max-w-2xl gap-2 ${ojciec && matka ? "grid-cols-2" : "max-w-xs grid-cols-1"}`}>
+              <ul data-linia="rodzice" className={`mx-auto grid max-w-2xl gap-2 ${ojciec && matka ? "grid-cols-2" : "max-w-xs grid-cols-1"}`}>
                 {ojciec && <li>{karta(ojciec, "ojciec", false, "👨")}</li>}
                 {matka && <li>{karta(matka, "matka", false, "👩")}</li>}
               </ul>
               {o.niepewne?.includes("rodzice") && <p className="mt-1 text-center text-sm text-tekst-2">Przypisanie rodziców jest w źródle niejednoznaczne.</p>}
             </Poziom>
-            {rodzenstwo.length > 0 ? <LacznikRodzenstwa /> : <Lacznik />}
+            {/* na szerokim ekranie miejsce na linie rysowane przez LinieRodziny; na wąskim – prosta kreska */}
+            <div className="lg:hidden">
+              <Lacznik />
+            </div>
+            <div aria-hidden="true" className="hidden h-16 lg:block" />
           </>
         )}
 
         <div className={`grid gap-6 ${rodzenstwo.length || zwiazki.length ? "lg:grid-cols-[1fr_minmax(20rem,1fr)_1fr]" : ""} lg:items-start`}>
-          <div className="flex flex-col items-center lg:order-2 lg:self-stretch">
-            <article className="szklo w-full px-5 py-4 text-center" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
+          <article data-linia="osoba" className="szklo px-5 py-4 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">
               Pokolenie {d.pokolenie.get(o.id)} ·{" "}
               <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="link">
@@ -248,9 +213,6 @@ export default async function StronaOsoby({ params }: Props) {
               </Link>
             </div>
           </article>
-            {/* linia od osoby w dół aż do dzieci – wypełnia wolne miejsce, gdy kolumna rodzeństwa jest dłuższa */}
-            {dzieci.length > 0 && <div aria-hidden="true" className="hidden w-[2.5px] flex-1 rounded-full bg-[var(--linia)] lg:block" />}
-          </div>
 
           {zwiazki.length > 0 && (
             <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3 lg:pl-10">
@@ -259,7 +221,7 @@ export default async function StronaOsoby({ params }: Props) {
                   <li key={z.osoba.id} className="relative">
                     {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
                     <span aria-hidden="true" className="absolute -left-16 top-1/2 hidden h-[2.5px] w-16 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
-                      <span className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
+                      <span data-linia={z === zwiazki[0] ? "plus" : undefined} className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
                     </span>
                     {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}
                   </li>
@@ -269,7 +231,7 @@ export default async function StronaOsoby({ params }: Props) {
           )}
 
           {rodzenstwo.length > 0 && (
-            <Poziom tytul={`Rodzeństwo (${rodzenstwo.length})`} className="lg:order-1">
+            <Poziom tytul={`Rodzeństwo (${rodzenstwo.length})`} className="lg:order-1" linia="rodzenstwo">
               <ul className="grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {rodzenstwo.map((r) => (
                   <li key={r.osoba.id}>{karta(r.osoba, r.przyrodnie ? "rodzeństwo przyrodnie" : undefined, true)}</li>
@@ -278,6 +240,7 @@ export default async function StronaOsoby({ params }: Props) {
             </Poziom>
           )}
         </div>
+        </LinieRodziny>
 
         {dzieci.length > 0 && (
           <>
