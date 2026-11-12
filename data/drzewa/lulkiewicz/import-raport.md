@@ -11,8 +11,8 @@ Poprawki wpisuj do `poprawki.json` drzewa (opis w README), a następnie uruchom 
 - Osoby scalone (odsyłacze „[n]” i sekcja „scal”): **1**.
 - Osoby w `rodzina.json`: **427** = 303 + 125 − 1.
 - Małżeństwa: **125**, pokolenia: **10**, gałęzie: **8** (w tym wspólny pień).
-- Osoby z flagą `zyjaca` (ur. po 1925, bez daty śmierci): **59**.
-- Zastosowane poprawki ręczne: **2** osób, **0** scaleń.
+- Osoby z flagą `zyjaca` (ur. po 1925, bez daty śmierci): **63**.
+- Zastosowane poprawki ręczne: **6** osób, **0** scaleń.
 
 ## Wiersze bez numeru pokolenia
 
@@ -111,3 +111,7 @@ Poprawki wpisuj do `poprawki.json` drzewa (opis w README), a następnie uruchom 
 
 - `aukasz-mocek`: imie → "Łukasz", plec → "M"
 - `aukasz-zemboldt`: imie → "Łukasz", plec → "M"
+- `nn-stanislawski`: imie → "Łukasz", nazwisko → "Stanisławski", nazwiskoRodowe → null, urodzenie → {"wartosc":"1988-06-22","dokladnosc":"dokladna"}, smierc → null, notatka → null
+- `marcin-stanislawski`: imie → "Marcin", nazwisko → "Stanisławski", nazwiskoRodowe → null, urodzenie → {"wartosc":"1989-11-27","dokladnosc":"dokladna"}, smierc → null, notatka → null
+- `zbigniew-stanislawski`: imie → "Zbigniew", nazwisko → "Stanisławski", nazwiskoRodowe → null, urodzenie → {"wartosc":"1964-05-02","dokladnosc":"dokladna"}, smierc → null, notatka → null
+- `urszula-zietek`: imie → "Urszula", nazwisko → "Stanisławska", nazwiskoRodowe → "Ziętek", urodzenie → {"wartosc":"1964-03-25","dokladnosc":"dokladna"}, smierc → null, notatka → null

@@ -2,11 +2,19 @@
   "slug": "lulkiewicz",
   "nazwa": "Rodzina Lulkiewiczów",
   "opis": "Potomkowie Sebastiana i Wiktora Lulkiewiczów z Kobylina – dziesięć pokoleń, od ok. 1780 r.",
-  "zakresLat": { "od": 1780, "do": 2008 },
+  "zakresLat": {
+    "od": 1780,
+    "do": 2008
+  },
   "region": "Kobylin, Wielkopolska",
-  "zrodlo": { "nazwa": "genealogia.okiem.pl", "url": "https://genealogia.okiem.pl/drzewo/238/lulkiewicz" },
-  "autor": { "nazwa": "Redakcja serwisu Nasi przodkowie" },
-  "zaktualizowano": "2026-11-11",
+  "zrodlo": {
+    "nazwa": "genealogia.okiem.pl",
+    "url": "https://genealogia.okiem.pl/drzewo/238/lulkiewicz"
+  },
+  "autor": {
+    "nazwa": "Redakcja serwisu Nasi przodkowie"
+  },
+  "zaktualizowano": "2026-11-12",
   "widocznosc": "publiczne",
   "politykaDatZyjacych": "ukryj",
   "wyrozniane": true

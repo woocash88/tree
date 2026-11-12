@@ -118,6 +118,8 @@ describe("import drzewa Lulkiewiczów", () => {
     }
     expect(poId.get("kazimiera-pospiech-1928")!.zyjaca).toBeUndefined(); // zm. 1995
     expect(poId.get("teresa-rybacka")!.zyjaca).toBe(true);
+    // Osoby, którym poprawka dopisała datę urodzenia (edycje z panelu), też są chronione.
+    for (const id of ["zbigniew-stanislawski", "urszula-zietek", "nn-stanislawski", "marcin-stanislawski"]) expect(poId.get(id)!.zyjaca, id).toBe(true);
     // Rok urodzenia osoby żyjącej nie może wyciekać przez id (adres URL).
     for (const o of rodzina.osoby) if (o.zyjaca) expect(o.id).not.toContain(o.urodzenie.wartosc!.slice(0, 4));
   });

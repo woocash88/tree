@@ -646,6 +646,12 @@ export function importuj(zrodlo: string, poprawki: Poprawki = {}): WynikImportu 
     if (wynikOsoby.some((o) => o.id === nowa.id)) throw new Error(`poprawki.json → dodane: osoba o id „${nowa.id}” już istnieje.`);
     wynikOsoby.push(nowa);
   }
+  // Ta sama reguła po poprawkach: osoba, której edycja (np. z panelu administratora) dopisała datę urodzenia,
+  // też jest „żyjąca” – inaczej jej data trafiłaby na publiczną stronę mimo polityki „ukryj”.
+  for (const o of wynikOsoby) {
+    const rok = o.urodzenie.wartosc ? Number(o.urodzenie.wartosc.slice(0, 4)) : null;
+    if (rok !== null && rok > ROK_GRANICZNY_ZYJACYCH && !o.smierc && !o.zyjaca) o.zyjaca = true;
+  }
 
   const surowa = {
     galezie,

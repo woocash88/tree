@@ -1746,40 +1746,44 @@
       "nazwisko": "Stanisławski",
       "plec": "M",
       "urodzenie": {
-        "dokladnosc": "nieznana"
+        "wartosc": "1964-05-02",
+        "dokladnosc": "dokladna"
       },
       "ojciecId": "sylwester-stanislawski",
       "matkaId": "anna-lulkiewicz-2",
       "galazId": "antoni",
+      "zyjaca": true,
       "wierszZrodla": 87
     },
     {
       "id": "urszula-zietek",
       "imie": "Urszula",
-      "nazwisko": "Ziętek",
+      "nazwisko": "Stanisławska",
+      "nazwiskoRodowe": "Ziętek",
       "plec": "K",
       "urodzenie": {
-        "dokladnosc": "nieznana"
+        "wartosc": "1964-03-25",
+        "dokladnosc": "dokladna"
       },
       "ojciecId": null,
       "matkaId": null,
       "galazId": "antoni",
+      "zyjaca": true,
       "wierszZrodla": 87
     },
     {
       "id": "nn-stanislawski",
-      "imie": "",
+      "imie": "Łukasz",
       "nazwisko": "Stanisławski",
       "plec": "M",
       "urodzenie": {
-        "dokladnosc": "nieznana"
+        "wartosc": "1988-06-22",
+        "dokladnosc": "dokladna"
       },
       "ojciecId": "zbigniew-stanislawski",
       "matkaId": "urszula-zietek",
       "galazId": "antoni",
-      "niepewne": [
-        "imie"
-      ],
+      "zyjaca": true,
       "wierszZrodla": 88
     },
     {
@@ -1788,11 +1792,13 @@
       "nazwisko": "Stanisławski",
       "plec": "M",
       "urodzenie": {
-        "dokladnosc": "nieznana"
+        "wartosc": "1989-11-27",
+        "dokladnosc": "dokladna"
       },
       "ojciecId": "zbigniew-stanislawski",
       "matkaId": "urszula-zietek",
       "galazId": "antoni",
+      "zyjaca": true,
       "wierszZrodla": 89
     },
     {
