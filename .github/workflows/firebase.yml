@@ -28,6 +28,22 @@ jobs:
         env:
           # Adres główny (bez podkatalogu): sitemap.xml i robots.txt dostają właściwą domenę.
           NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || format('https://{0}.web.app', vars.FIREBASE_PROJECT_ID) }}
+      - name: Sprawdź konfigurację Firebase (nie wypisuje sekretu)
+        env:
+          KLUCZ: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJEKT: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$PROJEKT" ]; then echo "::error::Brak zmiennej FIREBASE_PROJECT_ID (zakładka Variables)."; exit 1; fi
+          if [ -z "$KLUCZ" ]; then echo "::error::Sekret FIREBASE_SERVICE_ACCOUNT jest pusty albo nie istnieje (zakładka Secrets, dokładna nazwa)."; exit 1; fi
+          node -e '
+            let k;
+            try { k = JSON.parse(process.env.KLUCZ); } catch (e) { console.log("::error::Sekret nie jest poprawnym JSON-em – wklej cały plik klucza, od { do }."); process.exit(1); }
+            const braki = ["type","project_id","private_key","client_email"].filter((p) => !k[p]);
+            if (k.type !== "service_account" || braki.length) { console.log("::error::To nie jest klucz konta serwisowego (brakuje: " + braki.join(", ") + "). Pobierz klucz JSON z Google Cloud → Konta serwisowe."); process.exit(1); }
+            if (k.project_id !== process.env.PROJEKT) { console.log("::error::Klucz jest z projektu \"" + k.project_id + "\", a FIREBASE_PROJECT_ID to \"" + process.env.PROJEKT + "\"."); process.exit(1); }
+            console.log("Klucz poprawny. Konto serwisowe: " + k.client_email);
+            console.log("Nadaj temu kontu role: Firebase Hosting Admin oraz Service Usage Consumer.");
+          '
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

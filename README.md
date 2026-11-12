@@ -343,8 +343,8 @@ walidacja danych nie przejdą, strona **nie** jest aktualizowana, a w zakładce 
 2. Wejdź w **Build → Hosting** i kliknij „Rozpocznij”; kroki z instalacją CLI możesz pominąć, ale zakończ kreator,
    żeby Hosting został włączony.
 3. **Klucz konta serwisowego**: w Google Cloud (<https://console.cloud.google.com/iam-admin/serviceaccounts>,
-   ten sam projekt) utwórz konto serwisowe z rolą **Firebase Hosting Admin**, potem *Klucze → Dodaj klucz →
-   JSON* i pobierz plik.
+   ten sam projekt) utwórz konto serwisowe z rolami **Firebase Hosting Admin** i **Service Usage Consumer**, potem *Klucze → Dodaj klucz →
+   JSON* i pobierz plik. W projekcie muszą być włączone API: Firebase Management, Firebase Hosting i Cloud Resource Manager.
 4. W repozytorium na GitHubie: *Settings → Secrets and variables → Actions*:
    - zakładka **Secrets** → *New repository secret* o nazwie `FIREBASE_SERVICE_ACCOUNT`, wartość: **cała zawartość**
      pobranego pliku JSON,
