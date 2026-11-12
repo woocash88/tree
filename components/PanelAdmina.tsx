@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
-import type { PodsumowanieDrzewa } from "@/lib/dane";
-import { SKROT_ADMINA } from "@/lib/admin";
+import { useCallback, useEffect, useState } from "react";
+import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
+import { listaUzytkownikow, listaWszystkich, usunDaneUzytkownika, usunDrzewo, type WpisDrzewa, type WpisUzytkownika } from "@/lib/baza/api";
+import { komunikatBledu } from "@/lib/baza/konta";
 import { ileOsob, ilePokolen } from "@/lib/format";
 import { POLITYKI_DAT, type DrzewoMeta, type PolitykaDat } from "@/lib/schemat-drzewa";
-import { sciezkaDrzewa, sciezkaGalezi } from "@/lib/sciezki";
+import { sciezkaDrzewa, sciezkaGalezi, sciezkaUstawienDrzewa, slugDb } from "@/lib/sciezki";
 import { bledyMeta, zastosujZmianeMeta, type ZmianaDrzewa } from "@/lib/zmiany-drzew";
-import { useCzyAdmin, wylogujAdmina, zalogujAdmina } from "./useAdmin";
+import { useKonto } from "./konta/AuthProvider";
 import { useEdycje } from "./useEdycje";
 import { useZmianyDrzew } from "./useZmianyDrzew";
 
@@ -17,56 +18,6 @@ const OPISY_POLITYK: Record<PolitykaDat, string> = {
   "tylko-rok": "tylko rok urodzenia",
   pokaz: "pokaż wszystkie dane",
 };
-
-function Logowanie() {
-  const id = useId();
-  const [haslo, setHaslo] = useState("");
-  const [blad, setBlad] = useState("");
-  const [trwa, setTrwa] = useState(false);
-
-  const zaloguj = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setTrwa(true);
-    setBlad("");
-    try {
-      if (!(await zalogujAdmina(haslo))) setBlad("Nieprawidłowe hasło.");
-    } catch {
-      setBlad("Przeglądarka nie pozwoliła sprawdzić hasła. Otwórz stronę przez https (albo localhost).");
-    }
-    setTrwa(false);
-  };
-
-  if (!SKROT_ADMINA) {
-    return (
-      <div className="szklo mx-auto max-w-md p-6">
-        <h1 className="text-2xl">Administracja</h1>
-        <p className="mt-3 text-tekst-2">
-          Tryb administratora nie jest skonfigurowany. Ustaw hasło poleceniem <code>npm run ustaw-haslo</code>, a potem zbuduj i wdróż stronę.
-        </p>
-      </div>
-    );
-  }
-  return (
-    <form onSubmit={zaloguj} className="szklo mx-auto max-w-md p-6" aria-labelledby={`${id}-t`}>
-      <h1 id={`${id}-t`} className="text-2xl">
-        Administracja
-      </h1>
-      <p className="mt-2 text-sm text-tekst-2">Podaj hasło administratora, aby włączyć narzędzia edycji osób i zarządzania drzewami.</p>
-      <label htmlFor={`${id}-h`} className="mt-4 block text-sm text-tekst-2">
-        Hasło
-      </label>
-      <input id={`${id}-h`} type="password" autoComplete="current-password" value={haslo} onChange={(e) => setHaslo(e.target.value)} className="pole mt-1 w-full" aria-describedby={blad ? `${id}-b` : undefined} aria-invalid={!!blad} required />
-      {blad && (
-        <p id={`${id}-b`} role="alert" className="mt-2 text-sm font-semibold text-blad">
-          {blad}
-        </p>
-      )}
-      <button type="submit" className="przycisk przycisk-glowny mt-4 !min-h-10 w-full" disabled={trwa || !haslo}>
-        {trwa ? "Sprawdzanie…" : "Zaloguj"}
-      </button>
-    </form>
-  );
-}
 
 function Pole({ etykieta, children }: { etykieta: string; children: React.ReactNode }) {
   return (
@@ -81,8 +32,8 @@ function FormularzDrzewa({ meta, naZapis, naAnuluj }: { meta: DrzewoMeta; naZapi
   const [nazwa, setNazwa] = useState(meta.nazwa);
   const [opis, setOpis] = useState(meta.opis);
   const [region, setRegion] = useState(meta.region);
-  const [zrodloNazwa, setZrodloNazwa] = useState(meta.zrodlo.nazwa);
-  const [zrodloUrl, setZrodloUrl] = useState(meta.zrodlo.url);
+  const [zrodloNazwa, setZrodloNazwa] = useState(meta.zrodlo?.nazwa ?? "");
+  const [zrodloUrl, setZrodloUrl] = useState(meta.zrodlo?.url ?? "");
   const [autorNazwa, setAutorNazwa] = useState(meta.autor.nazwa);
   const [autorUrl, setAutorUrl] = useState(meta.autor.url ?? "");
   const [polityka, setPolityka] = useState<PolitykaDat>(meta.politykaDatZyjacych);
@@ -246,64 +197,187 @@ function WierszDrzewa({ drzewo, api }: { drzewo: PodsumowanieDrzewa; api: Return
   );
 }
 
-/** Panel administratora: logowanie, zarządzanie drzewami (edycja metadanych, usuwanie) i eksport zmian. */
+function SekcjaUzytkownikow() {
+  const [lista, setLista] = useState<WpisUzytkownika[] | null>(null);
+  const [blad, setBlad] = useState("");
+  const [info, setInfo] = useState("");
+  const [trwa, setTrwa] = useState<string | null>(null);
+  const [filtr, setFiltr] = useState("");
+
+  const wczytaj = useCallback(async () => {
+    try {
+      setLista(await listaUzytkownikow());
+    } catch (e) {
+      setBlad(komunikatBledu(e));
+    }
+  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- wczytanie listy po wejściu do panelu
+    void wczytaj();
+  }, [wczytaj]);
+
+  const widoczni = (lista ?? []).filter((u) => `${u.imie} ${u.nazwisko} ${u.email}`.toLowerCase().includes(filtr.toLowerCase()));
+  return (
+    <section aria-label="Użytkownicy" className="mt-8">
+      <h2 className="text-2xl">Użytkownicy ({lista?.length ?? "…"})</h2>
+      <input type="search" className="pole mt-3 w-full max-w-sm" placeholder="Szukaj po imieniu, nazwisku lub e-mailu" value={filtr} onChange={(e) => setFiltr(e.target.value)} aria-label="Szukaj użytkownika" />
+      {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
+      {info && <p role="status" className="mt-2 text-sm font-semibold">{info}</p>}
+      <ul className="mt-3 grid gap-2">
+        {widoczni.map((u) => (
+          <li key={u.uid} className="szklo flex flex-wrap items-center gap-x-4 gap-y-1 p-3">
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold">{u.imie} {u.nazwisko}</p>
+              <p className="truncate text-sm text-tekst-2">{u.email} · od {u.utworzono.slice(0, 10)}</p>
+            </div>
+            <button
+              type="button"
+              className="przycisk !min-h-8"
+              disabled={trwa === u.uid}
+              onClick={async () => {
+                if (!window.confirm(`Usunąć użytkownika ${u.imie} ${u.nazwisko} (${u.email}) wraz z jego drzewami?\n\nTej operacji nie można cofnąć. Konto zostanie zablokowane.`)) return;
+                setTrwa(u.uid);
+                setBlad("");
+                try {
+                  const { drzew } = await usunDaneUzytkownika(u.uid, u.email, { zablokuj: true });
+                  setInfo(`Usunięto użytkownika ${u.email} i jego drzewa (${drzew}).`);
+                  await wczytaj();
+                } catch (e) {
+                  setBlad(komunikatBledu(e));
+                }
+                setTrwa(null);
+              }}
+            >
+              {trwa === u.uid ? "Usuwanie…" : "Usuń użytkownika"}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {lista && widoczni.length === 0 && <p className="mt-3 text-sm italic text-tekst-2">Brak użytkowników.</p>}
+    </section>
+  );
+}
+
+function SekcjaDrzewUzytkownikow() {
+  const [lista, setLista] = useState<WpisDrzewa[] | null>(null);
+  const [blad, setBlad] = useState("");
+  const [trwa, setTrwa] = useState<string | null>(null);
+  const wczytaj = useCallback(async () => {
+    try {
+      setLista(await listaWszystkich());
+    } catch (e) {
+      setBlad(komunikatBledu(e));
+    }
+  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- wczytanie listy po wejściu do panelu
+    void wczytaj();
+  }, [wczytaj]);
+  return (
+    <section aria-label="Drzewa użytkowników" className="mt-8">
+      <h2 className="text-2xl">Drzewa użytkowników ({lista?.length ?? "…"})</h2>
+      {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
+      <ul className="mt-3 grid gap-2">
+        {(lista ?? []).map(({ id, meta }) => (
+          <li key={id} className="szklo flex flex-wrap items-center gap-x-4 gap-y-2 p-3">
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold">
+                <Link href={sciezkaDrzewa(slugDb(id))} className="link">{meta.nazwa}</Link>
+              </p>
+              <p className="text-sm text-tekst-2">
+                {meta.widocznosc === "publiczne" ? "publiczne" : "prywatne"} · {ileOsob(meta.statystyki.osob)} · właściciel: {meta.wlascicielNazwa}
+                {meta.kolaboranci.length > 0 && ` · kolaborantów: ${meta.kolaboranci.length}`}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link href={sciezkaDrzewa(slugDb(id))} className="przycisk !min-h-8">Otwórz i edytuj</Link>
+              <Link href={sciezkaUstawienDrzewa(slugDb(id))} className="przycisk !min-h-8">Ustawienia</Link>
+              <button
+                type="button"
+                className="przycisk !min-h-8"
+                disabled={trwa === id}
+                onClick={async () => {
+                  if (!window.confirm(`Usunąć drzewo „${meta.nazwa}” (właściciel: ${meta.wlascicielNazwa})?\n\nTej operacji nie można cofnąć.`)) return;
+                  setTrwa(id);
+                  try {
+                    await usunDrzewo(id);
+                    await wczytaj();
+                  } catch (e) {
+                    setBlad(komunikatBledu(e));
+                  }
+                  setTrwa(null);
+                }}
+              >
+                Usuń
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {lista && lista.length === 0 && <p className="mt-3 text-sm italic text-tekst-2">Użytkownicy nie utworzyli jeszcze żadnych drzew.</p>}
+    </section>
+  );
+}
+
+/** Panel administratora serwisu: użytkownicy, ich drzewa oraz drzewa z repozytorium. Dostępny tylko dla administratora. */
 export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
-  const admin = useCzyAdmin();
+  const konto = useKonto();
   const api = useZmianyDrzew();
-  if (!admin) return <Logowanie />;
+  if (konto.status === "wylaczone") return <p className="szklo p-6 text-tekst-2">Konta użytkowników nie są jeszcze włączone w tym serwisie.</p>;
+  if (konto.status === "ladowanie") return <p className="py-16 text-center text-tekst-2" role="status">Wczytywanie…</p>;
+  if (konto.status === "gosc") {
+    return (
+      <div className="szklo mx-auto max-w-md p-6">
+        <h1 className="text-2xl">Administracja</h1>
+        <p className="mt-2 text-tekst-2">Panel jest dostępny tylko dla administratora serwisu. Zaloguj się na swoje konto.</p>
+        <Link href="/logowanie/" className="przycisk przycisk-glowny mt-4 w-full">Zaloguj się</Link>
+      </div>
+    );
+  }
+  if (!konto.czyAdmin) {
+    return (
+      <div className="szklo mx-auto max-w-md p-6">
+        <h1 className="text-2xl">Brak dostępu</h1>
+        <p className="mt-2 text-tekst-2">To konto nie ma uprawnień administratora serwisu.</p>
+        <Link href="/profil/" className="przycisk mt-4 w-full">Mój profil</Link>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-4xl">Administracja</h1>
-        <button type="button" className="przycisk ml-auto" onClick={wylogujAdmina}>
-          Wyloguj
-        </button>
-      </div>
+      <h1 className="text-4xl">Administracja</h1>
       <p className="mt-2 max-w-3xl text-tekst-2">
-        Tryb administratora jest włączony w tej przeglądarce: w panelu osoby (lista gałęzi i diagram) widać przyciski „Edytuj dane” i „Dodaj dziecko”. Pozostali odwiedzający ich nie widzą.
+        Jako administrator masz dostęp do wszystkich drzew użytkowników: możesz je otwierać, edytować, zmieniać ich ustawienia i usuwać oraz usuwać użytkowników.
       </p>
 
-      <section className="panel mt-5 p-4 text-sm" aria-label="Jak opublikować zmiany">
+      <SekcjaUzytkownikow />
+      <SekcjaDrzewUzytkownikow />
+
+      <h2 className="mt-10 text-2xl">Drzewa z repozytorium ({drzewa.length})</h2>
+      <section className="panel mt-3 p-4 text-sm" aria-label="Jak opublikować zmiany drzew z repozytorium">
         <p>
-          <strong>Serwis jest statyczny.</strong> Zmiany zapisują się najpierw tylko w tej przeglądarce. Aby trafiły do serwisu, pobierz plik, zastosuj go w repozytorium i wdróż stronę:
+          Te drzewa są częścią kodu serwisu (pliki w <code>data/drzewa/</code>). Zmiany z tego panelu zapisują się najpierw tylko w tej przeglądarce – pobierz plik, zastosuj go w repozytorium i wdróż stronę:
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>
-            drzewa (edycja, usunięcie): <code>npm run zastosuj-zmiany-drzew -- zmiany-drzew.json</code>
-          </li>
-          <li>
-            osoby: <code>npm run zastosuj-edycje -- &lt;slug&gt; edycje-&lt;slug&gt;.json</code>
-          </li>
+          <li>drzewa (edycja, usunięcie): <code>npm run zastosuj-zmiany-drzew -- zmiany-drzew.json</code></li>
+          <li>osoby: <code>npm run zastosuj-edycje -- &lt;slug&gt; edycje-&lt;slug&gt;.json</code></li>
         </ul>
         {api.liczba > 0 ? (
           <p className="mt-3 flex flex-wrap items-center gap-2">
             <strong>Zmiany drzew do opublikowania: {api.liczba}.</strong>
-            <button type="button" className="przycisk przycisk-glowny !min-h-8" onClick={api.pobierz}>
-              Pobierz zmiany drzew (JSON)
-            </button>
-            <button
-              type="button"
-              className="przycisk !min-h-8"
-              onClick={() => {
-                if (window.confirm("Cofnąć wszystkie niezapisane zmiany drzew?")) api.wyczysc();
-              }}
-            >
-              Cofnij wszystkie
-            </button>
+            <button type="button" className="przycisk przycisk-glowny !min-h-8" onClick={api.pobierz}>Pobierz zmiany drzew (JSON)</button>
+            <button type="button" className="przycisk !min-h-8" onClick={() => { if (window.confirm("Cofnąć wszystkie niezapisane zmiany drzew?")) api.wyczysc(); }}>Cofnij wszystkie</button>
           </p>
         ) : (
           <p className="mt-3 text-tekst-2">Brak niezapisanych zmian drzew.</p>
         )}
       </section>
-
-      <h2 className="mt-8 text-2xl">Drzewa ({drzewa.length})</h2>
       <ul className="mt-4 grid gap-4">
         {drzewa.map((d) => (
           <WierszDrzewa key={d.meta.slug} drzewo={d} api={api} />
         ))}
       </ul>
-      <p className="mt-6 text-sm text-tekst-2">Nowe drzewo dodaje się w repozytorium – opis w README, sekcja „Jak dodać drzewo”.</p>
     </div>
   );
 }

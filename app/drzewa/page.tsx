@@ -6,8 +6,8 @@ import { pobierzDrzewa } from "@/lib/dane";
 
 export const metadata: Metadata = {
   title: "Drzewa",
-  description: "Wszystkie drzewa genealogiczne w serwisie Nasi przodkowie: wyszukiwanie po nazwie, nazwisku i regionie oraz sortowanie.",
-  openGraph: { title: "Drzewa · Nasi przodkowie", description: "Wszystkie drzewa genealogiczne w serwisie." },
+  description: "Wszystkie drzewa genealogiczne w serwisie Przodkowie: wyszukiwanie po nazwie, nazwisku i regionie oraz sortowanie.",
+  openGraph: { title: "Drzewa · Przodkowie", description: "Wszystkie drzewa genealogiczne w serwisie." },
 };
 
 export default async function IndeksDrzew() {

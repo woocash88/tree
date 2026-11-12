@@ -422,3 +422,9 @@ h1, h2, h3 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Logo (czarne na przezroczystym tle) w ciemnym motywie. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="jasny"]) .dark-odwroc { filter: invert(1); }
+}
+:root[data-theme="ciemny"] .dark-odwroc { filter: invert(1); }

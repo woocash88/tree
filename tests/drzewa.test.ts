@@ -38,7 +38,7 @@ describe("metadane drzewa (drzewo.json)", () => {
     expect(blad({ zaktualizowano: "2026-02-31" })).toMatch(/niepoprawna data/);
     expect(blad({ zakresLat: { od: 2000, do: 1900 } })).toMatch(/zakresLat/);
     expect(blad({ politykaDatZyjacych: "pokaz-wszystko" })).toMatch(/politykaDatZyjacych/);
-    expect(blad({ widocznosc: "prywatne" })).toMatch(/widocznosc/);
+    expect(blad({ widocznosc: "tajne" })).toMatch(/widocznosc/);
     expect(blad({ cos: 1 })).toMatch(/cos/);
   });
 

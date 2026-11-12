@@ -4,9 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane";
 import { filtrujDrzewa, SORTOWANIA, sortujDrzewa, type Sortowanie } from "@/lib/szukaj-drzew";
 import { KartaDrzewa } from "./KartaDrzewa";
+import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
 /** Indeks drzew: wyszukiwanie po nazwie, nazwisku i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
-export function KatalogDrzew({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
+export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
+  const zBazy = useDrzewaPubliczne();
+  const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
   const [sortowanie, setSortowanie] = useState<Sortowanie>("alfabetycznie");
   const [gotowe, setGotowe] = useState(false);

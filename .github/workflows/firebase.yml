@@ -1,8 +1,10 @@
-# Po każdej zmianie na gałęzi main: testy, build i wdrożenie na Firebase Hosting.
+# Po każdej zmianie na gałęzi main: testy, build i wdrożenie na Firebase Hosting (oraz reguł bazy Firestore).
 # Wymaga w repozytorium (Settings → Secrets and variables → Actions):
 #   sekret   FIREBASE_SERVICE_ACCOUNT  – klucz konta serwisowego (cały plik JSON)
-#   zmienna  FIREBASE_PROJECT_ID       – identyfikator projektu Firebase, np. nasi-przodkowie
-# Opis krok po kroku: README, sekcja „Wdrożenie”.
+#   zmienna  FIREBASE_PROJECT_ID       – identyfikator projektu Firebase, np. familytree-bab4e
+# Konta użytkowników włączają się dopiero, gdy ustawisz też zmienne (to publiczne identyfikatory, nie sekrety):
+#   FIREBASE_API_KEY, FIREBASE_APP_ID  – z Firebase: Ustawienia projektu → Twoje aplikacje → aplikacja internetowa
+# Opis krok po kroku: README, sekcje „Wdrożenie” i „Konta, role i prywatność”.
 name: Wdrożenie na Firebase
 on:
   push:
@@ -22,12 +24,53 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
       - run: npm ci
       - run: npm test
+      # Reguły dostępu do bazy sprawdzane na emulatorze Firestore – błąd w regułach zatrzymuje wdrożenie.
+      - run: npm run test:reguly
       - run: npm run build
         env:
           # Adres główny (bez podkatalogu): sitemap.xml i robots.txt dostają właściwą domenę.
           NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || format('https://{0}.web.app', vars.FIREBASE_PROJECT_ID) }}
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN || format('{0}.firebaseapp.com', vars.FIREBASE_PROJECT_ID) }}
+      - name: Sprawdź konfigurację Firebase (nie wypisuje sekretu)
+        env:
+          KLUCZ: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJEKT: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$PROJEKT" ]; then echo "::error::Brak zmiennej FIREBASE_PROJECT_ID (zakładka Variables)."; exit 1; fi
+          if [ -z "$KLUCZ" ]; then echo "::error::Sekret FIREBASE_SERVICE_ACCOUNT jest pusty albo nie istnieje (zakładka Secrets, dokładna nazwa)."; exit 1; fi
+          node -e '
+            let k;
+            try { k = JSON.parse(process.env.KLUCZ); } catch (e) { console.log("::error::Sekret nie jest poprawnym JSON-em – wklej cały plik klucza, od { do }."); process.exit(1); }
+            const braki = ["type","project_id","private_key","client_email"].filter((p) => !k[p]);
+            if (k.type !== "service_account" || braki.length) { console.log("::error::To nie jest klucz konta serwisowego (brakuje: " + braki.join(", ") + ")."); process.exit(1); }
+            if (k.project_id !== process.env.PROJEKT) { console.log("::error::Klucz jest z projektu \"" + k.project_id + "\", a FIREBASE_PROJECT_ID to \"" + process.env.PROJEKT + "\"."); process.exit(1); }
+            console.log("Klucz poprawny. Konto serwisowe: " + k.client_email);
+          '
+      # Reguły Firestore wdrażamy tylko, gdy konta są skonfigurowane. Jeśli konto serwisowe nie ma do tego uprawnień,
+      # strona i tak się wdroży – wtedy wklej plik firestore.rules ręcznie w konsoli Firebase (README).
+      - name: Wdróż reguły bazy (Firestore)
+        id: reguly
+        if: vars.FIREBASE_API_KEY != ''
+        continue-on-error: true
+        env:
+          KLUCZ: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJEKT: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          printf '%s' "$KLUCZ" > "$RUNNER_TEMP/klucz.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/klucz.json" npx firebase deploy --only firestore:rules --project "$PROJEKT" --non-interactive
+          rm -f "$RUNNER_TEMP/klucz.json"
+      - name: Ostrzeżenie o regułach
+        if: steps.reguly.outcome == 'failure'
+        run: echo "::warning::Nie udało się wdrożyć reguł Firestore automatycznie. Wklej zawartość pliku firestore.rules w konsoli Firebase (Firestore → Reguły → Opublikuj) albo nadaj kontu serwisowemu rolę 'Firebase Rules Admin'."
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

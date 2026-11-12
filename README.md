@@ -1,12 +1,21 @@
-# Nasi przodkowie – drzewa genealogiczne rodzin
+# Przodkowie – drzewa genealogiczne rodzin
 
-Statyczna strona WWW (Next.js, eksport do plików HTML) z **wieloma drzewami genealogicznymi**.
-Bez backendu, bez bazy danych, bez śledzenia i zewnętrznych skryptów; interfejs w całości po polsku.
-Każde drzewo to osobny katalog z danymi w repozytorium. Widoki czytają dane tylko przez
-`lib/dane.ts`, więc późniejsze przejście na bazę (Supabase – patrz „Dalsze kroki”) nie wymaga
-przepisywania stron.
+Serwis z **wieloma drzewami genealogicznymi**, w całości po polsku. Strona jest statyczna (Next.js, eksport do plików
+HTML, hosting Firebase), ale **każdy użytkownik może założyć konto i prowadzić własne drzewa**: konta, drzewa i osoby
+użytkowników trzymane są w Firebase (Authentication + Cloud Firestore) i obsługiwane w przeglądarce, a dostępu
+pilnują reguły bazy (`firestore.rules`). Bez śledzenia i zewnętrznych skryptów.
 
-W repozytorium są dwa drzewa:
+Są dwa rodzaje drzew:
+
+- **drzewa z repozytorium** (`data/drzewa/<slug>/`) – wbudowane w stronę, zarządzane przez administratora w kodzie
+  (Lulkiewiczowie, przykład),
+- **drzewa użytkowników** (`/d/?id=…`) – tworzone i edytowane przez zarejestrowanych użytkowników w przeglądarce,
+  zapisywane w bazie.
+
+Konta włączają się dopiero po skonfigurowaniu Firebase (sekcja „Konta, role i prywatność”). Bez konfiguracji
+serwis działa jak dotąd, tylko z drzewami z repozytorium.
+
+W repozytorium są dwa wbudowane drzewa:
 
 | slug | drzewo | uwagi |
 |---|---|---|
@@ -30,7 +39,10 @@ W repozytorium są dwa drzewa:
 | `/drzewa/<drzewo>/osoba/<id>/` | widok osoby: przodkowie, rodzeństwo, małżonkowie, dzieci |
 | `/drzewa/<drzewo>/osoby/` | alfabetyczny indeks osób z filtrami |
 | `/polityka-prywatnosci/` | polityka prywatności (link w stopce) |
-| `/admin/` | logowanie administratora i zarządzanie drzewami (bez linku w serwisie, poza indeksowaniem) |
+| `/rejestracja/`, `/logowanie/` | zakładanie konta (e-mail albo Google) i logowanie |
+| `/profil/` | profil użytkownika: dane, moje drzewa, drzewa, przy których współpracuje, tworzenie drzewa, usunięcie konta |
+| `/d/?id=<id>` | drzewo użytkownika; parametr `w` wybiera widok: brak = strona drzewa, `galaz` (lista; `g` = gałąź, `os` = osoba), `diagram`, `osoba`, `osoby`, `ustawienia` |
+| `/admin/` | panel administratora serwisu: użytkownicy, wszystkie drzewa użytkowników, drzewa z repozytorium (bez linku w serwisie, poza indeksowaniem) |
 | `/dane/szukaj-<drzewo>.json` | indeks wyszukiwania osób jednego drzewa (ładowany dopiero na stronie tego drzewa) |
 | `/sitemap.xml`, `/robots.txt` | generowane z listy drzew |
 
@@ -46,13 +58,14 @@ npm install
 npm run dev          # tryb deweloperski: http://localhost:3000
 npm run build        # walidacja wszystkich drzew + statyczny eksport do katalogu out/
 npm start            # podgląd zbudowanej strony z katalogu out/
-npm test             # testy: parsowanie, walidacja, polityka dat, wyszukiwarki, lista
+npm test             # testy: parsowanie, walidacja, polityka dat, wyszukiwarki, lista, logika drzew użytkowników
 npm run lint         # eslint + kontrola typów
 npm run waliduj      # walidacja drzew (opcjonalnie: -- <slug>)
 npm run kontrast     # kontrola kontrastu WCAG motywów jasnego i ciemnego
 npm run zastosuj-edycje -- <slug> <plik.json>   # wpisuje do danych zmiany osób pobrane z serwisu
 npm run zastosuj-zmiany-drzew -- <plik.json>    # edycja metadanych i usuwanie drzew z panelu /admin/
-npm run ustaw-haslo -- "haslo"                  # hasło trybu administratora
+npm run test:reguly                             # testy reguł bazy na emulatorze Firestore (wymaga Javy)
+npm run test:e2e                                # testy end-to-end kont i drzew na emulatorach (wymaga Playwrighta)
 ```
 
 ## Struktura danych
@@ -197,50 +210,101 @@ dziecko z 1. / 2. związku; `??` i `?` → pole `niepewne`; płeć z listy imion
 imię-nazwisko-rok urodzenia (bez roku u osób żyjących); gałęzie: dzieci Wiktora (pokolenie 3) zaczynają siedem
 linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. i brak informacji o śmierci.
 
-## Tryb administratora
+## Konta, role i prywatność
 
-Zwykły odwiedzający widzi czysty interfejs do przeglądania. Narzędzia edycji są dostępne tylko po zalogowaniu
-na stronie **`/admin/`** (nie ma do niej linku w serwisie; `robots.txt` wyłącza ją z indeksowania).
+### Kto co może
 
-- **Hasło**: `npm run ustaw-haslo -- "moje-haslo"` (albo bez argumentu – skrypt wylosuje hasło i je wypisze).
-  W `data/admin.json` zapisuje się tylko skrót PBKDF2 z solą. Po zmianie hasła zbuduj i wdróż stronę;
-  dotychczasowe sesje wygasają. Pusty skrót wyłącza tryb administratora.
-- **Co widzi administrator**: przycisk „Administracja” w nagłówku, w panelu osoby przyciski „✏️ Edytuj dane”
-  i „👶 Dodaj dziecko”, a na `/admin/` listę drzew z akcjami „Edytuj osoby”, „Edytuj drzewo” (nazwa, opis, region,
-  źródło, opiekun, polityka dat osób żyjących, wyróżnienie) i „Usuń drzewo”.
-- **Publikacja zmian drzew**: przycisk „Pobierz zmiany drzew (JSON)”, a potem
+| | gość | zalogowany | kolaborant drzewa | właściciel drzewa | administrator serwisu |
+|---|---|---|---|---|---|
+| przegląda drzewa publiczne (osoby żyjące wg ustawień właściciela) | ✔ | ✔ | ✔ | ✔ | ✔ |
+| zakłada konto i tworzy własne drzewa | | ✔ (po potwierdzeniu e-maila) | | | |
+| widzi pełne dane drzewa, dodaje, edytuje i usuwa osoby | | | ✔ | ✔ | ✔ (każde drzewo) |
+| zmienia ustawienia drzewa (nazwa, publiczne/prywatne, osoby żyjące), zaprasza kolaborantów, usuwa drzewo | | | | ✔ | ✔ (każde drzewo) |
+| usuwa użytkowników i ich drzewa | | | | | ✔ |
+
+- **Rejestracja**: imię, nazwisko, adres e-mail i hasło (min. 8 znaków) albo konto Google. Adres e-mail trzeba
+  potwierdzić linkiem z wiadomości (konta Google są potwierdzone automatycznie); do tego czasu nie można tworzyć drzew ani
+  być zapraszanym. Strona sama wykrywa kliknięcie linku w innej karcie.
+- **Prywatność drzewa** (ustawienia drzewa): *prywatne* – widzą je tylko właściciel, kolaboranci i administrator;
+  *publiczne* – każdy z linkiem, drzewo pojawia się w katalogu `/drzewa/`.
+- **Osoby żyjące** (oznaczone przy osobie; nowa osoba urodzona po 1925 r. bez daty śmierci jest domyślnie żyjąca):
+  właściciel wybiera, co widzą odwiedzający – *tylko imię i nazwisko*, *z rokiem urodzenia* albo *wszystkie dane*.
+  To ustawienie jest wymuszane przez bazę, nie tylko ukrywane w widoku: w Firestore każde drzewo ma dwa dokumenty,
+  `dane/pelne` (tylko dla zarządzających) i `dane/publiczne` (kopia już okrojona według polityki, przeliczana
+  przy każdej zmianie). Odwiedzający nigdy nie pobierają dat osób żyjących.
+- **Kolaboranci**: właściciel wpisuje adres e-mail zarejestrowanego użytkownika (w ustawieniach drzewa). Kolaborant widzi
+  drzewo w profilu w sekcji „Współpracuję przy”.
+- **Usuwanie**: użytkownik usuwa konto i wszystkie swoje drzewa w profilu. Administrator może usunąć użytkownika
+  (jego drzewa i udział w cudzych drzewach znikają, konto zostaje zablokowane) oraz dowolne drzewo.
+
+### Konfiguracja Firebase (jednorazowo, w przeglądarce)
+
+1. **Authentication** (Build → Authentication → Rozpocznij → Sign-in method): włącz **Adres e-mail/hasło** oraz **Google**
+   (przy Google wybierz adres pomocniczy projektu). W *Settings → Authorized domains* powinna być domena strony
+   (`<projekt>.web.app` dodaje się automatycznie).
+2. **Cloud Firestore** (Build → Firestore Database → Utwórz bazę): lokalizacja **eur3 (Europe)**, tryb **produkcyjny**
+   (nie „testowy”!). Reguły wdroży workflow albo wkleisz je ręcznie: Firestore → *Reguły* → wklej zawartość
+   `firestore.rules` → *Opublikuj*.
+3. **Aplikacja internetowa**: Ustawienia projektu (zębatka) → *Ogólne* → *Twoje aplikacje* → ikona `</>` → nazwa dowolna,
+   bez Firebase Hosting → *Zarejestruj*. Zapisz `apiKey` i `appId` z wyświetlonej konfiguracji (to publiczne identyfikatory).
+4. **GitHub** → *Settings → Secrets and variables → Actions → Variables*: dodaj `FIREBASE_API_KEY` (= `apiKey`)
+   i `FIREBASE_APP_ID` (= `appId`). Dopiero te zmienne włączają konta w zbudowanej stronie.
+5. **Pierwszy administrator**: zarejestruj się w serwisie własnym kontem, potwierdź e-mail. W konsoli Firebase
+   (Authentication → Users) skopiuj swój **UID**. Potem w Firestore (Dane → *Rozpocznij kolekcję*) utwórz kolekcję
+   `admini` z dokumentem o identyfikatorze równym Twojemu UID i dowolnym polem (np. `od` = tekst `1`).
+   Od tej chwili po zalogowaniu widzisz „Panel administratora” w menu konta. Klient nie może zapisać tej kolekcji,
+   więc nikt nie nada sobie roli sam.
+6. Wdróż (scal zmiany do `main` albo *Run workflow*) i sprawdź: rejestracja, tworzenie drzewa, zaproszenie kolaboranta.
+
+**Limity i koszty.** Wszystko mieści się w darmowym planie Spark dla typowego użytku rodzinnego (Firestore: 50 tys. odczytów
+i 20 tys. zapisów dziennie). Jedno drzewo użytkownika to dokumenty o rozmiarze do 1 MiB, czyli ok. 2000 osób
+(twardy limit w regułach i aplikacji). Konta Google i e-mailowe działają bez planu Blaze.
+
+**Czego nie ma.** Usunięcie *konta logowania* w Firebase Authentication przez administratora wymagałoby funkcji
+serwerowych (plan Blaze). Dlatego administrator usuwa dane użytkownika i **blokuje** konto; jeśli chcesz je wymazać
+całkowicie, usuń je dodatkowo w konsoli (Authentication → Users). Użytkownik usuwający własne konto jest usuwany
+w całości. Reguły chronią dane, ale w statycznej stronie nie ma limitów szybkości (ochrona przed nadużyciami
+to w Firebase App Check – patrz „Dalsze kroki”).
+
+### Administrator drzew z repozytorium
+
+Drzewa wbudowane (`data/drzewa/`) nie leżą w bazie. Administrator (konto z dokumentem `admini/<uid>`) widzi w menu konta
+„Panel administratora” i narzędzia edycji osób w ich panelach. Zmiany powstają lokalnie w przeglądarce i trafiają
+do serwisu tylko przez repozytorium:
 
   ```bash
-  npm run zastosuj-zmiany-drzew -- ~/Pobrane/zmiany-drzew.json
+  npm run zastosuj-zmiany-drzew -- ~/Pobrane/zmiany-drzew.json   # metadane i usuwanie drzew
+  npm run zastosuj-edycje -- <slug> ~/Pobrane/edycje-<slug>.json   # osoby
   npm test && npm run build
   ```
 
   Skrypt najpierw sprawdza wszystkie zmiany, dopiero potem zapisuje `drzewo.json` i **kasuje katalogi usuniętych
   drzew** (`data/drzewa/<slug>/`). Usunięcie cofa się z historii gita. Ostatniego drzewa usunąć się nie da.
-- **To nie jest zabezpieczenie danych.** Serwis jest statyczny, więc hasło jest sprawdzane w przeglądarce,
-  a skrót i kod są w publicznych plikach strony. Tryb administratora tylko chowa narzędzia przed zwykłymi
-  użytkownikami. Niczego nie da się nim zmienić w opublikowanym serwisie: zmiany powstają lokalnie i trafiają
-  do serwisu wyłącznie przez repozytorium – faktyczną kontrolą dostępu jest prawo zapisu do repozytorium.
-  Logowanie z kontami po stronie serwera opisują „Dalsze kroki”.
 
 ## Polityka prywatności
 
-Strona `/polityka-prywatnosci/` (link w stopce). Dane administratora i nazwę dostawcy hostingu wpisz
-w `data/serwis.json` – dopóki są puste, strona pokazuje ogólną formułę bez danych kontaktowych:
+Strona `/polityka-prywatnosci/` (link w stopce) opisuje konta, drzewa publiczne i prywatne, osoby żyjące, pamięć przeglądarki
+i prawa użytkowników (w tym usunięcie konta). Dane administratora wpisz w `data/serwis.json` – dopóki są puste, strona
+pokazuje ogólną formułę bez danych kontaktowych:
 
 ```json
-{ "administrator": { "nazwa": "Jan Kowalski", "email": "kontakt@example.org" }, "hosting": "Vercel Inc." }
+{ "administrator": { "nazwa": "Jan Kowalski", "email": "kontakt@example.org" } }
 ```
 
-Treść jest w `app/polityka-prywatnosci/page.tsx`; przy zmianie popraw też datę `OBOWIAZUJE_OD`.
+Treść jest w `app/polityka-prywatnosci/page.tsx`; przy zmianie popraw też datę `OBOWIAZUJE_OD`. To nie jest porada prawna –
+przed udostępnieniem serwisu innym osobom warto ją przeczytać i dopasować do swojej sytuacji.
 
 ## Edycja osób
 
-Edycja jest narzędziem administratora (patrz wyżej) i działa **lokalnie w przeglądarce**: w panelu osoby
+**Drzewa użytkowników** edytuje się w panelu osoby bezpośrednio w bazie (właściciel, kolaboranci, administrator):
+„✏️ Edytuj dane” (w tym płeć i oznaczenie „żyjąca”, usunięcie osoby), „👶 Dodaj dziecko”, „💍 Dodaj małżonka”,
+„👨 Dodaj ojca” / „👩 Dodaj matkę”; w pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
+natychmiast, a zapis idzie w tle w transakcji (równoczesne edycje kolaborantów się nie nadpisują). Poniższy opis dotyczy
+**drzew z repozytorium**, które edytuje tylko administrator serwisu i które działają **lokalnie w przeglądarce**: w panelu osoby
 (lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci
 z miejscem, notatka) i „👶 Dodaj dziecko” (z wyborem drugiego rodzica spośród małżonków). Daty wpisuje się jako
 `1891`, `4.03.1891`, `ok. 1891` albo `?` (data nieznana), opcjonalnie z miejscem po przecinku.
-Bez trybu administratora lokalne zmiany nie są nakładane na widok.
+Bez roli administratora lokalne zmiany nie są nakładane na widok.
 
 - Zmiany zapisują się w `localStorage` (klucz `edycje:<slug>`) i są nakładane na dane z repozytorium na liście
   i na diagramie; widzisz je tylko Ty, w tej przeglądarce. Strony osób, indeks i wyszukiwarka pokazują dane
@@ -255,7 +319,6 @@ Bez trybu administratora lokalne zmiany nie są nakładane na widok.
   Dla drzewa z importem (Lulkiewiczowie) zmiany lądują w `poprawki.json` (`osoby` i `dodane`) i import przelicza
   `rodzina.json`; dla pozostałych drzew skrypt zmienia `rodzina.json`. Poszerza też zakres lat i datę aktualizacji
   w `drzewo.json`.
-- Prawdziwa edycja wspólna dla wszystkich odwiedzających wymaga serwera i kont – patrz „Dalsze kroki”.
 
 ## Lista gałęzi i diagram
 
@@ -354,13 +417,14 @@ walidacja danych nie przejdą, strona **nie** jest aktualizowana, a w zakładce 
    Po minucie strona jest pod adresem `https://<identyfikator>.web.app`.
 6. Po wdrożeniu usuń pobrany plik JSON z komputera; klucz zostaje tylko w sekretach GitHuba.
 
-Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardową*.
+Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardową*. Po wdrożeniu włącz konta użytkowników według sekcji „Konfiguracja Firebase” wyżej.
 
 ### Jak aktualizować stronę bez IDE
 
+- **Drzewa użytkowników** nie wymagają żadnej aktualizacji strony – użytkownicy edytują je sami w przeglądarce.
 - **Dane** (`data/drzewa/<slug>/…`, `data/serwis.json`): na github.com otwórz plik, kliknij ołówek, zapisz
   („Commit changes”) na `main`. Wdrożenie ruszy samo.
-- **Zmiany z panelu `/admin/`**: pobrane pliki JSON stosuje się skryptami (`zastosuj-edycje`, `zastosuj-zmiany-drzew`),
+- **Zmiany drzew z repozytorium zrobione w panelu administratora**: pobrane pliki JSON stosuje się skryptami (`zastosuj-edycje`, `zastosuj-zmiany-drzew`),
   więc wymagają terminala – np. GitHub Codespaces (przycisk *Code → Codespaces* w repozytorium) albo sesja Claude Code.
 - Własna domena i pozostałe sposoby hostingu: Vercel (import repozytorium, ustawienia domyślne), dowolny serwer
   plików (zawartość `out/`). Dla GitHub Pages potrzebny jest workflow z `NEXT_PUBLIC_BASE_PATH=/<repozytorium>`
@@ -371,9 +435,14 @@ Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardo
 ## Struktura repozytorium
 
 ```
-app/                    strony i układy (/, /drzewa, /drzewa/[drzewo]/…), sitemap.ts, robots.ts, dane/[plik] (indeks wyszukiwania)
-components/             Naglowek, Wyszukiwarka, KatalogDrzew, KartaDrzewa, ListaGalezi, PanelOsoby, PlotnoDrzewa, IndeksOsob, …
-lib/dane.ts             JEDYNE miejsce, z którego widoki czytają dane: pobierzDrzewa(), pobierzDrzewo(slug),
+app/                    strony i układy (/, /drzewa, /drzewa/[drzewo]/…, /d, /profil, /logowanie, /rejestracja, /admin), sitemap.ts, robots.ts
+components/             Naglowek, Wyszukiwarka, KatalogDrzew, ListaGalezi, PanelOsoby, PlotnoDrzewa, IndeksOsob, …
+components/konta/       AuthProvider, MenuKonta, formularze logowania/rejestracji, PanelProfilu, HeroKonta
+components/db/          WidokDrzewaDb (strona /d/), UstawieniaDrzewa, kontekst i hooki drzew z bazy
+components/widoki/      widoki wspólne dla drzew z repozytorium i z bazy (osoba, strona drzewa, indeks osób)
+lib/baza/               Firebase: firebase.ts (inicjalizacja), konta.ts, api.ts (Firestore), logika.ts (czyste zmiany drzewa), typy.ts
+lib/dane-czyste.ts      okrajanie osób żyjących i struktury drzewa (bez plików – działa też w przeglądarce)
+lib/dane.ts             drzewa z repozytorium – widoki statyczne czytają dane WYŁĄCZNIE stąd: pobierzDrzewa(), pobierzDrzewo(slug),
                         pobierzOsoby(slug), pobierzOsobe(slug, id), pobierzIndeksSzukania(slug); polityka dat
 lib/drzewa-pliki.ts     odczyt plików drzew (Node) i walidacja metadanych – do podmiany przy przejściu na bazę
 lib/schemat*.ts         schematy zod: osoba/rodzina oraz metadane drzewa
@@ -381,27 +450,26 @@ lib/walidacja.ts        spójność danych (rodzice, duplikaty, cykle)
 lib/drzewo.ts           jednostki rodzinne, układ (d3-flextree), widok gałęzi
 lib/lista.ts            wiersze listy, wcięcia, liczniki potomków, stan w adresie
 lib/szukaj*.ts          wyszukiwanie osób i drzew (bez polskich znaków)
-scripts/                import.ts, waliduj.ts, generuj-testowe.ts, wytnij-zrodlo.mjs, kontrast.mjs
+firestore.rules         reguły dostępu do bazy (testy: tests/reguly, npm run test:reguly)
+scripts/                import.ts, waliduj.ts, generuj-testowe.ts, wytnij-zrodlo.mjs, kontrast.mjs, zastosuj-*.ts
 data/drzewa/<slug>/     dane drzew
-tests/                  testy (vitest)
+tests/                  testy (vitest); tests/reguly – reguły Firestore na emulatorze; tests/e2e – scenariusze Playwright na emulatorach
 ```
 
-## Dalsze kroki: konta i formularz (Supabase)
+## Testy end-to-end
 
-Plan na wersję, w której użytkownik może sam dodać drzewo. **Nic z tego nie jest jeszcze zaimplementowane.**
+`npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
+i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
+kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, usuwanie użytkownika
+i drzewa, usuwanie własnego konta. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
+Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google
+(dostępne tylko w buildzie testowym); działanie samego okna Google trzeba sprawdzić ręcznie na wdrożonej stronie.
 
-1. **Warstwa danych.** Przepisać tylko `lib/dane.ts` (i `lib/drzewa-pliki.ts`): funkcje `pobierz*()` są już
-   asynchroniczne, więc widoki się nie zmieniają. Tabele: `drzewa` (pola z `drzewo.json` + `wlasciciel_id`,
-   `widocznosc`), `galezie`, `osoby` (klucz `(drzewo_id, id)`), `malzenstwa`. Polityka dat osób żyjących
-   dalej stosowana w `okroj()` po stronie serwera – nigdy w przeglądarce.
-2. **Konta.** Supabase Auth (e-mail + link, opcjonalnie Google). Row Level Security: właściciel czyta i zapisuje
-   swoje drzewa; wszyscy czytają drzewa `publiczne`, ale tylko przez widok z już okrojonymi danymi osób żyjących.
-3. **Formularz „Dodaj drzewo”.** Kreator: metadane → import pliku (JSON z szablonu, GEDCOM, tekst) → podgląd
-   z raportem błędów (ta sama walidacja `lib/walidacja.ts`, uruchamiana także po stronie bazy) → publikacja.
-   Edycja osób w tabeli i na liście gałęzi.
-4. **Moderacja i prywatność.** Nowe drzewa trafiają najpierw jako `robocze`, publikacja po akceptacji; zgłaszanie
-   naruszeń; domyślnie „ukryj” dla osób żyjących; możliwość usunięcia drzewa i eksportu danych.
-5. **Budowanie stron.** Strony drzew są dziś w pełni statyczne. Po przejściu na bazę: ISR (przebudowa strony
-   drzewa po zmianie) albo renderowanie na żądanie; indeks wyszukiwania per drzewo generowany przy zapisie.
-6. **Migracja.** Skrypt wczytujący `data/drzewa/*` do bazy, żeby drzewa z repozytorium trafiły tam bez zmian
-   identyfikatorów (adresy `/drzewa/<slug>/osoba/<id>/` muszą zostać takie same).
+## Dalsze kroki
+
+- **Firebase App Check** (reCAPTCHA) – ochrona bazy przed nadużyciami spoza strony.
+- **Funkcje serwerowe** (plan Blaze): pełne usuwanie kont logowania przez administratora, powiadomienia e-mail o zaproszeniu
+  do współpracy, ochrona przed masowym zakładaniem kont.
+- **Import GEDCOM / JSON** do drzewa użytkownika oraz eksport drzewa.
+- **Przeniesienie drzew z repozytorium do bazy**, żeby administrator edytował je tak jak drzewa użytkowników.
+- **Moderacja**: zgłaszanie naruszeń i ukrywanie drzew publicznych do akceptacji.

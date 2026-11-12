@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { sciezkaAdmina, sciezkaDrzewa, sciezkaIndeksuDrzew, sciezkaIndeksuOsob } from "@/lib/sciezki";
+import { BASE_PATH, sciezkaDrzewa, sciezkaIndeksuDrzew, sciezkaIndeksuOsob } from "@/lib/sciezki";
 import { MotywPrzelacznik } from "./MotywPrzelacznik";
-import { useCzyAdmin } from "./useAdmin";
+import { MenuKonta } from "./konta/MenuKonta";
 import { Wyszukiwarka } from "./Wyszukiwarka";
 
 type GalazSkrot = { id: string; nazwa: string; kolor: string };
@@ -13,7 +13,6 @@ export type KontekstDrzewa = { slug: string; nazwa: string; galezie: GalazSkrot[
 /** Nagłówek serwisu. W obrębie drzewa dodaje jego nazwę, link do indeksu osób i wyszukiwarkę osób. */
 export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
   const sciezka = usePathname() ?? "/";
-  const admin = useCzyAdmin();
   const linki = [
     { href: sciezkaIndeksuDrzew(), etykieta: "Drzewa", aktywny: sciezka === "/drzewa" || sciezka === "/drzewa/" },
     ...(drzewo
@@ -29,11 +28,11 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
         Przejdź do treści
       </a>
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2 sm:flex-nowrap">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-tekst" aria-label="Nasi przodkowie – strona główna">
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6 text-akcent" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 21v-8M12 13c0-3.5-2.5-5-6-5 0 3.5 2 5.5 6 5Zm0-1.5c0-4.5 2.6-7 7-7 0 4.5-2.8 7.6-7 7Z" />
-          </svg>
-          <span className="max-[480px]:sr-only">Nasi przodkowie</span>
+        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-tekst" aria-label="Przodkowie – strona główna">
+          {/* Logo jest czarne na przezroczystym tle; w ciemnym motywie odwracamy kolory. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${BASE_PATH}/przodkowie_logo.png`} alt="" width={32} height={32} className="size-8 dark-odwroc" />
+          <span className="max-[480px]:sr-only">Przodkowie</span>
         </Link>
         <nav aria-label="Główna nawigacja" className="flex items-center gap-1 text-sm">
           {linki.map((l) => (
@@ -48,11 +47,7 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
           </div>
         )}
         <div className={`flex items-center gap-2 ${drzewo ? "ml-auto sm:ml-0" : "ml-auto"}`}>
-          {admin && (
-            <Link href={sciezkaAdmina(drzewo?.slug)} className="przycisk !min-h-8" aria-current={sciezka.startsWith("/admin") ? "page" : undefined} title="Tryb administratora jest włączony">
-              Administracja
-            </Link>
-          )}
+          <MenuKonta />
           <MotywPrzelacznik />
         </div>
       </div>

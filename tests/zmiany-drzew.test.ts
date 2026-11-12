@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { skrotHasla, sprawdzHaslo } from "../lib/admin";
 import { bledyMeta, liczbaZmianDrzew, zastosujZmianeMeta, zmianyDoPliku } from "../lib/zmiany-drzew";
 import type { DrzewoMeta } from "../lib/schemat-drzewa";
 import { zastosujZmianyDrzew } from "../scripts/zastosuj-zmiany-drzew";
@@ -19,22 +18,6 @@ const meta = (slug: string): DrzewoMeta => ({
   widocznosc: "publiczne",
   politykaDatZyjacych: "ukryj",
   wyrozniane: true,
-});
-
-describe("hasło administratora", () => {
-  it("akceptuje tylko właściwe hasło i odrzuca wszystko, gdy skrót jest pusty", async () => {
-    const k = { sol: "abc", iteracje: 1000, skrot: await skrotHasla("tajne-haslo-1", "abc", 1000) };
-    expect(await sprawdzHaslo("tajne-haslo-1", k)).toBe(true);
-    expect(await sprawdzHaslo("tajne-haslo-2", k)).toBe(false);
-    expect(await sprawdzHaslo("", k)).toBe(false);
-    expect(await sprawdzHaslo("cokolwiek", { sol: "abc", iteracje: 1000, skrot: "" })).toBe(false);
-  });
-
-  it("w repozytorium jest tylko skrót (64 znaki szesnastkowe) albo pusta konfiguracja", () => {
-    const k = JSON.parse(fs.readFileSync("data/admin.json", "utf8"));
-    expect(Object.keys(k).sort()).toEqual(["iteracje", "skrot", "sol"]);
-    expect(k.skrot).toMatch(/^([0-9a-f]{64})?$/);
-  });
 });
 
 describe("zmiany drzew", () => {
