@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
-import { dodajKolaboranta, usunDrzewo, usunKolaboranta, zapiszUstawienia } from "@/lib/baza/api";
+import { useCallback, useEffect, useId, useState } from "react";
+import { dodajKolaboranta, listaProsbDrzewa, przekazWlasnosc, usunDrzewo, usunKolaboranta, usunProsbe, zapiszUstawienia, zatwierdzProsbe } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
-import type { Dostep, MetaDb, Widocznosc } from "@/lib/baza/typy";
+import type { Dostep, MetaDb, Prosba, Widocznosc } from "@/lib/baza/typy";
 import { MAKS_KOLABORANTOW } from "@/lib/baza/typy";
 import { POLITYKI_DAT, type PolitykaDat } from "@/lib/schemat-drzewa";
 import { ADRES_SERWISU, sciezkaDrzewa } from "@/lib/sciezki";
@@ -28,10 +28,34 @@ export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoI
   const [trwa, setTrwa] = useState(false);
   const [email, setEmail] = useState("");
   const [potwierdzenie, setPotwierdzenie] = useState("");
+  const [prosby, setProsby] = useState<Prosba[]>([]);
+  const [nowyWlasciciel, setNowyWlasciciel] = useState("");
 
   const zarzadzanie = dostep === "wlasciciel" || dostep === "admin";
+  const wczytajProsby = useCallback(async () => {
+    if (!zarzadzanie) return;
+    try {
+      setProsby(await listaProsbDrzewa(drzewoId));
+    } catch {
+      /* brak prośb lub chwilowy błąd – lista jest dodatkiem */
+    }
+  }, [zarzadzanie, drzewoId]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- wczytanie próśb o dołączenie po wejściu w ustawienia
+    void wczytajProsby();
+  }, [wczytajProsby]);
+
   if (!zarzadzanie) {
-    return <p className="szklo p-6 text-tekst-2">Ustawienia drzewa może zmieniać tylko jego właściciel. Jako kolaborant możesz edytować osoby w drzewie.</p>;
+    return (
+      <div className="szklo space-y-3 p-6">
+        {komunikat && (
+          <p role={komunikat.typ === "blad" ? "alert" : "status"} className={`font-semibold ${komunikat.typ === "blad" ? "text-blad" : ""}`}>
+            {komunikat.tekst}
+          </p>
+        )}
+        <p className="text-tekst-2">Ustawienia drzewa może zmieniać tylko jego właściciel. Jako kolaborant możesz edytować osoby w drzewie.</p>
+      </div>
+    );
   }
   const kolaboranci = meta.kolaboranci.map((uid) => ({ uid, nazwa: meta.kolaboranciInfo[uid]?.nazwa ?? uid }));
 
@@ -41,6 +65,7 @@ export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoI
     try {
       await dzialanie();
       await naZmiane();
+      await wczytajProsby();
       setKomunikat({ typ: "ok", tekst: sukces });
     } catch (e) {
       setKomunikat({ typ: "blad", tekst: komunikatBledu(e) });
@@ -122,7 +147,7 @@ export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoI
           <button type="submit" className="przycisk przycisk-glowny !min-h-10" disabled={trwa}>
             Zapisz ustawienia
           </button>
-          {meta.widocznosc === "publiczne" && adres && (
+          {adres && (
             <button type="button" className="przycisk !min-h-10" onClick={() => void navigator.clipboard?.writeText(adres).then(() => setKomunikat({ typ: "ok", tekst: "Skopiowano link do drzewa." }))}>
               Kopiuj link do drzewa
             </button>
@@ -176,6 +201,66 @@ export function UstawieniaDrzewa({ drzewoId, meta, dostep, naZmiane }: { drzewoI
           </button>
         </form>
       </section>
+
+      {prosby.length > 0 && (
+        <section className="szklo space-y-3 p-6" aria-label="Prośby o dołączenie">
+          <h2 className="text-2xl">Prośby o dołączenie ({prosby.length})</h2>
+          <p className="text-sm text-tekst-2">Te osoby chcą być kolaborantami tego drzewa. Zatwierdź tylko te, które znasz – kolaborant widzi pełne dane i może edytować osoby.</p>
+          <ul className="divide-y divide-kreska">
+            {prosby.map((p) => (
+              <li key={p.id} className="flex flex-wrap items-center gap-2 py-2">
+                <span className="min-w-0 flex-1 truncate">
+                  {p.nazwa} <span className="text-sm text-tekst-2">· {p.utworzono.slice(0, 10)}</span>
+                </span>
+                <button type="button" className="przycisk przycisk-glowny !min-h-8" disabled={trwa} onClick={() => void wykonaj(() => zatwierdzProsbe(p, meta.kolaboranci.length), `Dodano kolaboranta: ${p.nazwa}.`)}>
+                  Zatwierdź
+                </button>
+                <button type="button" className="przycisk !min-h-8" disabled={trwa} onClick={() => void wykonaj(() => usunProsbe(p.id), "Odrzucono prośbę.")}>
+                  Odrzuć
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {dostep === "wlasciciel" && (
+        <section className="szklo space-y-3 p-6" aria-label="Przekazanie własności">
+          <h2 className="text-2xl">Przekaż własność drzewa</h2>
+          <p className="text-sm text-tekst-2">Nowy właściciel przejmie pełną kontrolę nad drzewem: ustawienia, kolaborantów i usunięcie. Ty zostaniesz kolaborantem. Dzięki temu możesz usunąć swoje konto bez utraty drzewa. Drzewo można przekazać tylko jednemu ze swoich kolaborantów – najpierw dodaj go wyżej.</p>
+          {kolaboranci.length > 0 ? (
+            <div className="flex flex-wrap items-end gap-2">
+              <div>
+                <label className="block text-sm text-tekst-2" htmlFor={`${id}-pw`}>
+                  Nowy właściciel
+                </label>
+                <select id={`${id}-pw`} className="pole mt-1 block w-64" value={nowyWlasciciel} onChange={(e) => setNowyWlasciciel(e.target.value)}>
+                  <option value="">wybierz kolaboranta…</option>
+                  {kolaboranci.map((k) => (
+                    <option key={k.uid} value={k.uid}>
+                      {k.nazwa}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                type="button"
+                className="przycisk !min-h-10"
+                disabled={trwa || !nowyWlasciciel}
+                onClick={() => {
+                  const wybrany = kolaboranci.find((k) => k.uid === nowyWlasciciel);
+                  if (!wybrany || !window.confirm(`Przekazać drzewo „${meta.nazwa}” użytkownikowi ${wybrany.nazwa}?\n\nStracisz możliwość zmiany jego ustawień i usunięcia (zostaniesz kolaborantem).`)) return;
+                  void wykonaj(() => przekazWlasnosc(drzewoId, meta, nowyWlasciciel), `Drzewo przekazano użytkownikowi ${wybrany.nazwa}. Jesteś teraz jego kolaborantem.`);
+                }}
+              >
+                Przekaż własność
+              </button>
+            </div>
+          ) : (
+            <p className="text-sm italic text-tekst-2">Brak kolaborantów, którym można przekazać drzewo.</p>
+          )}
+        </section>
+      )}
 
       <section className="szklo space-y-3 border-blad p-6" aria-label="Usuwanie drzewa">
         <h2 className="text-2xl text-blad">Usuń drzewo</h2>

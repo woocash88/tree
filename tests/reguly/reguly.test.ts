@@ -198,3 +198,86 @@ describe("profile, adresy, administratorzy", () => {
     await assertSucceeds(getDoc(doc(as("ola"), "blokady/ola")));
   });
 });
+
+describe("zmiana adresu e-mail w profilu", () => {
+  const profil = (email: string) => ({ imie: "Ola", nazwisko: "Nowak", email, utworzono: "2026-11-12T10:00:00Z" });
+  it("użytkownik aktualizuje adres tylko do takiego, jaki ma w tokenie logowania", async () => {
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "uzytkownicy/ola"), profil("stary@example.org")));
+    const po_zmianie = as("ola", "nowy@example.org");
+    await assertSucceeds(updateDoc(doc(po_zmianie, "uzytkownicy/ola"), { email: "nowy@example.org" }));
+    await assertFails(updateDoc(doc(po_zmianie, "uzytkownicy/ola"), { email: "cudzy@example.org" }));
+    await assertFails(updateDoc(doc(po_zmianie, "uzytkownicy/ola"), { email: "nowy@example.org", rola: "admin" }));
+  });
+  it("zwykłe zapisanie imienia i nazwiska wymaga zgodności adresu z tokenem (profil jest uzgadniany przy logowaniu)", async () => {
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "uzytkownicy/ola"), profil("ola@example.org")));
+    await assertSucceeds(updateDoc(doc(as("ola"), "uzytkownicy/ola"), { imie: "Aleksandra", nazwisko: "Kowal", email: "ola@example.org" }));
+    await assertFails(updateDoc(doc(as("obcy"), "uzytkownicy/ola"), { imie: "X", email: "ola@example.org" }));
+  });
+  it("stary wpis w rejestrze adresów użytkownik usuwa sam, a cudzego nie", async () => {
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "adresy/stary@example.org"), { uid: "ola", nazwa: "Ola" }));
+    await assertFails(deleteDoc(doc(as("obcy"), "adresy/stary@example.org")));
+    await assertSucceeds(deleteDoc(doc(as("ola", "nowy@example.org"), "adresy/stary@example.org")));
+    await assertSucceeds(setDoc(doc(as("ola", "nowy@example.org"), "adresy/nowy@example.org"), { uid: "ola", nazwa: "Ola" }));
+  });
+});
+
+describe("przekazanie własności drzewa", () => {
+  it("właściciel przekazuje drzewo swojemu kolaborantowi (zostając kolaborantem)", async () => {
+    const d = doc(as("ala"), "drzewa/prv");
+    await assertSucceeds(updateDoc(d, { wlascicielId: "kuba", wlascicielNazwa: "Kuba K", kolaboranci: ["ala"], kolaboranciInfo: { ala: { nazwa: "Ala Nowak" } } }));
+    await assertSucceeds(getDoc(doc(as("kuba"), "drzewa/prv/dane/pelne")));
+    await assertSucceeds(updateDoc(doc(as("kuba"), "drzewa/prv"), { widocznosc: "publiczne" }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/prv"), { widocznosc: "prywatne" }));
+  });
+  it("odrzuca przekazanie osobie spoza kolaborantów, kolaborantowi zostawionemu na liście, cudze i przez kolaboranta", async () => {
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { wlascicielId: "obcy", wlascicielNazwa: "Obcy" }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/prv"), { wlascicielId: "kuba", wlascicielNazwa: "Kuba K" }));
+    await assertFails(updateDoc(doc(as("kuba"), "drzewa/prv"), { wlascicielId: "kuba", wlascicielNazwa: "Kuba K", kolaboranci: [] }));
+    await assertFails(updateDoc(doc(as("obcy"), "drzewa/prv"), { wlascicielId: "obcy", kolaboranci: [] }));
+    await assertFails(updateDoc(doc(as("szef"), "drzewa/prv"), { wlascicielId: "szef" }));
+  });
+});
+
+describe("prośby o dołączenie do drzewa", () => {
+  const prosba = (uid: string, drzewo = "pub") => ({ drzewoId: drzewo, uid, nazwa: `Użytkownik ${uid}`, utworzono: "2026-11-12T10:00:00Z" });
+  it("zweryfikowany użytkownik zgłasza prośbę o dostęp (także do prywatnego drzewa); autor może ją ponowić", async () => {
+    await assertSucceeds(setDoc(doc(as("ola"), "prosby/pub_ola"), prosba("ola")));
+    await assertSucceeds(setDoc(doc(as("ola"), "prosby/prv_ola"), prosba("ola", "prv")));
+    await assertSucceeds(setDoc(doc(as("ola"), "prosby/pub_ola"), prosba("ola")));
+  });
+  it("odrzuca prośbę: gościa, niezweryfikowanego, w cudzym imieniu, o nieistniejące, własne i swoje-kolaborowane drzewo, ze złym kluczem", async () => {
+    await assertFails(setDoc(doc(gosc(), "prosby/pub_ola"), prosba("ola")));
+    await assertFails(setDoc(doc(as("ola", "ola@example.org", false), "prosby/pub_ola"), prosba("ola")));
+    await assertFails(setDoc(doc(as("ola"), "prosby/pub_ewa"), prosba("ewa")));
+    await assertFails(setDoc(doc(as("ola"), "prosby/nie-ma_ola"), prosba("ola", "nie-ma")));
+    await assertFails(setDoc(doc(as("ala"), "prosby/pub_ala"), prosba("ala")));
+    await assertFails(setDoc(doc(as("kuba"), "prosby/prv_kuba"), prosba("kuba", "prv")));
+    await assertFails(setDoc(doc(as("ola"), "prosby/cokolwiek"), prosba("ola")));
+    await assertFails(setDoc(doc(as("ola"), "prosby/pub_ola"), { ...prosba("ola"), rola: "wlasciciel" }));
+  });
+  it("widzą ją: autor, właściciel drzewa i administrator – nikt inny; listowanie tylko po własnym uid albo po drzewie właściciela", async () => {
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "prosby/pub_ola"), prosba("ola")));
+    for (const kto of ["ola", "ala", "szef"]) await assertSucceeds(getDoc(doc(as(kto), "prosby/pub_ola")));
+    await assertFails(getDoc(doc(as("obcy"), "prosby/pub_ola")));
+    await assertFails(getDoc(doc(gosc(), "prosby/pub_ola")));
+    await assertSucceeds(getDocs(query(collection(as("ola"), "prosby"), where("uid", "==", "ola"))));
+    await assertSucceeds(getDocs(query(collection(as("ala"), "prosby"), where("drzewoId", "==", "pub"))));
+    await assertFails(getDocs(query(collection(as("obcy"), "prosby"), where("drzewoId", "==", "pub"))));
+    await assertFails(getDocs(collection(as("obcy"), "prosby")));
+  });
+  it("usuwają ją: autor (wycofanie), właściciel (odrzucenie, zatwierdzenie) i administrator", async () => {
+    for (const kto of ["ola", "ala", "szef"]) {
+      await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "prosby/pub_ola"), prosba("ola")));
+      await assertSucceeds(deleteDoc(doc(as(kto), "prosby/pub_ola")));
+    }
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "prosby/pub_ola"), prosba("ola")));
+    await assertFails(deleteDoc(doc(as("obcy"), "prosby/pub_ola")));
+  });
+  it("zatwierdzenie: właściciel dopisuje kolaboranta i usuwa prośbę, a potem ten widzi pełne dane", async () => {
+    await env.withSecurityRulesDisabled((c) => setDoc(doc(c.firestore(), "prosby/prv_ola"), prosba("ola", "prv")));
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/prv"), { kolaboranci: arrayUnion("ola"), "kolaboranciInfo.ola": { nazwa: "Ola" } }));
+    await assertSucceeds(deleteDoc(doc(as("ala"), "prosby/prv_ola")));
+    await assertSucceeds(getDoc(doc(as("ola"), "drzewa/prv/dane/pelne")));
+    await assertFails(setDoc(doc(as("ola"), "prosby/prv_ola"), prosba("ola", "prv"))); // jest już kolaborantem
+  });
+});

@@ -2,7 +2,7 @@
 import { adresId } from "./konta-adres";
 import { pobierzFirebase } from "./firebase";
 import { daneDlaGosci, doFirestore, pusteDane, sprawdzDane, statystykiDanych, zakresLatDanych } from "./logika";
-import type { Dostep, DaneDb, MetaDb, Profil, Widocznosc } from "./typy";
+import type { Dostep, DaneDb, MetaDb, Profil, Prosba, Widocznosc } from "./typy";
 import { MAKS_KOLABORANTOW } from "./typy";
 import type { PolitykaDat } from "../schemat-drzewa";
 
@@ -136,10 +136,84 @@ export async function usunKolaboranta(id: string, uid: string): Promise<void> {
 
 export async function usunDrzewo(id: string): Promise<void> {
   const { db, F } = await fs();
-  // Najpierw dane, potem dokument drzewa – reguły sprawdzają uprawnienia w dokumencie drzewa.
+  // Najpierw dane i prośby o dołączenie, potem dokument drzewa – reguły sprawdzają uprawnienia w dokumencie drzewa.
   await F.deleteDoc(F.doc(db, "drzewa", id, "dane", "pelne"));
   await F.deleteDoc(F.doc(db, "drzewa", id, "dane", "publiczne"));
+  for (const p of await listaProsbDrzewa(id)) await F.deleteDoc(F.doc(db, "prosby", p.id));
   await F.deleteDoc(F.doc(db, "drzewa", id));
+}
+
+// ───────────────────────────── współpraca i własność ─────────────────────────────
+
+const naProsby = (snap: { docs: { id: string; data: () => unknown }[] }): Prosba[] =>
+  snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Prosba, "id">) })).sort((a, b) => a.utworzono.localeCompare(b.utworzono));
+
+/** Zgłasza prośbę o dołączenie do drzewa jako kolaborant (dla drzewa prywatnego też – wystarczy znać jego identyfikator). */
+export async function wyslijProsbe(drzewoId: string, uid: string, nazwa: string): Promise<void> {
+  const { db, F } = await fs();
+  try {
+    await F.setDoc(F.doc(db, "prosby", `${drzewoId}_${uid}`), { drzewoId, uid, nazwa, utworzono: new Date().toISOString() });
+  } catch (e) {
+    if ((e as { code?: string }).code === "permission-denied") {
+      throw new Error("Nie można wysłać prośby: drzewo nie istnieje, jesteś już jego właścicielem albo kolaborantem, albo Twój adres e-mail nie jest potwierdzony.");
+    }
+    throw e;
+  }
+}
+
+export async function listaProsbDrzewa(drzewoId: string): Promise<Prosba[]> {
+  const { db, F } = await fs();
+  return naProsby(await F.getDocs(F.query(F.collection(db, "prosby"), F.where("drzewoId", "==", drzewoId))));
+}
+
+export async function listaMoichProsb(uid: string): Promise<Prosba[]> {
+  const { db, F } = await fs();
+  return naProsby(await F.getDocs(F.query(F.collection(db, "prosby"), F.where("uid", "==", uid))));
+}
+
+export async function usunProsbe(id: string): Promise<void> {
+  const { db, F } = await fs();
+  await F.deleteDoc(F.doc(db, "prosby", id));
+}
+
+/** Zatwierdza prośbę (właściciel): dopisuje użytkownika jako kolaboranta i usuwa prośbę. */
+export async function zatwierdzProsbe(prosba: Prosba, juzKolaborantow: number): Promise<void> {
+  if (juzKolaborantow >= MAKS_KOLABORANTOW) throw new Error(`Drzewo może mieć najwyżej ${MAKS_KOLABORANTOW} kolaborantów.`);
+  const { db, F } = await fs();
+  await F.updateDoc(F.doc(db, "drzewa", prosba.drzewoId), { kolaboranci: F.arrayUnion(prosba.uid), [`kolaboranciInfo.${prosba.uid}`]: { nazwa: prosba.nazwa }, zaktualizowano: dzis() });
+  await F.deleteDoc(F.doc(db, "prosby", prosba.id));
+}
+
+/** Nazwa drzewa, jeśli użytkownik może je odczytać (drzewo publiczne albo własne); inaczej null. */
+export async function nazwaDrzewa(drzewoId: string): Promise<string | null> {
+  const { db, F } = await fs();
+  try {
+    const snap = await F.getDoc(F.doc(db, "drzewa", drzewoId));
+    return snap.exists() ? (snap.data() as MetaDb).nazwa : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Kolaborant opuszcza drzewo. */
+export const opuscDrzewo = usunKolaboranta;
+
+/**
+ * Przekazuje własność drzewa jednemu z jego kolaborantów. Dotychczasowy właściciel zostaje kolaborantem
+ * (może wtedy później opuścić drzewo albo usunąć konto bez utraty drzewa).
+ */
+export async function przekazWlasnosc(drzewoId: string, meta: MetaDb, nowyWlascicielId: string): Promise<void> {
+  const nowy = meta.kolaboranciInfo[nowyWlascicielId];
+  if (!meta.kolaboranci.includes(nowyWlascicielId) || !nowy) throw new Error("Drzewo można przekazać tylko użytkownikowi, który jest jego kolaborantem.");
+  const { db, F } = await fs();
+  await F.updateDoc(F.doc(db, "drzewa", drzewoId), {
+    wlascicielId: nowyWlascicielId,
+    wlascicielNazwa: nowy.nazwa,
+    kolaboranci: [...meta.kolaboranci.filter((u) => u !== nowyWlascicielId), meta.wlascicielId],
+    [`kolaboranciInfo.${nowyWlascicielId}`]: F.deleteField(),
+    [`kolaboranciInfo.${meta.wlascicielId}`]: { nazwa: meta.wlascicielNazwa },
+    zaktualizowano: dzis(),
+  });
 }
 
 const naWpisy = (snap: { docs: { id: string; data: () => unknown }[] }): WpisDrzewa[] => snap.docs.map((d) => ({ id: d.id, meta: d.data() as MetaDb }));
@@ -183,6 +257,7 @@ export async function usunDaneUzytkownika(uid: string, email: string, { zablokuj
   const { wlasne, wspolne } = await listaMoich(uid);
   for (const d of wlasne) await usunDrzewo(d.id);
   for (const d of wspolne) await usunKolaboranta(d.id, uid);
+  for (const p of await listaMoichProsb(uid)) await F.deleteDoc(F.doc(db, "prosby", p.id));
   if (email) await F.deleteDoc(F.doc(db, "adresy", adresId(email)));
   await F.deleteDoc(F.doc(db, "uzytkownicy", uid));
   if (zablokuj) await F.setDoc(F.doc(db, "blokady", uid), { email, od: new Date().toISOString() });

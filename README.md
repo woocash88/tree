@@ -219,7 +219,8 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
 | przegląda drzewa publiczne (osoby żyjące wg ustawień właściciela) | ✔ | ✔ | ✔ | ✔ | ✔ |
 | zakłada konto i tworzy własne drzewa | | ✔ (po potwierdzeniu e-maila) | | | |
 | widzi pełne dane drzewa, dodaje, edytuje i usuwa osoby | | | ✔ | ✔ | ✔ (każde drzewo) |
-| zmienia ustawienia drzewa (nazwa, publiczne/prywatne, osoby żyjące), zaprasza kolaborantów, usuwa drzewo | | | | ✔ | ✔ (każde drzewo) |
+| prosi o dołączenie do cudzego drzewa jako kolaborant | | ✔ | | | |
+| zmienia ustawienia drzewa (nazwa, publiczne/prywatne, osoby żyjące), dodaje kolaborantów, zatwierdza prośby, przekazuje własność, usuwa drzewo | | | | ✔ | ✔ (ustawienia i usunięcie; własności nie przekazuje) |
 | usuwa użytkowników i ich drzewa | | | | | ✔ |
 
 - **Rejestracja**: imię, nazwisko, adres e-mail i hasło (min. 8 znaków) albo konto Google. Adres e-mail trzeba
@@ -232,10 +233,30 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
   To ustawienie jest wymuszane przez bazę, nie tylko ukrywane w widoku: w Firestore każde drzewo ma dwa dokumenty,
   `dane/pelne` (tylko dla zarządzających) i `dane/publiczne` (kopia już okrojona według polityki, przeliczana
   przy każdej zmianie). Odwiedzający nigdy nie pobierają dat osób żyjących.
-- **Kolaboranci**: właściciel wpisuje adres e-mail zarejestrowanego użytkownika (w ustawieniach drzewa). Kolaborant widzi
-  drzewo w profilu w sekcji „Współpracuję przy”.
+- **Kolaboranci** można dodać na dwa sposoby. (1) Właściciel wpisuje adres e-mail zarejestrowanego użytkownika (ustawienia
+  drzewa). (2) Użytkownik wkleja w profilu („Dołącz do istniejącego drzewa”) link do drzewa od właściciela albo otwiera
+  link do prywatnego drzewa i klika „Poproś o dostęp”; **prośbę zatwierdza albo odrzuca właściciel** (ustawienia drzewa,
+  w profilu widać liczbę oczekujących próśb). Kolaborant widzi drzewo w profilu w sekcji „Współpracuję przy” i może
+  je tam opuścić. Prośba zawiera tylko imię i nazwisko autora i znika po zatwierdzeniu lub odrzuceniu.
+- **Przekazanie własności**: właściciel może przekazać drzewo jednemu ze swoich kolaborantów (ustawienia drzewa →
+  „Przekaż własność”); dotychczasowy właściciel zostaje kolaborantem. Dzięki temu może usunąć konto, a drzewo zostaje.
+  W sekcji „Usuń konto” w profilu widać, które drzewa zostaną usunięte, z linkami do przekazania.
 - **Usuwanie**: użytkownik usuwa konto i wszystkie swoje drzewa w profilu. Administrator może usunąć użytkownika
   (jego drzewa i udział w cudzych drzewach znikają, konto zostaje zablokowane) oraz dowolne drzewo.
+
+### Adres e-mail i dwa sposoby logowania
+
+Konto można prowadzić hasłem, przez Google albo oboma sposobami naraz – wciąż jest to jedno konto z jednymi drzewami.
+
+- **Jedno konto na adres.** W konsoli Firebase (*Authentication → Settings → User account linking*) powinna być wybrana opcja
+  **„Link accounts that use the same email”** (domyślna). Wtedy logowanie przez Google adresem, którym ktoś zarejestrował się
+  hasłem (i odwrotnie), prowadzi do tego samego konta, a nie zakłada drugiego.
+- **Zmiana adresu** (profil → „Adres e-mail i logowanie”): dla kont z hasłem. Użytkownik podaje nowy adres i swoje hasło, na nowy
+  adres idzie link; po jego kliknięciu adres się zmienia, a użytkownik loguje się ponownie. Profil i wpis w rejestrze adresów
+  (wyszukiwanie kolaboranta) są uzgadniane przy najbliższym logowaniu. Konto założone wyłącznie przez Google ma adres
+  konta Google – nie da się go tu zmienić (można dodać hasło albo założyć nowe konto i przekazać mu drzewa).
+- **Dodanie drugiego sposobu**: konto Google może dodać logowanie hasłem, a konto z hasłem – połączyć się z Google
+  (tylko jeśli konto Google ma ten sam adres e-mail, inaczej połączenie jest cofane).
 
 ### Konfiguracja Firebase (jednorazowo, w przeglądarce)
 
@@ -244,7 +265,9 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
    (`<projekt>.web.app` dodaje się automatycznie).
 2. **Cloud Firestore** (Build → Firestore Database → Utwórz bazę): lokalizacja **eur3 (Europe)**, tryb **produkcyjny**
    (nie „testowy”!). Reguły wdroży workflow albo wkleisz je ręcznie: Firestore → *Reguły* → wklej zawartość
-   `firestore.rules` → *Opublikuj*.
+   `firestore.rules` → *Opublikuj*. **Po każdej zmianie pliku `firestore.rules` trzeba je opublikować ponownie** – automatycznie
+   zrobi to workflow, o ile konto serwisowe ma rolę *Firebase Rules Admin* (w logu Actions pojawi się ostrzeżenie, jeśli nie ma).
+   Bez aktualnych reguł nowe funkcje nie działają, a przy braku reguł baza odmawia wszystkiego.
 3. **Aplikacja internetowa**: Ustawienia projektu (zębatka) → *Ogólne* → *Twoje aplikacje* → ikona `</>` → nazwa dowolna,
    bez Firebase Hosting → *Zarejestruj*. Zapisz `apiKey` i `appId` z wyświetlonej konfiguracji (to publiczne identyfikatory).
 4. **GitHub** → *Settings → Secrets and variables → Actions → Variables*: dodaj `FIREBASE_API_KEY` (= `apiKey`)
@@ -461,7 +484,8 @@ tests/                  testy (vitest); tests/reguly – reguły Firestore na em
 `npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
 i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
 kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, usuwanie użytkownika
-i drzewa, usuwanie własnego konta. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
+i drzewa, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
+i zachowanie drzewa po usunięciu konta, opuszczanie drzewa, zmiana adresu e-mail, logowanie hasłem do konta Google. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
 Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google
 (dostępne tylko w buildzie testowym); działanie samego okna Google trzeba sprawdzić ręcznie na wdrożonej stronie.
 

@@ -14,7 +14,7 @@ import { WidokOsoby } from "@/components/widoki/WidokOsoby";
 import { WidokStronyDrzewa } from "@/components/widoki/WidokStronyDrzewa";
 import { type ApiEdycji } from "@/components/useEdycje";
 import { daneWidoku, indeksSzukaniaDrzewa, przygotujDrzewo, statystykaWidoku } from "@/lib/dane-czyste";
-import { wczytajDrzewo, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
+import { wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import * as L from "@/lib/baza/logika";
 import { type DaneDb } from "@/lib/baza/typy";
@@ -38,6 +38,39 @@ function Komunikat({ tytul, tekst, akcja }: { tytul: string; tekst: string; akcj
         {akcja && <p className="mt-6 flex flex-wrap justify-center gap-3">{akcja}</p>}
       </main>
       <Stopka />
+    </>
+  );
+}
+
+/** Przycisk „Poproś o dostęp” dla zalogowanego użytkownika, który trafił na cudze prywatne drzewo. */
+function ProsbaODostep({ drzewoId, uid, nazwa, zweryfikowany }: { drzewoId: string; uid: string; nazwa: string; zweryfikowany: boolean }) {
+  const [stan, setStan] = useState<{ typ: "ok" | "blad"; tekst: string } | null>(null);
+  const [trwa, setTrwa] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        className="przycisk przycisk-glowny"
+        disabled={trwa || !zweryfikowany || stan?.typ === "ok"}
+        onClick={async () => {
+          setTrwa(true);
+          try {
+            await wyslijProsbe(drzewoId, uid, nazwa);
+            setStan({ typ: "ok", tekst: "Prośba wysłana. Gdy właściciel ją zatwierdzi, drzewo pojawi się w Twoim profilu w sekcji „Współpracuję przy”." });
+          } catch (e) {
+            setStan({ typ: "blad", tekst: komunikatBledu(e) });
+          }
+          setTrwa(false);
+        }}
+      >
+        Poproś o dostęp jako kolaborant
+      </button>
+      {!zweryfikowany && <span className="basis-full text-sm text-tekst-2">Najpierw potwierdź adres e-mail w swoim profilu.</span>}
+      {stan && (
+        <span role={stan.typ === "blad" ? "alert" : "status"} className={`basis-full text-sm font-semibold ${stan.typ === "blad" ? "text-blad" : ""}`}>
+          {stan.tekst}
+        </span>
+      )}
     </>
   );
 }
@@ -151,10 +184,15 @@ export function WidokDrzewaDb() {
     return (
       <Komunikat
         tytul="Nie ma takiego drzewa"
-        tekst={uid ? "Drzewo nie istnieje albo jest prywatne i nie masz do niego dostępu." : "Drzewo nie istnieje albo jest prywatne. Jeśli ktoś Ci je udostępnił, zaloguj się na swoje konto."}
+        tekst={uid ? "Drzewo nie istnieje albo jest prywatne i nie masz do niego dostępu. Jeśli znasz jego właściciela, możesz poprosić o dostęp jako kolaborant." : "Drzewo nie istnieje albo jest prywatne. Jeśli ktoś Ci je udostępnił, zaloguj się na swoje konto."}
         akcja={
           uid ? (
-            <Link href="/profil/" className="przycisk przycisk-glowny">Mój profil</Link>
+            <>
+              {wczytane === "zakaz" && konto.profil && (
+                <ProsbaODostep drzewoId={id} uid={uid} nazwa={`${konto.profil.imie} ${konto.profil.nazwisko}`} zweryfikowany={konto.zweryfikowany} />
+              )}
+              <Link href="/profil/" className="przycisk">Mój profil</Link>
+            </>
           ) : (
             <Link href="/logowanie/" className="przycisk przycisk-glowny">Zaloguj się</Link>
           )

@@ -29,6 +29,10 @@ const KOMUNIKATY: Record<string, string> = {
   "auth/popup-blocked": "Przeglądarka zablokowała okno logowania Google. Zezwól na wyskakujące okna dla tej strony.",
   "auth/network-request-failed": "Brak połączenia z internetem albo z serwerem.",
   "auth/requires-recent-login": "Ze względów bezpieczeństwa zaloguj się ponownie i spróbuj jeszcze raz.",
+  "auth/credential-already-in-use": "To konto Google jest już połączone z innym kontem w serwisie.",
+  "auth/provider-already-linked": "Ten sposób logowania jest już dodany do Twojego konta.",
+  "auth/email-already-exists": "Konto z tym adresem e-mail już istnieje.",
+  "auth/operation-not-allowed-email-change": "Nie można zmienić adresu e-mail tą metodą.",
   "auth/operation-not-allowed": "Ten sposób logowania nie jest włączony w projekcie Firebase (Authentication → Metoda logowania).",
   "auth/unauthorized-domain": "Ta domena nie jest dozwolona w projekcie Firebase (Authentication → Ustawienia → Autoryzowane domeny).",
   "auth/internal-error": "Błąd wewnętrzny logowania. Zwykle pomaga włączenie logowania Google w konsoli Firebase albo wyłączenie blokady wyskakujących okien i ciasteczek innych firm.",
@@ -148,7 +152,8 @@ export async function zapewnijAdres(user: User, profil: Profil): Promise<void> {
 export async function zapiszProfil(uid: string, imie: string, nazwisko: string): Promise<void> {
   const { auth, db } = await pobierzFirebase();
   const F = await import("firebase/firestore");
-  await F.updateDoc(F.doc(db, "uzytkownicy", uid), { imie: imie.trim(), nazwisko: nazwisko.trim() });
+  // Adres zapisujemy razem z nazwiskiem: reguły wymagają, żeby zgadzał się z tokenem logowania.
+  await F.updateDoc(F.doc(db, "uzytkownicy", uid), { imie: imie.trim(), nazwisko: nazwisko.trim(), email: auth.currentUser?.email ?? "" });
   if (auth.currentUser) await (await import("firebase/auth")).updateProfile(auth.currentUser, { displayName: `${imie.trim()} ${nazwisko.trim()}` });
 }
 
@@ -176,5 +181,69 @@ export async function usunWlasneKonto(haslo?: string): Promise<void> {
   } catch (e) {
     kontoUsuwane = false;
     throw e;
+  }
+}
+
+// ───────────────────────────── adres e-mail i sposoby logowania ─────────────────────────────
+
+export type SposobyLogowania = { haslo: boolean; google: boolean; emailGoogle: string | null };
+
+export function sposobyLogowania(user: User): SposobyLogowania {
+  const g = user.providerData.find((p) => p.providerId === "google.com");
+  return { haslo: user.providerData.some((p) => p.providerId === "password"), google: !!g, emailGoogle: g?.email ?? null };
+}
+
+/**
+ * Po zmianie adresu logowania (link potwierdzający z nowego adresu) uzgadnia profil i rejestr adresów:
+ * wpis w profilu dostaje nowy adres, stary wpis w rejestrze kolaborantów znika.
+ */
+export async function uzgodnijAdres(user: User, profil: Profil): Promise<Profil> {
+  const nowy = user.email ? adresId(user.email) : "";
+  if (!user.emailVerified || !nowy || adresId(profil.email) === nowy) return profil;
+  const { db } = await pobierzFirebase();
+  const F = await import("firebase/firestore");
+  await F.updateDoc(F.doc(db, "uzytkownicy", user.uid), { email: user.email });
+  if (profil.email) {
+    const stary = F.doc(db, "adresy", adresId(profil.email));
+    const snap = await F.getDoc(stary).catch(() => null);
+    if (snap?.exists() && snap.data().uid === user.uid) await F.deleteDoc(stary);
+  }
+  return { ...profil, email: user.email ?? "" };
+}
+
+/** Zmiana adresu e-mail (konto z hasłem): wysyła link na NOWY adres, zmiana następuje po jego kliknięciu. */
+export async function zmienEmail(nowyEmail: string, haslo: string): Promise<void> {
+  const { auth } = await pobierzFirebase();
+  const A = await import("firebase/auth");
+  const user = auth.currentUser;
+  if (!user?.email) throw new Error("Nie jesteś zalogowany.");
+  if (!sposobyLogowania(user).haslo) throw new Error("To konto loguje się tylko przez Google – adres e-mail pochodzi z konta Google.");
+  if (adresId(nowyEmail) === adresId(user.email)) throw new Error("To jest już Twój obecny adres e-mail.");
+  await A.reauthenticateWithCredential(user, A.EmailAuthProvider.credential(user.email, haslo));
+  await A.verifyBeforeUpdateEmail(user, nowyEmail.trim());
+}
+
+/** Dodaje logowanie hasłem do konta założonego przez Google (ten sam adres e-mail, to samo konto). */
+export async function dodajLogowanieHaslem(haslo: string): Promise<void> {
+  const { auth } = await pobierzFirebase();
+  const A = await import("firebase/auth");
+  const user = auth.currentUser;
+  if (!user?.email) throw new Error("Nie jesteś zalogowany.");
+  if (haslo.length < 8) throw new Error("Hasło musi mieć co najmniej 8 znaków.");
+  // Dla konta bez hasła updatePassword dodaje logowanie hasłem (do adresu tego samego konta); wymaga niedawnego logowania.
+  await A.updatePassword(user, haslo);
+}
+
+/** Łączy konto z logowaniem Google, ale tylko gdy konto Google ma ten sam adres e-mail (żeby nie powstawały „dwa konta w jednym”). */
+export async function polaczZGoogle(): Promise<void> {
+  const { auth } = await pobierzFirebase();
+  const A = await import("firebase/auth");
+  const user = auth.currentUser;
+  if (!user?.email) throw new Error("Nie jesteś zalogowany.");
+  await A.linkWithPopup(user, new A.GoogleAuthProvider());
+  const g = sposobyLogowania(auth.currentUser ?? user).emailGoogle;
+  if (g && adresId(g) !== adresId(user.email)) {
+    await A.unlink(auth.currentUser ?? user, "google.com");
+    throw new Error(`Konto Google używa innego adresu e-mail (${g}) niż Twoje konto (${user.email}). Połączenie anulowano.`);
   }
 }

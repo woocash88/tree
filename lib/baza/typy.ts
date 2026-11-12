@@ -36,3 +36,14 @@ export const MAKS_KOLABORANTOW = 20;
 
 export const mozeEdytowacDane = (d: Dostep) => d !== "gosc";
 export const mozeZarzadzac = (d: Dostep) => d === "wlasciciel" || d === "admin";
+
+/** Prośba użytkownika o dołączenie do cudzego drzewa jako kolaborant: prosby/{idDrzewa}_{uid}. */
+export type Prosba = { id: string; drzewoId: string; uid: string; nazwa: string; utworzono: string };
+
+/** Wyciąga identyfikator drzewa z linku (…/d/?id=XYZ…) albo z samego identyfikatora wklejonego przez użytkownika. */
+export function idDrzewaZTekstu(tekst: string): string {
+  const t = tekst.trim();
+  const zLinku = /[?&]id=([A-Za-z0-9_-]+)/.exec(t);
+  const id = zLinku ? zLinku[1] : t;
+  return /^[A-Za-z0-9]{10,40}$/.test(id) ? id : "";
+}

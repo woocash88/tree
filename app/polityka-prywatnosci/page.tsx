@@ -79,7 +79,7 @@ export default function PolitykaPrywatnosci() {
               <strong>Drzewo prywatne</strong> widzą tylko jego właściciel, zaproszeni współpracownicy i administrator serwisu. <strong>Drzewo publiczne</strong> może przeglądać każdy, kto zna jego adres, a ponadto pojawia się w katalogu drzew. Przy osobach oznaczonych jako żyjące właściciel wybiera, czy odwiedzający widzą tylko imię i nazwisko, dodatkowo rok urodzenia, czy wszystkie dane. Dane osób żyjących, których odwiedzający nie powinni widzieć, nie są w ogóle przesyłane do ich przeglądarki – serwer przechowuje je oddzielnie, dostępne tylko dla zarządzających drzewem.
             </p>
             <p>
-              Współpracownik wskazany przez właściciela może dodawać, zmieniać i usuwać osoby w drzewie, ale nie zmienia ustawień prywatności ani nie usuwa drzewa.
+              Współpracownik wskazany przez właściciela może dodawać, zmieniać i usuwać osoby w drzewie, ale nie zmienia ustawień prywatności ani nie usuwa drzewa. Możesz też sam poprosić o dołączenie do cudzego drzewa: prośba zawiera tylko Twoje imię i nazwisko, widzi ją właściciel drzewa i znika po jego decyzji. Właściciel może przekazać drzewo jednemu ze swoich współpracowników – wtedy drzewo zostaje w serwisie, nawet jeśli dotychczasowy właściciel usunie konto.
             </p>
             <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) właściciela drzewa polegający na dokumentowaniu historii rodziny, a w przypadku konta – umowa o świadczenie usługi (art. 6 ust. 1 lit. b RODO).</p>
           </Sekcja>

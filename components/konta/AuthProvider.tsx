@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { firebaseSkonfigurowany, pobierzFirebase } from "@/lib/baza/firebase";
-import { odswiezUzytkownika, wczytajProfil, zapewnijAdres } from "@/lib/baza/konta";
+import { odswiezUzytkownika, sposobyLogowania, uzgodnijAdres, wczytajProfil, zapewnijAdres, type SposobyLogowania } from "@/lib/baza/konta";
 import type { Profil } from "@/lib/baza/typy";
 
 export type StanKonta = {
@@ -12,13 +12,15 @@ export type StanKonta = {
   email: string | null;
   zweryfikowany: boolean;
   profil: Profil | null;
+  /** Którymi sposobami logowania dysponuje konto (hasło, Google). */
+  sposoby: SposobyLogowania | null;
   czyAdmin: boolean;
   zablokowany: boolean;
   /** Ponownie wczytuje użytkownika i profil (np. po potwierdzeniu adresu e-mail). */
   odswiez: () => Promise<void>;
 };
 
-const bazowy: Omit<StanKonta, "odswiez"> = { status: "ladowanie", uid: null, email: null, zweryfikowany: false, profil: null, czyAdmin: false, zablokowany: false };
+const bazowy: Omit<StanKonta, "odswiez"> = { status: "ladowanie", uid: null, email: null, zweryfikowany: false, profil: null, sposoby: null, czyAdmin: false, zablokowany: false };
 const Kontekst = createContext<StanKonta>({ ...bazowy, status: "wylaczone", odswiez: async () => {} });
 
 export const useKonto = () => useContext(Kontekst);
@@ -37,7 +39,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Adres potwierdzono, ale token logowania (z którego korzystają reguły bazy) może jeszcze mieć starą informację
     // (np. link kliknięty przed wejściem na stronę) – wymuszamy jego odświeżenie, inaczej zapisy byłyby odrzucane.
     try {
-      if (u.emailVerified && (await u.getIdTokenResult()).claims.email_verified !== true) await u.getIdToken(true);
+      if (u.emailVerified) {
+        const { claims } = await u.getIdTokenResult();
+        // Token ma starą informację o potwierdzeniu albo o adresie (np. po zmianie adresu e-mail) – odświeżamy go.
+        if (claims.email_verified !== true || String(claims.email ?? "").toLowerCase() !== (u.email ?? "").toLowerCase()) await u.getIdToken(true);
+      }
     } catch {
       /* brak sieci – odświeżenie nastąpi przy kolejnej próbie */
     }
@@ -52,13 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       zablokowany = b.exists();
       if (!zablokowany) {
         profil = await wczytajProfil(u);
+        if (profil) profil = await uzgodnijAdres(u, profil);
         if (profil) await zapewnijAdres(u, profil);
       }
     } catch (e) {
       // Błąd sieci lub reguł: pokazujemy użytkownika bez profilu, strony same zgłoszą problem.
       console.error("Nie udało się wczytać konta:", e);
     }
-    if (!anuluj.current) setStan({ status: "zalogowany", uid: u.uid, email: u.email, zweryfikowany: u.emailVerified, profil, czyAdmin, zablokowany });
+    if (!anuluj.current) setStan({ status: "zalogowany", uid: u.uid, email: u.email, zweryfikowany: u.emailVerified, profil, sposoby: sposobyLogowania(u), czyAdmin, zablokowany });
   }, []);
 
   useEffect(() => {
