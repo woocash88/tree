@@ -54,14 +54,22 @@ function Poziom({ tytul, children, className = "" }: { tytul: string; children: 
   );
 }
 
-const LINIA = "border-[color:var(--linia)]";
 const KROPKA = "absolute size-2 rounded-full bg-akcent";
 const SIATKA = "grid-cols-[1fr_minmax(20rem,1fr)_1fr]";
 
+/** Krzywa schodząca od środka belki do kolumny: ćwiartka elipsy rozciągnięta na szerokość kolumny. */
+function Krzywa({ strona }: { strona: "lewa" | "prawa" }) {
+  const sciezka = strona === "lewa" ? "M100 0C70 0 50 22 50 56" : "M0 0C30 0 50 22 50 56";
+  return (
+    <svg aria-hidden="true" viewBox="0 0 100 56" preserveAspectRatio="none" fill="none" className="absolute inset-0 h-full w-full overflow-visible text-[color:var(--linia)]">
+      <path d={sciezka} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
 /**
- * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): belka pod rodzicami z zaokrąglonymi
- * kolankami, z której schodzą linie do kolumny rodzeństwa i do karty osoby; na końcach kropki.
- * Kolumny i odstęp odpowiadają siatce poniżej.
+ * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): dwie gładkie krzywe wychodzące spod
+ * rodziców w stronę kolumny rodzeństwa i karty osoby, zakończone kropkami. Kolumny i odstęp odpowiadają siatce poniżej.
  */
 function LacznikRodzenstwa() {
   return (
@@ -69,13 +77,14 @@ function LacznikRodzenstwa() {
       <div className="lg:hidden">
         <Lacznik />
       </div>
-      <div aria-hidden="true" className={`mb-3 hidden h-7 gap-6 lg:grid ${SIATKA}`}>
+      <div aria-hidden="true" className={`mb-3 hidden h-14 gap-6 lg:grid ${SIATKA}`}>
         <div className="relative">
-          <span className={`absolute inset-y-0 left-1/2 right-[-1.5rem] rounded-tl-2xl border-l-2 border-t-2 ${LINIA}`} />
+          <Krzywa strona="lewa" />
+          <span className="absolute left-full top-0 w-6 border-t-[2.5px] border-[color:var(--linia)]" />
           <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div className="relative">
-          <span className={`absolute inset-y-0 left-[-1.5rem] right-1/2 rounded-tr-2xl border-r-2 border-t-2 ${LINIA}`} />
+          <Krzywa strona="prawa" />
           <span className={`${KROPKA} bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2`} />
         </div>
         <div />
@@ -85,7 +94,7 @@ function LacznikRodzenstwa() {
 }
 
 function Lacznik() {
-  return <div aria-hidden="true" className="mx-auto h-6 w-0.5 rounded-full bg-[var(--linia)]" />;
+  return <div aria-hidden="true" className="mx-auto h-6 w-[2.5px] rounded-full bg-[var(--linia)]" />;
 }
 
 export default async function StronaOsoby({ params }: Props) {
@@ -179,7 +188,8 @@ export default async function StronaOsoby({ params }: Props) {
         )}
 
         <div className={`grid gap-6 ${rodzenstwo.length || zwiazki.length ? "lg:grid-cols-[1fr_minmax(20rem,1fr)_1fr]" : ""} lg:items-start`}>
-          <article className="szklo px-5 py-4 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
+          <div className="flex flex-col items-center lg:order-2 lg:self-stretch">
+            <article className="szklo w-full px-5 py-4 text-center" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">
               Pokolenie {d.pokolenie.get(o.id)} ·{" "}
               <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="link">
@@ -237,6 +247,9 @@ export default async function StronaOsoby({ params }: Props) {
               </Link>
             </div>
           </article>
+            {/* linia od osoby w dół aż do dzieci – wypełnia wolne miejsce, gdy kolumna rodzeństwa jest dłuższa */}
+            {dzieci.length > 0 && <div aria-hidden="true" className="hidden w-[2.5px] flex-1 rounded-full bg-[var(--linia)] lg:block" />}
+          </div>
 
           {zwiazki.length > 0 && (
             <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3">
@@ -244,7 +257,7 @@ export default async function StronaOsoby({ params }: Props) {
                 {zwiazki.map((z) => (
                   <li key={z.osoba.id} className="relative">
                     {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
-                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-0.5 w-6 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
+                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-[2.5px] w-6 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
                       <span className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
                     </span>
                     {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}

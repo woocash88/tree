@@ -256,19 +256,19 @@ h1, h2, h3 {
 
 /* Linie od rodzica do dzieci na stronie osoby: belka z zaokrąglonymi końcami nad pierwszym rzędem kart
    i „zęby” do kart w środku rzędu. Kolor linii (--linia) pochodzi z koloru akcentu motywu. */
-.dzieci-linie { padding-top: 1.1rem; }
+.dzieci-linie { padding-top: 1.7rem; }
 .dzieci-linie > li { position: relative; }
 .dzieci-linie > li::before,
 .dzieci-linie > li::after { content: ""; position: absolute; display: none; }
-.dzieci-linie > li::before { top: -1.1rem; left: -0.25rem; right: -0.25rem; height: 1.1rem; border-top: 2px solid var(--linia); }
-.dzieci-linie > li::after { top: -1.1rem; left: calc(50% - 1px); height: 1.1rem; border-left: 2px solid var(--linia); }
+.dzieci-linie > li::before { top: -1.7rem; left: -0.25rem; right: -0.25rem; height: 1.7rem; border-top: 2.5px solid var(--linia); }
+.dzieci-linie > li::after { top: -1.7rem; left: calc(50% - 1px); height: 1.7rem; border-left: 2.5px solid var(--linia); }
 .dzieci-linie > li:only-child::before { display: none !important; }
 @media (max-width: 639px) {
   .dzieci-linie > li:nth-child(-n+2)::before,
   .dzieci-linie > li:nth-child(-n+2)::after { display: block; }
-  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2px solid var(--linia); border-top-left-radius: 0.9rem; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2.5px solid var(--linia); border-top-left-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(2)::before,
-  .dzieci-linie > li:last-child:nth-child(-n+2)::before { right: 50%; border-right: 2px solid var(--linia); border-top-right-radius: 0.9rem; }
+  .dzieci-linie > li:last-child:nth-child(-n+2)::before { right: 50%; border-right: 2.5px solid var(--linia); border-top-right-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(1)::after,
   .dzieci-linie > li:nth-child(2)::after,
   .dzieci-linie > li:last-child:nth-child(-n+2)::after { display: none; }
@@ -277,9 +277,9 @@ h1, h2, h3 {
 @media (min-width: 640px) and (max-width: 1023px) {
   .dzieci-linie > li:nth-child(-n+3)::before,
   .dzieci-linie > li:nth-child(-n+3)::after { display: block; }
-  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2px solid var(--linia); border-top-left-radius: 0.9rem; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2.5px solid var(--linia); border-top-left-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(3)::before,
-  .dzieci-linie > li:last-child:nth-child(-n+3)::before { right: 50%; border-right: 2px solid var(--linia); border-top-right-radius: 0.9rem; }
+  .dzieci-linie > li:last-child:nth-child(-n+3)::before { right: 50%; border-right: 2.5px solid var(--linia); border-top-right-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(1)::after,
   .dzieci-linie > li:nth-child(3)::after,
   .dzieci-linie > li:last-child:nth-child(-n+3)::after { display: none; }
@@ -288,9 +288,9 @@ h1, h2, h3 {
 @media (min-width: 1024px) and (max-width: 1279px) {
   .dzieci-linie > li:nth-child(-n+4)::before,
   .dzieci-linie > li:nth-child(-n+4)::after { display: block; }
-  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2px solid var(--linia); border-top-left-radius: 0.9rem; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2.5px solid var(--linia); border-top-left-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(4)::before,
-  .dzieci-linie > li:last-child:nth-child(-n+4)::before { right: 50%; border-right: 2px solid var(--linia); border-top-right-radius: 0.9rem; }
+  .dzieci-linie > li:last-child:nth-child(-n+4)::before { right: 50%; border-right: 2.5px solid var(--linia); border-top-right-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(1)::after,
   .dzieci-linie > li:nth-child(4)::after,
   .dzieci-linie > li:last-child:nth-child(-n+4)::after { display: none; }
@@ -299,9 +299,9 @@ h1, h2, h3 {
 @media (min-width: 1280px) {
   .dzieci-linie > li:nth-child(-n+5)::before,
   .dzieci-linie > li:nth-child(-n+5)::after { display: block; }
-  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2px solid var(--linia); border-top-left-radius: 0.9rem; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; border-left: 2.5px solid var(--linia); border-top-left-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(5)::before,
-  .dzieci-linie > li:last-child:nth-child(-n+5)::before { right: 50%; border-right: 2px solid var(--linia); border-top-right-radius: 0.9rem; }
+  .dzieci-linie > li:last-child:nth-child(-n+5)::before { right: 50%; border-right: 2.5px solid var(--linia); border-top-right-radius: 1.6rem; }
   .dzieci-linie > li:nth-child(1)::after,
   .dzieci-linie > li:nth-child(5)::after,
   .dzieci-linie > li:last-child:nth-child(-n+5)::after { display: none; }
