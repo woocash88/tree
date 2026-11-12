@@ -7,7 +7,7 @@ import { sciezkaIndeksuDrzew } from "@/lib/sciezki";
 
 export const metadata: Metadata = {
   title: "Polityka prywatności",
-  description: "Jakie dane przetwarza serwis Nasi przodkowie, co zapisuje w przeglądarce i jak zgłosić poprawkę lub usunięcie danych.",
+  description: "Jakie dane przetwarza serwis Przodkowie (konta, drzewa, osoby żyjące), co zapisuje w przeglądarce i jak usunąć konto albo zgłosić poprawkę danych.",
 };
 
 /** Data ostatniej zmiany treści tej strony – zmień ją razem z treścią. */
@@ -23,7 +23,7 @@ function Sekcja({ tytul, children }: { tytul: string; children: React.ReactNode 
 }
 
 export default function PolitykaPrywatnosci() {
-  const { administrator, hosting } = serwis;
+  const { administrator } = serwis;
   const kontakt = administrator.email ? (
     <a className="link" href={`mailto:${administrator.email}`}>
       {administrator.email}
@@ -40,10 +40,10 @@ export default function PolitykaPrywatnosci() {
 
           <Sekcja tytul="W skrócie">
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>Serwis nie używa ciasteczek, narzędzi analitycznych ani skryptów śledzących.</li>
-              <li>Nie ma kont użytkowników, formularzy kontaktowych ani newslettera – niczego o Tobie nie zbieramy.</li>
-              <li>Strona nie pobiera niczego z zewnętrznych serwerów: fonty i skrypty są serwowane z tej samej domeny.</li>
-              <li>Drzewa zawierają dane genealogiczne. Dane osób żyjących są domyślnie ograniczone do imienia i nazwiska.</li>
+              <li>Przeglądanie publicznych drzew nie wymaga konta. Serwis nie używa ciasteczek reklamowych, narzędzi analitycznych ani skryptów śledzących.</li>
+              <li>Konto jest potrzebne tylko do tworzenia własnych drzew. Przy rejestracji podajesz imię, nazwisko i adres e-mail.</li>
+              <li>Sam decydujesz, czy Twoje drzewo jest publiczne czy prywatne i co odwiedzający widzą o osobach żyjących.</li>
+              <li>Konto i wszystkie swoje drzewa możesz w każdej chwili usunąć w profilu.</li>
             </ul>
           </Sekcja>
 
@@ -56,44 +56,57 @@ export default function PolitykaPrywatnosci() {
             ) : (
               <p>Serwis jest prowadzony prywatnie, w celach niekomercyjnych. Dane kontaktowe administratora zostaną podane w tym miejscu.</p>
             )}
+            <p>Administrator serwisu ma dostęp do wszystkich kont i drzew, w tym prywatnych, i może je edytować lub usuwać (np. w razie naruszenia regulaminu albo na prośbę zainteresowanej osoby).</p>
           </Sekcja>
 
-          <Sekcja tytul="Dane odwiedzających">
+          <Sekcja tytul="Konta użytkowników">
             <p>
-              Samo przeglądanie serwisu nie wymaga podawania żadnych danych. Serwis składa się wyłącznie z plików statycznych – nie ma własnego serwera aplikacji ani bazy danych, w której mogłyby być zapisywane informacje o odwiedzających.
+              Podczas rejestracji zbieramy imię, nazwisko i adres e-mail (także przy logowaniu przez Google – wtedy z konta Google pobieramy imię i nazwisko oraz adres e-mail). Dane te służą do prowadzenia konta, logowania, potwierdzenia adresu e-mail i wskazywania Ciebie jako właściciela albo współpracownika drzewa. Nie wysyłamy wiadomości marketingowych.
             </p>
             <p>
-              Dostawca hostingu{hosting ? ` (${hosting})` : ""}, jak każdy serwer WWW, może zapisywać w dziennikach technicznych adres IP, czas żądania i rodzaj przeglądarki. Dzieje się to na zasadach tego dostawcy i służy zapewnieniu działania oraz bezpieczeństwa usługi; administrator serwisu nie łączy tych danych z konkretnymi osobami.
+              Imię i nazwisko właściciela jest widoczne przy jego publicznych drzewach, a imiona i nazwiska współpracowników – osobom, które mogą zobaczyć dane drzewo. Adres e-mail nie jest nigdzie publikowany; służy jedynie do zaproszenia Cię do współpracy (inny użytkownik wpisuje Twój adres, żeby dodać Cię do swojego drzewa).
             </p>
+            <p>
+              Konta, drzewa i dane logowania są przechowywane w usługach Google Firebase (Authentication i Cloud Firestore), a strona jest udostępniana przez Firebase Hosting. Google LLC działa jako podmiot przetwarzający dane na zlecenie administratora; dostawca, jak każdy serwer WWW, może zapisywać w dziennikach technicznych adres IP i czas żądania.
+            </p>
+          </Sekcja>
+
+          <Sekcja tytul="Drzewa i dane osób, które w nich występują">
+            <p>
+              Drzewa zawierają imiona, nazwiska, daty i miejsca urodzenia oraz śmierci, a także powiązania rodzinne. Za dane wpisane do drzewa odpowiada jego właściciel. Wpisuj dane osób żyjących tylko wtedy, gdy masz do tego podstawę (np. są to Twoi bliscy i wiesz, że nie mają nic przeciwko).
+            </p>
+            <p>
+              <strong>Drzewo prywatne</strong> widzą tylko jego właściciel, zaproszeni współpracownicy i administrator serwisu. <strong>Drzewo publiczne</strong> może przeglądać każdy, kto zna jego adres, a ponadto pojawia się w katalogu drzew. Przy osobach oznaczonych jako żyjące właściciel wybiera, czy odwiedzający widzą tylko imię i nazwisko, dodatkowo rok urodzenia, czy wszystkie dane. Dane osób żyjących, których odwiedzający nie powinni widzieć, nie są w ogóle przesyłane do ich przeglądarki – serwer przechowuje je oddzielnie, dostępne tylko dla zarządzających drzewem.
+            </p>
+            <p>
+              Współpracownik wskazany przez właściciela może dodawać, zmieniać i usuwać osoby w drzewie, ale nie zmienia ustawień prywatności ani nie usuwa drzewa.
+            </p>
+            <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) właściciela drzewa polegający na dokumentowaniu historii rodziny, a w przypadku konta – umowa o świadczenie usługi (art. 6 ust. 1 lit. b RODO).</p>
           </Sekcja>
 
           <Sekcja tytul="Pamięć przeglądarki">
-            <p>Serwis nie zapisuje ciasteczek. W pamięci lokalnej przeglądarki (localStorage) mogą zostać zapisane wyłącznie:</p>
+            <p>Serwis nie zapisuje ciasteczek. W pamięci przeglądarki (localStorage, IndexedDB) zapisywane są wyłącznie:</p>
             <ul className="list-disc space-y-1.5 pl-5">
               <li>
-                <strong>wybrany motyw</strong> (jasny lub ciemny) – po kliknięciu przełącznika w nagłówku,
+                <strong>wybrany motyw</strong> (jasny lub ciemny),
               </li>
               <li>
-                <strong>robocze zmiany administratora</strong> – tylko w przeglądarce osoby, która zalogowała się do panelu administracyjnego.
+                <strong>sesja logowania</strong> Firebase – tylko po zalogowaniu, aby nie trzeba było logować się przy każdej stronie,
+              </li>
+              <li>
+                <strong>robocze zmiany administratora</strong> dotyczące drzew z repozytorium – tylko w przeglądarce administratora.
               </li>
             </ul>
-            <p>Te informacje nie opuszczają Twojego urządzenia i nie są nigdzie wysyłane. Możesz je usunąć, czyszcząc dane strony w ustawieniach przeglądarki.</p>
-          </Sekcja>
-
-          <Sekcja tytul="Dane w drzewach genealogicznych">
-            <p>
-              Drzewa zawierają imiona, nazwiska, daty i miejsca urodzenia oraz śmierci, a także powiązania rodzinne. Źródło danych i opiekun każdego drzewa są podane na jego stronie i w stopce. Dane są publikowane w celu dokumentowania i udostępniania historii rodzin.
-            </p>
-            <p>
-              Większość wpisów dotyczy osób zmarłych. Przy osobach oznaczonych jako żyjące serwis domyślnie pokazuje tylko imię i nazwisko – daty, miejsca i notatki nie są publikowane. Opiekun drzewa może zdecydować o pokazaniu roku urodzenia lub pełnych danych; informacja o tym jest w stopce drzewa.
-            </p>
-            <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) polegający na dokumentowaniu historii rodziny.</p>
+            <p>Są to dane niezbędne do działania serwisu. Możesz je usunąć, wylogowując się albo czyszcząc dane strony w ustawieniach przeglądarki.</p>
           </Sekcja>
 
           <Sekcja tytul="Twoje prawa i zgłoszenia">
             <p>
+              Dane konta możesz poprawić w profilu, a konto wraz ze wszystkimi swoimi drzewami usunąć jednym przyciskiem („Usuń moje konto”). Usunięcie jest nieodwracalne. Drzewa innych osób, w których jesteś współpracownikiem, pozostają, a Ty przestajesz być ich współpracownikiem.
+            </p>
+            <p>
               Jeśli w drzewie znajdują się dane Twoje lub Twoich bliskich, możesz poprosić o ich poprawienie, ograniczenie albo usunięcie, a także wnieść sprzeciw wobec ich publikacji.{" "}
-              {kontakt ? <>Napisz na adres {kontakt}</> : "Skontaktuj się z administratorem serwisu albo z opiekunem danego drzewa"} i wskaż drzewo oraz osobę, której dotyczy zgłoszenie. Zgłoszenia dotyczące osób żyjących są rozpatrywane w pierwszej kolejności.
+              {kontakt ? <>Napisz na adres {kontakt}</> : "Skontaktuj się z administratorem serwisu"} i wskaż drzewo oraz osobę, której dotyczy zgłoszenie – albo zwróć się bezpośrednio do właściciela drzewa. Zgłoszenia dotyczące osób żyjących są rozpatrywane w pierwszej kolejności.
             </p>
             <p>
               Przysługuje Ci również prawo dostępu do danych oraz prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (

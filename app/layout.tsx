@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { AuthProvider } from "@/components/konta/AuthProvider";
 import { ADRES_SERWISU } from "@/lib/sciezki";
 import "./globals.css";
 
-const NAZWA = "Nasi przodkowie";
+const NAZWA = "Przodkowie";
 const OPIS = "Drzewa genealogiczne rodzin – przeglądaj pokolenia, szukaj przodków i odkrywaj powiązania.";
 
 export const metadata: Metadata = {
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: SKRYPT_MOTYWU }} />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

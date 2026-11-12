@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
+import { KontekstDb } from "./db/KontekstDb";
 import { pelneImie } from "@/lib/format";
-import { sciezkaIndeksuOsob, sciezkaIndeksuSzukania, sciezkaOsoby } from "@/lib/sciezki";
+import { czyDb, sciezkaIndeksuOsob, sciezkaIndeksuSzukania, sciezkaOsoby } from "@/lib/sciezki";
 import { przygotujIndeks, szukaj, type WpisPrzygotowany, type WpisSzukania } from "@/lib/szukaj";
 import { obslugaWyboru } from "@/lib/wybor";
 
@@ -41,9 +42,12 @@ export function Wyszukiwarka({ slug, galezie, duza = false }: { slug: string; ga
   const [aktywny, setAktywny] = useState(0);
   const kolory = useMemo(() => new Map(galezie.map((g) => [g.id, g])), [galezie]);
 
+  const db = useContext(KontekstDb);
   const zaladuj = useCallback(() => {
-    pobierzIndeks(slug).then(setIndeks, () => setBlad(true));
-  }, [slug]);
+    // Drzewa z bazy mają indeks w pamięci (już wczytane dane); pozostałe – plik JSON.
+    if (czyDb(slug)) setIndeks(przygotujIndeks(db?.indeks ?? []));
+    else pobierzIndeks(slug).then(setIndeks, () => setBlad(true));
+  }, [slug, db]);
 
   // Skróty "/" oraz Ctrl+K (Cmd+K) – z każdego miejsca strony drzewa.
   useEffect(() => {

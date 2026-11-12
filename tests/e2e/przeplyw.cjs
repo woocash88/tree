@@ -1,0 +1,186 @@
+const { chromium } = require('playwright');
+const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem, czekajNaOsoby } = require('./helpery.cjs');
+(async () => {
+  const br = await chromium.launch();
+  await wyczysc();
+  const t = Date.now();
+  const mail = (n) => `${n}-${t}@example.org`;
+
+  // ── 1. gość: hero i nagłówek ──
+  const g = await nowaKarta(br);
+  await g.p.goto(B + '/');
+  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor();
+  ok('nagłówek strony to „Przodkowie”', (await g.p.title()).includes('Przodkowie') && !(await g.p.title()).includes('Nasi'));
+  await g.p.locator('section[aria-label="Rejestracja i logowanie"]').waitFor();
+  ok('gość widzi w hero rejestrację i logowanie', (await g.p.locator('section[aria-label="Rejestracja i logowanie"] a').allInnerTexts()).join('|') === 'Zarejestruj się|Zaloguj się');
+  ok('logo w nagłówku', (await g.p.locator('header img[src$="przodkowie_logo.png"]').count()) === 1);
+  ok('brak starych przycisków edycji u gościa', (await g.p.getByRole('button', { name: /Edytuj|Dodaj/ }).count()) === 0);
+
+  // ── 2. rejestracja Ali ──
+  const ala = await nowaKarta(br);
+  await rejestruj(ala.p, 'Ala', 'Nowak', mail('ala'));
+  await ala.p.goto(B + '/profil/');
+  await ala.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor();
+  ok('niezweryfikowany użytkownik nie może tworzyć drzew', await ala.p.getByRole('button', { name: '+ Utwórz nowe drzewo' }).isDisabled());
+  await potwierdzEmail(mail('ala'));
+  await ala.p.getByRole('button', { name: /Kliknąłem w link/ }).click();
+  await ala.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor({ state: 'detached' });
+  ok('po potwierdzeniu e-maila baner znika', true);
+  await ala.p.goto(B + '/');
+  await ala.p.waitForTimeout(1500);
+  ok('po zalogowaniu hero z rejestracją znika', (await ala.p.locator('section[aria-label="Rejestracja i logowanie"]').count()) === 0);
+  ok('nagłówek pokazuje menu konta', await ala.p.getByRole('button', { name: /Ala/ }).isVisible());
+
+  // ── 3. tworzenie drzewa i osób ──
+  await ala.p.goto(B + '/profil/');
+  await ala.p.getByRole('button', { name: '+ Utwórz nowe drzewo' }).click();
+  await ala.p.getByLabel(/^Nazwa/).fill('Rodzina Nowak');
+  await ala.p.getByRole('button', { name: 'Utwórz drzewo' }).click();
+  await ala.p.waitForURL('**/d/?id=*');
+  const idDrzewa = new URL(ala.p.url()).searchParams.get('id');
+  ok('drzewo utworzone, adres /d/?id=…', !!idDrzewa);
+  await ala.p.getByText('To drzewo jest jeszcze puste').waitFor();
+  await ala.p.getByLabel('Imię').first().fill('Jan');
+  await ala.p.getByLabel('Nazwisko').first().fill('Nowak');
+  await ala.p.getByLabel('Urodzenie').first().fill('4.03.1950');
+  await ala.p.getByRole('button', { name: 'Dodaj osobę' }).click();
+  await czekajNaOsoby(idDrzewa, 1);
+  await ala.p.getByRole('heading', { name: 'Statystyki' }).or(ala.p.getByLabel('Statystyki')).first().waitFor();
+  ok('pierwsza osoba zapisana w bazie, widok drzewa zamiast pustego stanu', true);
+
+  const lista = (os) => `${B}/d/?id=${idDrzewa}&w=galaz&g=cale&os=${os}`;
+  await ala.p.goto(lista('jan-nowak'));
+  await ala.p.getByRole('button', { name: '💍 Dodaj małżonka' }).waitFor();
+  await dodajOsobePanelem(ala.p, '💍 Dodaj małżonka', { Imię: 'Anna', Nazwisko: 'Nowak', Urodzenie: '1952' }, 'Dodaj małżonka', idDrzewa, 2);
+  await ala.p.goto(lista('jan-nowak'));
+  await ala.p.getByRole('button', { name: '👶 Dodaj dziecko' }).waitFor();
+  await dodajOsobePanelem(ala.p, '👶 Dodaj dziecko', { Imię: 'Piotr', Urodzenie: '1980' }, 'Dodaj dziecko', idDrzewa, 3);
+  await ala.p.goto(lista('jan-nowak'));
+  await ala.p.getByRole('button', { name: '👨 Dodaj ojca' }).waitFor();
+  await dodajOsobePanelem(ala.p, '👨 Dodaj ojca', { Imię: 'Stefan', Urodzenie: '1920', 'Śmierć (puste = brak informacji)': '1990' }, 'Dodaj ojca', idDrzewa, 4);
+  await ala.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-e1-edycja.png' });
+  await ala.p.goto(B + `/d/?id=${idDrzewa}&w=osoby`);
+  await ala.p.waitForSelector('text=Osób: 4');
+  ok('po odświeżeniu w bazie jest 4 osoby (Jan, Anna, Piotr, Stefan)', true);
+  const pelne = await dokument(`drzewa/${idDrzewa}/dane/pelne`);
+  const publ = await dokument(`drzewa/${idDrzewa}/dane/publiczne`);
+  const osobyPubl = JSON.stringify(publ);
+  ok('dane pełne zawierają daty urodzenia żyjących', JSON.stringify(pelne).includes('1950-03-04'));
+  ok('dane publiczne NIE zawierają dat osób żyjących (polityka „ukryj”)', !/1950|1952|1980/.test(osobyPubl), osobyPubl.match(/19(50|52|80)/)?.[0]);
+  ok('dane publiczne zawierają datę zmarłego Stefana', osobyPubl.includes('1920'));
+  const metaDoc = await dokument(`drzewa/${idDrzewa}`);
+  ok('meta: statystyki 4 osoby, zakres lat tylko ze zmarłych', metaDoc.fields.statystyki.mapValue.fields.osob.integerValue === '4' && metaDoc.fields.zakresLat.mapValue.fields.od.integerValue === '1920' && metaDoc.fields.zakresLat.mapValue.fields.do.integerValue === '1990', JSON.stringify(metaDoc.fields.zakresLat));
+
+  // ── 4. prywatne: gość nie widzi ──
+  await g.p.goto(`${B}/d/?id=${idDrzewa}&w=osoba&os=jan-nowak`);
+  await g.p.getByRole('heading', { name: 'Nie ma takiego drzewa' }).waitFor();
+  ok('prywatne drzewo niewidoczne dla gościa', true);
+  await g.p.goto(B + '/drzewa/');
+  await g.p.waitForTimeout(1500);
+  ok('prywatne drzewo nie jest w katalogu', (await g.p.getByText('Rodzina Nowak').count()) === 0);
+
+  // ── 5. ustawienia: publiczne, kolaborant ──
+  const kuba = await nowaKarta(br);
+  await rejestruj(kuba.p, 'Kuba', 'Kowalski', mail('kuba'));
+  await potwierdzEmail(mail('kuba'));
+  await kuba.p.goto(B + '/profil/');
+  await kuba.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor({ state: 'detached', timeout: 20000 });
+  ok('potwierdzenie e-maila w innej karcie wykrywane automatycznie', true);
+
+  await ala.p.goto(`${B}/d/?id=${idDrzewa}&w=ustawienia`);
+  await ala.p.getByRole('heading', { name: 'Ustawienia drzewa' }).waitFor();
+  await ala.p.getByLabel(/^Publiczne/).check();
+  await ala.p.getByRole('button', { name: 'Zapisz ustawienia' }).click();
+  await ala.p.getByText('Zapisano ustawienia.').waitFor();
+  ok('drzewo ustawione jako publiczne', true);
+  await ala.p.getByLabel(/Adres e-mail użytkownika/).fill(mail('nieistniejacy'));
+  await ala.p.getByRole('button', { name: 'Dodaj kolaboranta' }).click();
+  await ala.p.getByText(/Nie ma zarejestrowanego użytkownika/).waitFor();
+  ok('nieznany adres e-mail: czytelny błąd', true);
+  await ala.p.getByLabel(/Adres e-mail użytkownika/).fill(mail('kuba').toUpperCase());
+  await ala.p.getByRole('button', { name: 'Dodaj kolaboranta' }).click();
+  await ala.p.getByText('Dodano kolaboranta.').waitFor({ timeout: 8000 }).catch(async () => {
+    console.log('KOMUNIKATY NA STRONIE:', await ala.p.locator('[role=alert], [role=status]').allInnerTexts());
+    console.log('adresy:', JSON.stringify(await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/adresy`, { headers: { Authorization: 'Bearer owner' } })).json()).slice(0, 600));
+    throw new Error('kolaborant nie został dodany');
+  });
+  ok('kolaborant dodany po adresie e-mail (wielkość liter bez znaczenia)', (await ala.p.getByText('Kuba Kowalski').count()) > 0);
+
+  // ── 6. gość widzi publiczne drzewo, ale bez dat żyjących ──
+  await g.p.goto(`${B}/d/?id=${idDrzewa}&w=osoba&os=jan-nowak`);
+  await g.p.getByRole('heading', { name: 'Jan Nowak' }).waitFor();
+  const html = await g.p.content();
+  ok('gość widzi imię i nazwisko osoby żyjącej', true);
+  ok('gość NIE widzi dat urodzenia osoby żyjącej na stronie', !/1950|4\.03\.1950/.test(await g.p.locator('main').innerText()));
+  ok('gość nie widzi przycisków edycji', (await g.p.getByRole('button', { name: /Edytuj|Dodaj|Usuń/ }).count()) === 0);
+  await g.p.goto(`${B}/d/?id=${idDrzewa}&w=osoba&os=stefan-nowak-1920`);
+  await g.p.getByRole('heading', { name: 'Stefan Nowak' }).waitFor();
+  ok('gość widzi dane zmarłego przodka', (await g.p.locator('main').innerText()).includes('1920'));
+  await g.p.goto(B + '/drzewa/');
+  await g.p.getByText('Rodzina Nowak').first().waitFor({ timeout: 10000 });
+  ok('publiczne drzewo pojawia się w katalogu', true);
+  await g.p.goto(`${B}/d/?id=${idDrzewa}&w=galaz&g=cale&os=jan-nowak`);
+  await g.p.locator('aside h2').waitFor();
+  ok('gość w panelu osoby nie ma narzędzi edycji', (await g.p.locator('aside').getByRole('button', { name: /Edytuj|Dodaj/ }).count()) === 0);
+  await g.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-e2-gosc.png' });
+
+  // ── 7. kolaborant ──
+  await kuba.p.goto(B + '/profil/');
+  await kuba.p.getByRole('heading', { name: 'Współpracuję przy' }).waitFor({ timeout: 10000 });
+  ok('kolaborant widzi drzewo w „Współpracuję przy”', true);
+  await kuba.p.goto(lista('piotr-nowak'));
+  await kuba.p.getByRole('button', { name: '👶 Dodaj dziecko' }).waitFor({ timeout: 10000 }).catch(async () => {
+    console.log('KUBA url:', kuba.p.url());
+    console.log('KUBA body:', (await kuba.p.locator('body').innerText()).replace(/\n+/g, ' | ').slice(0, 700));
+    await kuba.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-e3-kuba.png' });
+    throw new Error('kolaborant nie widzi narzędzi edycji');
+  });
+  await dodajOsobePanelem(kuba.p, '👶 Dodaj dziecko', { Imię: 'Ola', Urodzenie: '2010' }, 'Dodaj dziecko', idDrzewa, 5);
+  await ala.p.goto(B + `/d/?id=${idDrzewa}&w=osoby`);
+  await ala.p.waitForSelector('text=Osób: 5');
+  ok('kolaborant dodał osobę, właściciel widzi 5 osób', true);
+  await kuba.p.goto(`${B}/d/?id=${idDrzewa}&w=ustawienia`);
+  await kuba.p.getByText(/Ustawienia drzewa może zmieniać tylko jego właściciel/).waitFor();
+  ok('kolaborant nie zmienia ustawień drzewa', true);
+  await kuba.p.goto(B + '/admin/');
+  await kuba.p.getByRole('heading', { name: 'Brak dostępu' }).waitFor();
+  ok('zwykły użytkownik nie wchodzi do panelu administratora', true);
+
+  // ── 8. administrator ──
+  const szef = await nowaKarta(br);
+  await rejestruj(szef.p, 'Szef', 'Serwisu', mail('szef'));
+  await potwierdzEmail(mail('szef'));
+  await nadajAdmina(await uidPo(mail('szef')));
+  await szef.p.goto(B + '/admin/');
+  await szef.p.getByRole('heading', { name: /Użytkownicy \(\d+\)/ }).waitFor({ timeout: 15000 });
+  await szef.p.getByText(`Ala Nowak`).first().waitFor();
+  ok('administrator widzi listę użytkowników', (await szef.p.getByText(mail('kuba')).count()) > 0);
+  await szef.p.getByRole('heading', { name: /Drzewa użytkowników \(1\)/ }).waitFor();
+  ok('administrator widzi drzewa użytkowników', true);
+  await szef.p.goto(lista('jan-nowak'));
+  await szef.p.getByRole('button', { name: '✏️ Edytuj dane' }).waitFor({ timeout: 15000 });
+  ok('administrator może edytować cudze drzewo', true);
+  await szef.p.goto(B + '/admin/');
+  await szef.p.getByText(mail('kuba')).waitFor();
+  await szef.p.locator('li', { hasText: mail('kuba') }).getByRole('button', { name: 'Usuń użytkownika' }).click();
+  await szef.p.getByText(/Usunięto użytkownika/).waitFor({ timeout: 15000 });
+  ok('administrator usunął użytkownika (Kuba)', (await szef.p.getByText(mail('kuba'), { exact: false }).count()) <= 1);
+  await kuba.p.goto(B + '/profil/');
+  await kuba.p.getByRole('heading', { name: 'Konto usunięte' }).waitFor({ timeout: 15000 });
+  ok('usunięty użytkownik widzi „Konto usunięte” i nie ma dostępu', true);
+  const kub = await dokument(`drzewa/${idDrzewa}`);
+  ok('usunięty kolaborant zniknął z drzewa', !JSON.stringify(kub.fields.kolaboranci).includes('stringValue'));
+  await szef.p.goto(B + '/admin/');
+  await szef.p.locator('li', { hasText: 'Rodzina Nowak' }).getByRole('button', { name: 'Usuń' }).click();
+  await szef.p.getByText(/Użytkownicy nie utworzyli jeszcze żadnych drzew/).waitFor({ timeout: 15000 });
+  ok('administrator usunął drzewo użytkownika', (await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/drzewa/${idDrzewa}`, { headers: { Authorization: 'Bearer owner' } })).status) === 404);
+
+  // ── 9. usunięcie własnego konta ──
+  await ala.p.goto(B + '/profil/');
+  await ala.p.getByRole('heading', { name: 'Twój profil' }).waitFor();
+  console.log('błędy strony:', bledy.length ? bledy : 'brak');
+  const nieudane = wyniki.filter((w) => !w[0]);
+  console.log(`\nWYNIK: ${wyniki.length - nieudane.length}/${wyniki.length} sprawdzeń OK`);
+  await br.close();
+  process.exit(nieudane.length ? 1 : 0);
+})().catch(async (e) => { console.error('PRZERWANO:', e.message.split('\n').slice(0, 6).join('\n')); console.log('błędy strony:', bledy); process.exit(2); });

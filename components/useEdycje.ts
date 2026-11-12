@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useContext, useMemo, useSyncExternalStore } from "react";
 import { doPliku, liczbaZmian, PUSTE_EDYCJE, zastosujPatch, type Edycje, type NowaOsoba, type PatchOsoby } from "@/lib/edycje";
 import type { Osoba } from "@/lib/schemat";
-import { useCzyAdmin } from "./useAdmin";
+import type { NowaOsoba as NowaOsobaTyp } from "@/lib/edycje";
+import { czyDb } from "@/lib/sciezki";
+import { KontekstDb } from "./db/KontekstDb";
+import { useCzyAdmin } from "./konta/AuthProvider";
 
 /**
  * Magazyn lokalnych edycji (localStorage, klucz „edycje:<slug>”). Każdy odczyt i zapis jest w try/catch –
@@ -57,6 +60,14 @@ function subskrybuj(zmiana: () => void) {
 }
 
 export type ApiEdycji = {
+  /** Czy zalogowany użytkownik może zmieniać dane tego drzewa (administrator lokalnie; właściciel/kolaborant w bazie). */
+  mozeEdytowac: boolean;
+  /** Tylko drzewa z bazy: operacje na strukturze drzewa i stan zapisu. */
+  dodajMalzonka?: (osobaId: string, nowa: NowaOsobaTyp) => void;
+  dodajRodzica?: (dzieckoId: string, rola: "ojciec" | "matka", nowa: NowaOsobaTyp) => void;
+  usunOsobe?: (id: string) => void;
+  zapisuje?: boolean;
+  blad?: string | null;
   edycje: Edycje;
   liczbaZmian: number;
   zapiszOsobe: (id: string, patch: PatchOsoby) => void;
@@ -68,7 +79,14 @@ export type ApiEdycji = {
   pobierz: () => void;
 };
 
+/** Edycje osób: drzewa z bazy zapisują zmiany w Firestore (przez kontekst widoku), pozostałe – lokalnie dla administratora. */
 export function useEdycje(slug: string): ApiEdycji {
+  const lokalne = useEdycjeLokalne(slug);
+  const db = useContext(KontekstDb);
+  return czyDb(slug) && db ? db.api : lokalne;
+}
+
+function useEdycjeLokalne(slug: string): ApiEdycji {
   // W trybie bez pamięci przeglądarki (render na serwerze) nie ma żadnych edycji.
   const zapisane = useSyncExternalStore(subskrybuj, () => odczytaj(slug), () => PUSTE_EDYCJE);
   // Edycja jest narzędziem administratora: bez trybu administratora widok pokazuje wyłącznie dane z repozytorium,
@@ -77,6 +95,7 @@ export function useEdycje(slug: string): ApiEdycji {
   const edycje = admin ? zapisane : PUSTE_EDYCJE;
   return useMemo<ApiEdycji>(
     () => ({
+      mozeEdytowac: admin,
       edycje,
       liczbaZmian: liczbaZmian(edycje),
       // Osoba dopisana lokalnie: zmiana trafia prosto do jej wpisu (w pliku jest jedna, kompletna osoba).
@@ -113,6 +132,6 @@ export function useEdycje(slug: string): ApiEdycji {
         URL.revokeObjectURL(adres);
       },
     }),
-    [slug, edycje],
+    [slug, edycje, admin],
   );
 }

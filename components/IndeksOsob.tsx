@@ -40,11 +40,12 @@ export function IndeksOsob({ slug, wiersze, galezie, stulecia }: { slug: string;
   }, []);
   useEffect(() => {
     if (!gotowe) return;
-    const p = new URLSearchParams();
-    if (q) p.set("q", q);
-    if (nazwisko) p.set("nazwisko", nazwisko);
-    if (galaz) p.set("galaz", galaz);
-    if (wiek) p.set("wiek", wiek);
+    // Zachowujemy pozostałe parametry adresu (np. id i widok drzewa z bazy).
+    const p = new URLSearchParams(window.location.search);
+    for (const [k, v] of [["q", q], ["nazwisko", nazwisko], ["galaz", galaz], ["wiek", wiek]] as const) {
+      if (v) p.set(k, v);
+      else p.delete(k);
+    }
     const s = p.toString();
     window.history.replaceState(null, "", s ? `?${s}` : window.location.pathname);
   }, [gotowe, q, nazwisko, galaz, wiek]);

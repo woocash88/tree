@@ -8,8 +8,7 @@ import type { ParaDrzewa } from "@/lib/drzewo";
 import { pelneImie } from "@/lib/format";
 import type { Galaz } from "@/lib/schemat";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
-import { FormularzDziecka, FormularzEdycji, PasekEdycji } from "./FormularzOsoby";
-import { useCzyAdmin } from "./useAdmin";
+import { FormularzDziecka, FormularzEdycji, FormularzNowejOsoby, PasekEdycji } from "./FormularzOsoby";
 import type { ApiEdycji } from "./useEdycje";
 
 type Props = {
@@ -35,10 +34,10 @@ type Props = {
  * To jedna z kilku dużych powierzchni ze szkłem (rozmycie tła).
  */
 export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 150, api, naDodane, naWybor, naZamkniecie }: Props) {
-  const [tryb, ustawTryb] = useState<{ id: string; tryb: "edycja" | "dziecko" } | null>(null);
+  const [tryb, ustawTryb] = useState<{ id: string; tryb: "edycja" | "dziecko" | "malzonek" | "ojciec" | "matka" } | null>(null);
   // Tryb edycji dotyczy jednej osoby – po przejściu do innej wracamy do podglądu.
-  // Narzędzia edycji widzi tylko administrator (/admin/); pozostali mają czysty podgląd.
-  const admin = useCzyAdmin();
+  // Narzędzia edycji widzą tylko osoby uprawnione do tego drzewa (właściciel, kolaboranci, administrator); pozostali mają czysty podgląd.
+  const admin = api.mozeEdytowac;
   const aktywnyTryb = admin && tryb?.id === osoba.id ? tryb.tryb : "podglad";
   const zamknijFormularz = () => ustawTryb(null);
   const naglowek = useRef<HTMLHeadingElement>(null);
@@ -107,6 +106,36 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4 pt-2">
         {aktywnyTryb === "edycja" ? (
           <FormularzEdycji key={osoba.id} osoba={osoba} api={api} naGotowe={zamknijFormularz} />
+        ) : aktywnyTryb === "malzonek" && api.dodajMalzonka ? (
+          <FormularzNowejOsoby
+            key={`m-${osoba.id}`}
+            tytul={`Dodaj małżonka: ${pelneImie(osoba)}`}
+            przycisk="Dodaj małżonka"
+            domyslnaPlec={osoba.plec === "M" ? "K" : osoba.plec === "K" ? "M" : "nieznana"}
+            wszystkieId={new Set(osoby.keys())}
+            galazId={osoba.galazId}
+            naZapis={(n) => {
+              api.dodajMalzonka?.(osoba.id, n);
+              naDodane(n.id);
+            }}
+            naGotowe={zamknijFormularz}
+          />
+        ) : (aktywnyTryb === "ojciec" || aktywnyTryb === "matka") && api.dodajRodzica ? (
+          <FormularzNowejOsoby
+            key={`${aktywnyTryb}-${osoba.id}`}
+            tytul={`Dodaj ${aktywnyTryb === "ojciec" ? "ojca" : "matkę"}: ${pelneImie(osoba)}`}
+            przycisk={aktywnyTryb === "ojciec" ? "Dodaj ojca" : "Dodaj matkę"}
+            domyslneNazwisko={aktywnyTryb === "ojciec" ? osoba.nazwisko : ""}
+            domyslnaPlec={aktywnyTryb === "ojciec" ? "M" : "K"}
+            stalaPlec
+            wszystkieId={new Set(osoby.keys())}
+            galazId={osoba.galazId}
+            naZapis={(n) => {
+              api.dodajRodzica?.(osoba.id, aktywnyTryb, n);
+              naDodane(n.id);
+            }}
+            naGotowe={zamknijFormularz}
+          />
         ) : aktywnyTryb === "dziecko" ? (
           <FormularzDziecka key={osoba.id} osoba={osoba} malzonkowie={malzonkowie} wszystkieId={new Set(osoby.keys())} api={api} naDodane={naDodane} naGotowe={zamknijFormularz} />
         ) : (
@@ -159,6 +188,11 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
           )}
         </div>
 
+        {api.blad && (
+          <p role="alert" className="mt-2 rounded-lg border border-blad p-2 text-sm font-semibold text-blad">
+            {api.blad}
+          </p>
+        )}
         {admin && aktywnyTryb === "podglad" && (
           <div className="mt-2 grid grid-cols-2 gap-2">
             <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "edycja" })}>
@@ -167,6 +201,21 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
             <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "dziecko" })}>
               👶 Dodaj dziecko
             </button>
+            {api.dodajMalzonka && (
+              <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "malzonek" })}>
+                💍 Dodaj małżonka
+              </button>
+            )}
+            {api.dodajRodzica && !osoba.ojciecId && (
+              <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "ojciec" })}>
+                👨 Dodaj ojca
+              </button>
+            )}
+            {api.dodajRodzica && !osoba.matkaId && (
+              <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "matka" })}>
+                👩 Dodaj matkę
+              </button>
+            )}
           </div>
         )}
 
@@ -193,7 +242,7 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
         )}
           </>
         )}
-        {admin && <PasekEdycji api={api} />}
+        {admin && !api.dodajMalzonka && <PasekEdycji api={api} />}
       </div>
     </aside>
   );
