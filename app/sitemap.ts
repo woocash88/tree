@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { pobierzDrzewa, pobierzDrzewo } from "@/lib/dane";
 import { galezieWidoku } from "@/lib/galezie";
-import { ADRES_SERWISU, sciezkaDrzewa, sciezkaGalezi, sciezkaIndeksuDrzew, sciezkaIndeksuOsob, sciezkaOsoby } from "@/lib/sciezki";
+import { ADRES_SERWISU, sciezkaDrzewa, sciezkaGalezi, sciezkaIndeksuDrzew, sciezkaIndeksuOsob, sciezkaOsoby, sciezkaPolitykiPrywatnosci } from "@/lib/sciezki";
 
 export const dynamic = "force-static";
 
@@ -11,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const wpisy: MetadataRoute.Sitemap = [
     { url: adres("/"), changeFrequency: "weekly", priority: 1 },
     { url: adres(sciezkaIndeksuDrzew()), changeFrequency: "weekly", priority: 0.9 },
+    { url: adres(sciezkaPolitykiPrywatnosci()), changeFrequency: "yearly", priority: 0.2 },
   ];
   for (const { meta } of await pobierzDrzewa()) {
     const d = (await pobierzDrzewo(meta.slug))!;

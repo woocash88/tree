@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { sciezkaDrzewa, sciezkaIndeksuDrzew, sciezkaIndeksuOsob } from "@/lib/sciezki";
+import { sciezkaAdmina, sciezkaDrzewa, sciezkaIndeksuDrzew, sciezkaIndeksuOsob } from "@/lib/sciezki";
 import { MotywPrzelacznik } from "./MotywPrzelacznik";
+import { useCzyAdmin } from "./useAdmin";
 import { Wyszukiwarka } from "./Wyszukiwarka";
 
 type GalazSkrot = { id: string; nazwa: string; kolor: string };
@@ -12,6 +13,7 @@ export type KontekstDrzewa = { slug: string; nazwa: string; galezie: GalazSkrot[
 /** Nagłówek serwisu. W obrębie drzewa dodaje jego nazwę, link do indeksu osób i wyszukiwarkę osób. */
 export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
   const sciezka = usePathname() ?? "/";
+  const admin = useCzyAdmin();
   const linki = [
     { href: sciezkaIndeksuDrzew(), etykieta: "Drzewa", aktywny: sciezka === "/drzewa" || sciezka === "/drzewa/" },
     ...(drzewo
@@ -45,7 +47,12 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
             <Wyszukiwarka slug={drzewo.slug} galezie={drzewo.galezie} />
           </div>
         )}
-        <div className={`flex items-center ${drzewo ? "ml-auto sm:ml-0" : "ml-auto"}`}>
+        <div className={`flex items-center gap-2 ${drzewo ? "ml-auto sm:ml-0" : "ml-auto"}`}>
+          {admin && (
+            <Link href={sciezkaAdmina(drzewo?.slug)} className="przycisk !min-h-8" aria-current={sciezka.startsWith("/admin") ? "page" : undefined} title="Tryb administratora jest włączony">
+              Administracja
+            </Link>
+          )}
           <MotywPrzelacznik />
         </div>
       </div>

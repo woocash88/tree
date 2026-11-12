@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DrzewoMeta } from "@/lib/schemat-drzewa";
+import { sciezkaPolitykiPrywatnosci } from "@/lib/sciezki";
 
 /** Stopka serwisu; na stronach drzewa pokazuje źródło danych i opiekuna. */
 export function Stopka({ drzewo }: { drzewo?: Pick<DrzewoMeta, "zrodlo" | "autor" | "politykaDatZyjacych" | "przykladowe"> }) {
@@ -22,7 +23,10 @@ export function Stopka({ drzewo }: { drzewo?: Pick<DrzewoMeta, "zrodlo" | "autor
         <Link href="/" className="font-semibold text-tekst">
           Nasi przodkowie
         </Link>{" "}
-        · drzewa genealogiczne rodzin · bez ciasteczek i skryptów śledzących
+        · drzewa genealogiczne rodzin · bez ciasteczek i skryptów śledzących ·{" "}
+        <Link href={sciezkaPolitykiPrywatnosci()} className="link">
+          Polityka prywatności
+        </Link>
       </p>
     </footer>
   );

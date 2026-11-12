@@ -1,0 +1,36 @@
+# Po każdej zmianie na gałęzi main: testy, build i wdrożenie na Firebase Hosting.
+# Wymaga w repozytorium (Settings → Secrets and variables → Actions):
+#   sekret   FIREBASE_SERVICE_ACCOUNT  – klucz konta serwisowego (cały plik JSON)
+#   zmienna  FIREBASE_PROJECT_ID       – identyfikator projektu Firebase, np. nasi-przodkowie
+# Opis krok po kroku: README, sekcja „Wdrożenie”.
+name: Wdrożenie na Firebase
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: firebase
+  cancel-in-progress: true
+jobs:
+  wdrozenie:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          # Adres główny (bez podkatalogu): sitemap.xml i robots.txt dostają właściwą domenę.
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL || format('https://{0}.web.app', vars.FIREBASE_PROJECT_ID) }}
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          channelId: live

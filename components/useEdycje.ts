@@ -3,6 +3,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { doPliku, liczbaZmian, PUSTE_EDYCJE, zastosujPatch, type Edycje, type NowaOsoba, type PatchOsoby } from "@/lib/edycje";
 import type { Osoba } from "@/lib/schemat";
+import { useCzyAdmin } from "./useAdmin";
 
 /**
  * Magazyn lokalnych edycji (localStorage, klucz „edycje:<slug>”). Każdy odczyt i zapis jest w try/catch –
@@ -69,7 +70,11 @@ export type ApiEdycji = {
 
 export function useEdycje(slug: string): ApiEdycji {
   // W trybie bez pamięci przeglądarki (render na serwerze) nie ma żadnych edycji.
-  const edycje = useSyncExternalStore(subskrybuj, () => odczytaj(slug), () => PUSTE_EDYCJE);
+  const zapisane = useSyncExternalStore(subskrybuj, () => odczytaj(slug), () => PUSTE_EDYCJE);
+  // Edycja jest narzędziem administratora: bez trybu administratora widok pokazuje wyłącznie dane z repozytorium,
+  // nawet jeśli w tej przeglądarce zostały kiedyś zapisane lokalne zmiany.
+  const admin = useCzyAdmin();
+  const edycje = admin ? zapisane : PUSTE_EDYCJE;
   return useMemo<ApiEdycji>(
     () => ({
       edycje,
