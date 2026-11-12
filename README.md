@@ -29,6 +29,8 @@ W repozytorium są dwa drzewa:
 | `/drzewa/<drzewo>/diagram/<galaz>/` | diagram na płótnie (React Flow) – widok dodatkowy (też `cale`) |
 | `/drzewa/<drzewo>/osoba/<id>/` | widok osoby: przodkowie, rodzeństwo, małżonkowie, dzieci |
 | `/drzewa/<drzewo>/osoby/` | alfabetyczny indeks osób z filtrami |
+| `/polityka-prywatnosci/` | polityka prywatności (link w stopce) |
+| `/admin/` | logowanie administratora i zarządzanie drzewami (bez linku w serwisie, poza indeksowaniem) |
 | `/dane/szukaj-<drzewo>.json` | indeks wyszukiwania osób jednego drzewa (ładowany dopiero na stronie tego drzewa) |
 | `/sitemap.xml`, `/robots.txt` | generowane z listy drzew |
 
@@ -48,7 +50,9 @@ npm test             # testy: parsowanie, walidacja, polityka dat, wyszukiwarki,
 npm run lint         # eslint + kontrola typów
 npm run waliduj      # walidacja drzew (opcjonalnie: -- <slug>)
 npm run kontrast     # kontrola kontrastu WCAG motywów jasnego i ciemnego
-npm run zastosuj-edycje -- <slug> <plik.json>   # wpisuje do danych zmiany pobrane z serwisu
+npm run zastosuj-edycje -- <slug> <plik.json>   # wpisuje do danych zmiany osób pobrane z serwisu
+npm run zastosuj-zmiany-drzew -- <plik.json>    # edycja metadanych i usuwanie drzew z panelu /admin/
+npm run ustaw-haslo -- "haslo"                  # hasło trybu administratora
 ```
 
 ## Struktura danych
@@ -193,12 +197,50 @@ dziecko z 1. / 2. związku; `??` i `?` → pole `niepewne`; płeć z listy imion
 imię-nazwisko-rok urodzenia (bez roku u osób żyjących); gałęzie: dzieci Wiktora (pokolenie 3) zaczynają siedem
 linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. i brak informacji o śmierci.
 
+## Tryb administratora
+
+Zwykły odwiedzający widzi czysty interfejs do przeglądania. Narzędzia edycji są dostępne tylko po zalogowaniu
+na stronie **`/admin/`** (nie ma do niej linku w serwisie; `robots.txt` wyłącza ją z indeksowania).
+
+- **Hasło**: `npm run ustaw-haslo -- "moje-haslo"` (albo bez argumentu – skrypt wylosuje hasło i je wypisze).
+  W `data/admin.json` zapisuje się tylko skrót PBKDF2 z solą. Po zmianie hasła zbuduj i wdróż stronę;
+  dotychczasowe sesje wygasają. Pusty skrót wyłącza tryb administratora.
+- **Co widzi administrator**: przycisk „Administracja” w nagłówku, w panelu osoby przyciski „✏️ Edytuj dane”
+  i „👶 Dodaj dziecko”, a na `/admin/` listę drzew z akcjami „Edytuj osoby”, „Edytuj drzewo” (nazwa, opis, region,
+  źródło, opiekun, polityka dat osób żyjących, wyróżnienie) i „Usuń drzewo”.
+- **Publikacja zmian drzew**: przycisk „Pobierz zmiany drzew (JSON)”, a potem
+
+  ```bash
+  npm run zastosuj-zmiany-drzew -- ~/Pobrane/zmiany-drzew.json
+  npm test && npm run build
+  ```
+
+  Skrypt najpierw sprawdza wszystkie zmiany, dopiero potem zapisuje `drzewo.json` i **kasuje katalogi usuniętych
+  drzew** (`data/drzewa/<slug>/`). Usunięcie cofa się z historii gita. Ostatniego drzewa usunąć się nie da.
+- **To nie jest zabezpieczenie danych.** Serwis jest statyczny, więc hasło jest sprawdzane w przeglądarce,
+  a skrót i kod są w publicznych plikach strony. Tryb administratora tylko chowa narzędzia przed zwykłymi
+  użytkownikami. Niczego nie da się nim zmienić w opublikowanym serwisie: zmiany powstają lokalnie i trafiają
+  do serwisu wyłącznie przez repozytorium – faktyczną kontrolą dostępu jest prawo zapisu do repozytorium.
+  Logowanie z kontami po stronie serwera opisują „Dalsze kroki”.
+
+## Polityka prywatności
+
+Strona `/polityka-prywatnosci/` (link w stopce). Dane administratora i nazwę dostawcy hostingu wpisz
+w `data/serwis.json` – dopóki są puste, strona pokazuje ogólną formułę bez danych kontaktowych:
+
+```json
+{ "administrator": { "nazwa": "Jan Kowalski", "email": "kontakt@example.org" }, "hosting": "Vercel Inc." }
+```
+
+Treść jest w `app/polityka-prywatnosci/page.tsx`; przy zmianie popraw też datę `OBOWIAZUJE_OD`.
+
 ## Edycja osób
 
-Serwis jest statyczny (bez serwera i bazy), więc edycja działa **lokalnie w przeglądarce**: w panelu osoby
+Edycja jest narzędziem administratora (patrz wyżej) i działa **lokalnie w przeglądarce**: w panelu osoby
 (lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci
 z miejscem, notatka) i „👶 Dodaj dziecko” (z wyborem drugiego rodzica spośród małżonków). Daty wpisuje się jako
 `1891`, `4.03.1891`, `ok. 1891` albo `?` (data nieznana), opcjonalnie z miejscem po przecinku.
+Bez trybu administratora lokalne zmiany nie są nakładane na widok.
 
 - Zmiany zapisują się w `localStorage` (klucz `edycje:<slug>`) i są nakładane na dane z repozytorium na liście
   i na diagramie; widzisz je tylko Ty, w tej przeglądarce. Strony osób, indeks i wyszukiwarka pokazują dane

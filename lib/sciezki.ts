@@ -12,6 +12,9 @@ const zapytanie = (p?: Parametry) => {
 };
 
 export const sciezkaIndeksuDrzew = () => "/drzewa/";
+export const sciezkaPolitykiPrywatnosci = () => "/polityka-prywatnosci/";
+/** Panel administratora; z kotwicą do wskazanego drzewa. */
+export const sciezkaAdmina = (slug?: string) => `/admin/${slug ? `#${slug}` : ""}`;
 export const sciezkaDrzewa = (slug: string) => `/drzewa/${slug}/`;
 export const sciezkaOsoby = (slug: string, id: string) => `/drzewa/${slug}/osoba/${id}/`;
 export const sciezkaIndeksuOsob = (slug: string, p?: Parametry) => `/drzewa/${slug}/osoby/${zapytanie(p)}`;

@@ -9,6 +9,7 @@ import { pelneImie } from "@/lib/format";
 import type { Galaz } from "@/lib/schemat";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
 import { FormularzDziecka, FormularzEdycji, PasekEdycji } from "./FormularzOsoby";
+import { useCzyAdmin } from "./useAdmin";
 import type { ApiEdycji } from "./useEdycje";
 
 type Props = {
@@ -36,7 +37,9 @@ type Props = {
 export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 150, api, naDodane, naWybor, naZamkniecie }: Props) {
   const [tryb, ustawTryb] = useState<{ id: string; tryb: "edycja" | "dziecko" } | null>(null);
   // Tryb edycji dotyczy jednej osoby – po przejściu do innej wracamy do podglądu.
-  const aktywnyTryb = tryb?.id === osoba.id ? tryb.tryb : "podglad";
+  // Narzędzia edycji widzi tylko administrator (/admin/); pozostali mają czysty podgląd.
+  const admin = useCzyAdmin();
+  const aktywnyTryb = admin && tryb?.id === osoba.id ? tryb.tryb : "podglad";
   const zamknijFormularz = () => ustawTryb(null);
   const naglowek = useRef<HTMLHeadingElement>(null);
   const galaz = galezie.find((g) => g.id === osoba.galazId)!;
@@ -156,7 +159,7 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
           )}
         </div>
 
-        {aktywnyTryb === "podglad" && (
+        {admin && aktywnyTryb === "podglad" && (
           <div className="mt-2 grid grid-cols-2 gap-2">
             <button type="button" className="przycisk" onClick={() => ustawTryb({ id: osoba.id, tryb: "edycja" })}>
               ✏️ Edytuj dane
@@ -190,7 +193,7 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
         )}
           </>
         )}
-        <PasekEdycji api={api} />
+        {admin && <PasekEdycji api={api} />}
       </div>
     </aside>
   );
