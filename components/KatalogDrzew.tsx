@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane";
 import { filtrujDrzewa, SORTOWANIA, sortujDrzewa, type Sortowanie } from "@/lib/szukaj-drzew";
 import { KartaDrzewa } from "./KartaDrzewa";
+import { LIMIT_KATALOGU } from "@/lib/baza/katalog";
 import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
 /** Indeks drzew: wyszukiwanie po nazwie, nazwisku i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
@@ -55,6 +56,9 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
       <p role="status" aria-live="polite" className="mt-4 text-sm text-tekst-2">
         {wynik.length === drzewa.length ? `Drzew: ${drzewa.length}` : `Znaleziono ${wynik.length} z ${drzewa.length} drzew`}
       </p>
+      {zBazy.length >= LIMIT_KATALOGU.wszystkie && (
+        <p className="mt-2 text-sm text-tekst-2">Wyświetlono pierwsze {LIMIT_KATALOGU.wszystkie} publicznych drzew użytkowników.</p>
+      )}
       {wynik.length === 0 ? (
         <p className="szklo mt-4 p-6 text-center text-tekst-2">Żadne drzewo nie pasuje do „{q}”. Spróbuj samego nazwiska lub nazwy miejscowości.</p>
       ) : (

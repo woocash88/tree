@@ -276,6 +276,28 @@ Konto można prowadzić hasłem, przez Google albo oboma sposobami naraz – wci
    więc nikt nie nada sobie roli sam.
 6. Wdróż (scal zmiany do `main` albo *Run workflow*) i sprawdź: rejestracja, tworzenie drzewa, zaproszenie kolaboranta.
 
+### Ochrona przed nadużyciami (App Check, opcjonalnie)
+
+Reguły chronią dane, ale nie ograniczają ruchu: skrypt spoza strony mógłby w pętli czytać publiczne drzewa i zużyć dzienny limit odczytów
+(wtedy strona do końca doby zgłasza błędy). **Firebase App Check** sprawia, że baza przyjmuje tylko żądania z Twojej strony.
+
+1. Wejdź na <https://www.google.com/recaptcha/admin> i utwórz klucz **reCAPTCHA v3** (typ: Score based) z domenami `familytree-bab4e.web.app`
+   i `familytree-bab4e.firebaseapp.com` (oraz własną, jeśli ją dodasz). Zapisz **klucz witryny** (site key) i **klucz tajny** (secret key).
+2. W konsoli Firebase: *Build → App Check → Apps* → wybierz aplikację internetową → **reCAPTCHA** → wklej **klucz tajny** → *Save*.
+3. W GitHubie (*Settings → Secrets and variables → Actions → Variables*) dodaj `FIREBASE_APPCHECK_KEY` = **klucz witryny**. Wdróż stronę.
+4. Odczekaj dobę i w *App Check → APIs → Cloud Firestore* sprawdź wykres: żądania mają być „zweryfikowane”. **Dopiero wtedy** kliknij **Enforce**.
+   Włączenie od razu zablokuje każdego, kto ma jeszcze starą wersję strony w przeglądarce.
+
+Koszt i prywatność: usługa jest darmowa, ale reCAPTCHA ładuje skrypt Google u każdego odwiedzającego – dlatego jest włączana tylko po
+ustawieniu zmiennej, a polityka prywatności i stopka dostają wtedy odpowiednie informacje (stopka z wymaganym przez Google oznaczeniem,
+plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i testy nie używają App Check.
+
+**Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna pobiera tylko
+12 publicznych drzew (pokazuje 6 największych z nich), pełna lista (limit 100: katalog i wyszukiwarka na stronie głównej) ładuje się
+dopiero przy użyciu, a wynik jest wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa
+(utworzenie, ustawienia, usunięcie) unieważnia pamięć. Typowa wizyta na stronie głównej to ok. 12 odczytów. Przy ponad 100 publicznych
+drzewach katalog pokazuje 100 z nich; dalsza skala wymagałaby indeksu złożonego i stronicowania.
+
 **Limity i koszty.** Wszystko mieści się w darmowym planie Spark dla typowego użytku rodzinnego (Firestore: 50 tys. odczytów
 i 20 tys. zapisów dziennie). Jedno drzewo użytkownika to dokumenty o rozmiarze do 1 MiB, czyli ok. 2000 osób
 (twardy limit w regułach i aplikacji). Konta Google i e-mailowe działają bez planu Blaze.
@@ -509,7 +531,7 @@ tests/                  testy (vitest); tests/reguly – reguły Firestore na em
 
 `npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
 i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
-kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, usuwanie użytkownika
+kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, liczba zapytań katalogu do bazy (pamięć podręczna, leniwa wyszukiwarka), usuwanie użytkownika
 i drzewa, eksport i import JSON/GEDCOM, przeniesienie drzewa z repozytorium do bazy, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
 i zachowanie drzewa po usunięciu konta, opuszczanie drzewa, zmiana adresu e-mail, logowanie hasłem do konta Google. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
 Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google

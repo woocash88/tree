@@ -2,22 +2,25 @@
 
 import { useEffect, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
-import { listaPublicznych } from "@/lib/baza/api";
 import { firebaseSkonfigurowany } from "@/lib/baza/firebase";
-import { podsumowanieZBazy } from "@/lib/baza/widok";
+import { katalogPubliczny, type ZakresKatalogu } from "@/lib/baza/katalog";
 
-/** Publiczne drzewa użytkowników z bazy (ładowane w przeglądarce); przy braku konfiguracji lub błędzie – pusta lista. */
-export function useDrzewaPubliczne(): PodsumowanieDrzewa[] {
+/**
+ * Publiczne drzewa użytkowników z bazy. Wynik jest wspólny dla wszystkich komponentów i trzymany w pamięci kilka minut
+ * (lib/baza/katalog.ts), więc kilka użyć na jednej stronie to jedno zapytanie. `aktywne = false` odkłada pobranie do chwili,
+ * gdy lista jest naprawdę potrzebna (np. dopiero po kliknięciu w wyszukiwarkę).
+ */
+export function useDrzewaPubliczne(zakres: ZakresKatalogu = "wszystkie", aktywne = true): PodsumowanieDrzewa[] {
   const [lista, setLista] = useState<PodsumowanieDrzewa[]>([]);
   useEffect(() => {
-    if (!firebaseSkonfigurowany) return;
-    let aktywne = true;
-    listaPublicznych()
-      .then((w) => aktywne && setLista(w.filter((x) => x.meta.statystyki.osob > 0).map((x) => podsumowanieZBazy(x.id, x.meta))))
+    if (!firebaseSkonfigurowany || !aktywne) return;
+    let trwa = true;
+    katalogPubliczny(zakres)
+      .then((w) => trwa && setLista(w))
       .catch(() => {});
     return () => {
-      aktywne = false;
+      trwa = false;
     };
-  }, []);
+  }, [zakres, aktywne]);
   return lista;
 }

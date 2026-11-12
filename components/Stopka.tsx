@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DrzewoMeta } from "@/lib/schemat-drzewa";
+import { KLUCZ_APP_CHECK } from "@/lib/baza/firebase";
 import { sciezkaPolitykiPrywatnosci } from "@/lib/sciezki";
 
 /** Stopka serwisu; na stronach drzewa pokazuje źródło danych i opiekuna. */
@@ -30,6 +31,23 @@ export function Stopka({ drzewo }: { drzewo?: Pick<DrzewoMeta, "zrodlo" | "autor
           Polityka prywatności
         </Link>
       </p>
+      {KLUCZ_APP_CHECK && (
+        <>
+          {/* Plakietkę reCAPTCHA chowamy (zasłaniałaby panele), więc Google wymaga tego oznaczenia w stopce. */}
+          <style>{".grecaptcha-badge{visibility:hidden}"}</style>
+          <p className="mt-2 text-xs">
+            Ta strona jest chroniona przez reCAPTCHA; obowiązują{" "}
+            <a className="link" href="https://policies.google.com/privacy" rel="noreferrer">
+              Polityka prywatności
+            </a>{" "}
+            i{" "}
+            <a className="link" href="https://policies.google.com/terms" rel="noreferrer">
+              Warunki korzystania
+            </a>{" "}
+            Google.
+          </p>
+        </>
+      )}
     </footer>
   );
 }

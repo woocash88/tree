@@ -1,6 +1,7 @@
 /** Operacje na danych drzew w Firestore (tylko przeglądarka). Wszystkie zapisy danych idą przez transakcję. */
 import { adresId } from "./konta-adres";
 import { pobierzFirebase } from "./firebase";
+import { uniewaznijKatalog } from "./katalog";
 import { daneDlaGosci, doFirestore, pusteDane, sprawdzDane, statystykiDanych, zakresLatDanych } from "./logika";
 import type { Dostep, DaneDb, MetaDb, Profil, Prosba, Widocznosc } from "./typy";
 import { MAKS_KOLABORANTOW } from "./typy";
@@ -69,6 +70,7 @@ export async function utworzDrzewo(dane: NoweDrzewo, uid: string, wlascicielNazw
   // Dane zapisujemy po utworzeniu drzewa – reguły sprawdzają członkostwo w istniejącym dokumencie drzewa.
   await F.setDoc(F.doc(db, "drzewa", ref.id, "dane", "pelne"), pusteDane());
   await F.setDoc(F.doc(db, "drzewa", ref.id, "dane", "publiczne"), pusteDane());
+  uniewaznijKatalog();
   return ref.id;
 }
 
@@ -111,6 +113,7 @@ export async function zapiszUstawienia(id: string, u: UstawieniaDrzewa): Promise
     tx.set(F.doc(db, "drzewa", id, "dane", "publiczne"), doFirestore(publiczne));
     tx.update(mRef, { nazwa: u.nazwa.trim(), opis: u.opis.trim(), region: u.region.trim(), widocznosc: u.widocznosc, politykaDatZyjacych: u.politykaDatZyjacych, zakresLat: zakresLatDanych(publiczne), zaktualizowano: dzis() });
   });
+  uniewaznijKatalog();
 }
 
 export async function dodajKolaboranta(id: string, email: string, wlascicielId: string, juz: number): Promise<{ uid: string; nazwa: string }> {
@@ -141,6 +144,7 @@ export async function usunDrzewo(id: string): Promise<void> {
   await F.deleteDoc(F.doc(db, "drzewa", id, "dane", "publiczne"));
   for (const p of await listaProsbDrzewa(id)) await F.deleteDoc(F.doc(db, "prosby", p.id));
   await F.deleteDoc(F.doc(db, "drzewa", id));
+  uniewaznijKatalog();
 }
 
 // ───────────────────────────── współpraca i własność ─────────────────────────────
@@ -218,9 +222,10 @@ export async function przekazWlasnosc(drzewoId: string, meta: MetaDb, nowyWlasci
 
 const naWpisy = (snap: { docs: { id: string; data: () => unknown }[] }): WpisDrzewa[] => snap.docs.map((d) => ({ id: d.id, meta: d.data() as MetaDb }));
 
-export async function listaPublicznych(): Promise<WpisDrzewa[]> {
+/** Publiczne drzewa; każde zwrócone drzewo to jeden odczyt, więc limit jest mały (patrz lib/baza/katalog.ts). */
+export async function listaPublicznych(limit = 100): Promise<WpisDrzewa[]> {
   const { db, F } = await fs();
-  return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.limit(300))));
+  return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.limit(limit))));
 }
 
 export async function listaMoich(uid: string): Promise<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[] }> {

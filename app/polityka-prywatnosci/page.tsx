@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Naglowek } from "@/components/Naglowek";
 import { Stopka } from "@/components/Stopka";
 import serwis from "@/data/serwis.json";
+import { KLUCZ_APP_CHECK } from "@/lib/baza/firebase";
 import { sciezkaIndeksuDrzew } from "@/lib/sciezki";
 
 export const metadata: Metadata = {
@@ -86,6 +87,14 @@ export default function PolitykaPrywatnosci() {
             </p>
             <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) właściciela drzewa polegający na dokumentowaniu historii rodziny, a w przypadku konta – umowa o świadczenie usługi (art. 6 ust. 1 lit. b RODO).</p>
           </Sekcja>
+
+          {KLUCZ_APP_CHECK && (
+            <Sekcja tytul="Ochrona przed nadużyciami (reCAPTCHA)">
+              <p>
+                Aby chronić bazę danych przed automatycznymi nadużyciami, serwis korzysta z Firebase App Check z usługą Google reCAPTCHA. W tym celu przeglądarka każdego odwiedzającego pobiera skrypt Google i przesyła do Google informacje o urządzeniu i sposobie korzystania ze strony (m.in. adres IP) według polityki prywatności Google. Dane te służą wyłącznie do odróżnienia człowieka od bota.
+              </p>
+            </Sekcja>
+          )}
 
           <Sekcja tytul="Pamięć przeglądarki">
             <p>Serwis nie zapisuje ciasteczek. W pamięci przeglądarki (localStorage, IndexedDB) zapisywane są wyłącznie:</p>

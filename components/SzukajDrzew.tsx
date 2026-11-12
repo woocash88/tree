@@ -10,7 +10,9 @@ import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
 /** Wyszukiwarka drzew na stronie głównej: wyniki pojawiają się pod polem. */
 export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
-  const zBazy = useDrzewaPubliczne();
+  // Pełną listę drzew z bazy pobieramy dopiero, gdy ktoś kliknie w pole wyszukiwania (oszczędność odczytów).
+  const [uzywane, setUzywane] = useState(false);
+  const zBazy = useDrzewaPubliczne("wszystkie", uzywane);
   const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
   const wynik = useMemo(() => (q.trim() ? filtrujDrzewa(drzewa, q).slice(0, 6) : []), [drzewa, q]);
@@ -28,6 +30,7 @@ export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumowa
           id="szukaj-drzew"
           type="search"
           value={q}
+          onFocus={() => setUzywane(true)}
           onChange={(e) => setQ(e.target.value)}
           autoComplete="off"
           placeholder="Szukaj drzewa: nazwisko, region…"

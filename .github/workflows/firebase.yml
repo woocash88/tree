@@ -4,6 +4,7 @@
 #   zmienna  FIREBASE_PROJECT_ID       – identyfikator projektu Firebase, np. familytree-bab4e
 # Konta użytkowników włączają się dopiero, gdy ustawisz też zmienne (to publiczne identyfikatory, nie sekrety):
 #   FIREBASE_API_KEY, FIREBASE_APP_ID  – z Firebase: Ustawienia projektu → Twoje aplikacje → aplikacja internetowa
+# Opcjonalnie ochrona przed nadużyciami (App Check, reCAPTCHA v3): zmienna FIREBASE_APPCHECK_KEY (klucz witryny reCAPTCHA).
 # Opis krok po kroku: README, sekcje „Wdrożenie” i „Konta, role i prywatność”.
 name: Wdrożenie na Firebase
 on:
@@ -39,6 +40,7 @@ jobs:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          NEXT_PUBLIC_FIREBASE_APPCHECK_KEY: ${{ vars.FIREBASE_APPCHECK_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN || format('{0}.firebaseapp.com', vars.FIREBASE_PROJECT_ID) }}
       - name: Sprawdź konfigurację Firebase (nie wypisuje sekretu)
         env:

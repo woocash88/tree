@@ -7,7 +7,7 @@ import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
 /** Polecane drzewa na stronie głównej: wyróżnione drzewa z repozytorium, a poza nimi największe i najnowsze publiczne drzewa użytkowników. */
 export function PolecaneDrzewa({ zRepozytorium }: { zRepozytorium: PodsumowanieDrzewa[] }) {
-  const zBazy = useDrzewaPubliczne();
+  const zBazy = useDrzewaPubliczne("polecane");
   const lista = useMemo(() => {
     const wyrozniane = zRepozytorium.filter((d) => d.meta.wyrozniane);
     const reszta = [...zRepozytorium.filter((d) => !d.meta.wyrozniane), ...zBazy].sort((a, b) => b.osob - a.osob || b.meta.zaktualizowano.localeCompare(a.meta.zaktualizowano));
