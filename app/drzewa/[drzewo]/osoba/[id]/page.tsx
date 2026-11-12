@@ -54,6 +54,33 @@ function Poziom({ tytul, children, className = "" }: { tytul: string; children: 
   );
 }
 
+const LINIA = "border-tekst-2/60";
+
+/**
+ * Łącznik od rodziców do rodzeństwa i do osoby (na szerokim ekranie): pozioma belka pod rodzicami,
+ * z której schodzą linie do kolumny rodzeństwa i do karty osoby. Kolumny i odstęp odpowiadają siatce poniżej.
+ */
+function LacznikRodzenstwa() {
+  return (
+    <>
+      <div className="lg:hidden">
+        <Lacznik />
+      </div>
+      <div aria-hidden="true" className="hidden h-6 grid-cols-[1fr_minmax(22rem,1.25fr)_1fr] gap-6 lg:grid">
+        <div className="relative">
+          <span className={`absolute left-1/2 right-[-1.5rem] top-0 border-t ${LINIA}`} />
+          <span className={`absolute inset-y-0 left-1/2 border-l ${LINIA}`} />
+        </div>
+        <div className="relative">
+          <span className={`absolute left-[-1.5rem] right-1/2 top-0 border-t ${LINIA}`} />
+          <span className={`absolute inset-y-0 left-1/2 border-l ${LINIA}`} />
+        </div>
+        <div />
+      </div>
+    </>
+  );
+}
+
 function Lacznik() {
   return <div aria-hidden="true" className="mx-auto h-6 w-px bg-kreska" />;
 }
@@ -144,7 +171,7 @@ export default async function StronaOsoby({ params }: Props) {
               </ul>
               {o.niepewne?.includes("rodzice") && <p className="mt-1 text-center text-sm text-tekst-2">Przypisanie rodziców jest w źródle niejednoznaczne.</p>}
             </Poziom>
-            <Lacznik />
+            {rodzenstwo.length > 0 ? <LacznikRodzenstwa /> : <Lacznik />}
           </>
         )}
 
@@ -212,7 +239,13 @@ export default async function StronaOsoby({ params }: Props) {
             <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3">
               <ul className="grid gap-2">
                 {zwiazki.map((z) => (
-                  <li key={z.osoba.id}>{karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}</li>
+                  <li key={z.osoba.id} className="relative">
+                    {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
+                    <span aria-hidden="true" className="absolute -left-6 top-1/2 hidden h-px w-6 -translate-y-1/2 items-center justify-center bg-tekst-2/60 lg:flex">
+                      <span className="flex size-6 items-center justify-center rounded-full border border-tekst-2 bg-lita text-base font-bold leading-none text-tekst">+</span>
+                    </span>
+                    {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}
+                  </li>
                 ))}
               </ul>
             </Poziom>
@@ -233,6 +266,7 @@ export default async function StronaOsoby({ params }: Props) {
           <>
             <Lacznik />
             <Poziom tytul={`Dzieci (${dzieci.length})`}>
+              <Lacznik />
               <div className="grid gap-4">
                 {[...grupyDzieci.entries()].map(([drugiId, lista]) => {
                   const drugi = osoba(drugiId || null);
@@ -252,9 +286,11 @@ export default async function StronaOsoby({ params }: Props) {
                           )}
                         </p>
                       )}
-                      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                      <ul className="dzieci-linie flex flex-wrap justify-center gap-2">
                         {lista.map((dz) => (
-                          <li key={dz.id}>{karta(dz, undefined, true, "👶")}</li>
+                          <li key={dz.id} className="basis-[calc(50%-0.25rem)] sm:basis-[calc(33.333%-0.34rem)] lg:basis-[calc(25%-0.375rem)] xl:basis-[calc(20%-0.4rem)]">
+                            {karta(dz, undefined, true, "👶")}
+                          </li>
                         ))}
                       </ul>
                     </div>

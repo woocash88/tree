@@ -253,6 +253,42 @@ h1, h2, h3 {
   }
 }
 
+/* Linie od rodzica do dzieci na stronie osoby: belka nad pierwszym rzędem kart i „zęby” do każdej karty. */
+.dzieci-linie { padding-top: 1rem; }
+.dzieci-linie > li { position: relative; }
+.dzieci-linie > li::before,
+.dzieci-linie > li::after { content: ""; position: absolute; display: none; }
+.dzieci-linie > li::before { top: -1rem; left: -0.25rem; right: -0.25rem; border-top: 1.3px solid color-mix(in srgb, var(--tekst-2) 60%, transparent); }
+.dzieci-linie > li::after { top: -1rem; left: 50%; height: 1rem; border-left: 1.3px solid color-mix(in srgb, var(--tekst-2) 60%, transparent); }
+@media (max-width: 639px) {
+  .dzieci-linie > li:nth-child(-n+2)::before,
+  .dzieci-linie > li:nth-child(-n+2)::after { display: block; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; }
+  .dzieci-linie > li:nth-child(2)::before,
+  .dzieci-linie > li:last-child:nth-child(-n+2)::before { right: 50%; }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .dzieci-linie > li:nth-child(-n+3)::before,
+  .dzieci-linie > li:nth-child(-n+3)::after { display: block; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; }
+  .dzieci-linie > li:nth-child(3)::before,
+  .dzieci-linie > li:last-child:nth-child(-n+3)::before { right: 50%; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .dzieci-linie > li:nth-child(-n+4)::before,
+  .dzieci-linie > li:nth-child(-n+4)::after { display: block; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; }
+  .dzieci-linie > li:nth-child(4)::before,
+  .dzieci-linie > li:last-child:nth-child(-n+4)::before { right: 50%; }
+}
+@media (min-width: 1280px) {
+  .dzieci-linie > li:nth-child(-n+5)::before,
+  .dzieci-linie > li:nth-child(-n+5)::after { display: block; }
+  .dzieci-linie > li:nth-child(1)::before { left: 50%; }
+  .dzieci-linie > li:nth-child(5)::before,
+  .dzieci-linie > li:last-child:nth-child(-n+5)::before { right: 50%; }
+}
+
 @keyframes podswietlenie {
   0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
   25%, 75% { box-shadow: inset 3px 0 0 var(--akcent); background-color: var(--zaznaczenie); }
