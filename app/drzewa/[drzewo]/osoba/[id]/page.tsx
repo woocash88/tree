@@ -154,8 +154,8 @@ export default async function StronaOsoby({ params }: Props) {
           </>
         )}
 
-        <div className={`grid gap-6 ${rodzenstwo.length || zwiazki.length ? "lg:grid-cols-[1fr_minmax(20rem,1fr)_1fr]" : ""} lg:items-start`}>
-          <article data-linia="osoba" className="szklo px-5 py-4 text-center lg:order-2" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
+        <div className={`grid gap-6 lg:grid-cols-[1fr_minmax(20rem,1fr)_1fr] lg:items-start ${dzieci.length > 0 ? "lg:pb-16" : ""}`}>
+          <article data-linia="osoba" className="szklo px-5 py-4 text-center lg:col-start-2 lg:row-start-1" style={{ borderTop: `4px solid ${galaz.kolor}` }}>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-tekst-2">
               Pokolenie {d.pokolenie.get(o.id)} ·{" "}
               <Link href={sciezkaGalezi(slug, idWidoku(galaz), o.id)} className="link">
@@ -215,7 +215,7 @@ export default async function StronaOsoby({ params }: Props) {
           </article>
 
           {zwiazki.length > 0 && (
-            <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:order-3 lg:pl-10">
+            <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:col-start-3 lg:row-start-1 lg:pl-10">
               <ul className="grid gap-2">
                 {zwiazki.map((z) => (
                   <li key={z.osoba.id} className="relative">
@@ -231,7 +231,7 @@ export default async function StronaOsoby({ params }: Props) {
           )}
 
           {rodzenstwo.length > 0 && (
-            <Poziom tytul={`Rodzeństwo (${rodzenstwo.length})`} className="lg:order-1" linia="rodzenstwo">
+            <Poziom tytul={`Rodzeństwo (${rodzenstwo.length})`} className="lg:col-start-1 lg:row-start-1" linia="rodzenstwo">
               <ul className="grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {rodzenstwo.map((r) => (
                   <li key={r.osoba.id}>{karta(r.osoba, r.przyrodnie ? "rodzeństwo przyrodnie" : undefined, true)}</li>
