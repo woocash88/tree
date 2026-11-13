@@ -1,66 +1,85 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane";
-import { drzewaZNazwiskiem, filtrujDrzewa, pasujaceNazwiska, SORTOWANIA, sortujDrzewa, type Sortowanie } from "@/lib/szukaj-drzew";
-import { KartaDrzewa } from "./KartaDrzewa";
+import { ileOsob, rozdzielOpis } from "@/lib/format";
+import { sciezkaDrzewa } from "@/lib/sciezki";
+import { drzewaZNazwiskiem, filtrujDrzewa, pasujaceNazwiska, sortujDrzewa } from "@/lib/szukaj-drzew";
 import { LIMIT_KATALOGU } from "@/lib/baza/katalog";
 import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
-/** Najwięcej drzew pokazywanych naraz na stronie przeglądu (szukanie obejmuje wszystkie pobrane drzewa, nie tylko te pokazane). */
-export const LIMIT_WYSWIETLANIA = 20;
+/** Od tylu drzew lista dostaje nagłówki z literami (przy kilku drzewach same nagłówki tylko zaśmiecałyby widok). */
+const PROG_NAGLOWKOW_LITER = 12;
 
-/** Indeks drzew: wyszukiwanie po nazwisku (osób w drzewach), nazwie drzewa i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
+const pierwszaLitera = (nazwa: string) => {
+  const l = nazwa.trim().charAt(0).toLocaleUpperCase("pl");
+  return /\p{L}/u.test(l) ? l : "#";
+};
+
+/** Indeks drzew: alfabetyczna lista wszystkich publicznych drzew; wyszukiwanie po nazwisku (osób w drzewach), nazwie i regionie. Stan w adresie (?q=). */
 export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
   const zBazy = useDrzewaPubliczne();
   const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
-  const [sortowanie, setSortowanie] = useState<Sortowanie>("alfabetycznie");
   const [gotowe, setGotowe] = useState(false);
 
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search);
-    const s = p.get("sort");
     /* eslint-disable react-hooks/set-state-in-effect -- jednorazowe odczytanie adresu po zamontowaniu (strona jest statyczna) */
-    setQ(p.get("q") ?? "");
-    if (SORTOWANIA.some((x) => x.wartosc === s)) setSortowanie(s as Sortowanie);
+    setQ(new URLSearchParams(window.location.search).get("q") ?? "");
     setGotowe(true);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
   useEffect(() => {
     if (!gotowe) return;
-    const p = new URLSearchParams();
-    if (q) p.set("q", q);
-    if (sortowanie !== "alfabetycznie") p.set("sort", sortowanie);
-    const s = p.toString();
-    window.history.replaceState(null, "", s ? `?${s}` : window.location.pathname);
-  }, [gotowe, q, sortowanie]);
+    window.history.replaceState(null, "", q ? `?${new URLSearchParams({ q })}` : window.location.pathname);
+  }, [gotowe, q]);
 
-  const wynik = useMemo(() => sortujDrzewa(filtrujDrzewa(drzewa, q), sortowanie), [drzewa, q, sortowanie]);
+  const wynik = useMemo(() => sortujDrzewa(filtrujDrzewa(drzewa, q), "alfabetycznie"), [drzewa, q]);
   const zapytanie = q.trim();
   const zNazwiskiem = useMemo(() => (zapytanie ? drzewaZNazwiskiem(drzewa, zapytanie).length : 0), [drzewa, zapytanie]);
+  const grupy = useMemo(() => {
+    const mapa = new Map<string, PodsumowanieDrzewa[]>();
+    for (const d of wynik) mapa.set(pierwszaLitera(d.meta.nazwa), [...(mapa.get(pierwszaLitera(d.meta.nazwa)) ?? []), d]);
+    return [...mapa.entries()];
+  }, [wynik]);
+  const zNaglowkami = wynik.length >= PROG_NAGLOWKOW_LITER;
+
+  const pozycja = (d: PodsumowanieDrzewa) => {
+    const nazwiska = pasujaceNazwiska(d, q);
+    const opis = [d.meta.region, `${d.meta.zakresLat.od}–${d.meta.zakresLat.do}`].filter(Boolean).join(" · ");
+    return (
+      <li key={d.meta.slug} className="border-b border-kreska last:border-b-0">
+        <Link href={sciezkaDrzewa(d.meta.slug)} className="flex items-baseline gap-4 px-4 py-3 hover:bg-najazd focus-visible:bg-najazd">
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-lg font-semibold leading-snug">{d.meta.nazwa}</span>
+            <span className="block truncate text-sm text-tekst-2" title={rozdzielOpis(d.meta.opis).opis || undefined}>
+              {opis}
+            </span>
+            {nazwiska.length > 0 && (
+              <span className="block truncate text-sm">
+                <span className="text-tekst-2">Nazwisko w drzewie: </span>
+                <strong>{nazwiska.join(", ")}</strong>
+              </span>
+            )}
+          </span>
+          <span className="shrink-0 text-sm tabular-nums text-tekst-2">{ileOsob(d.osob)}</span>
+          <span aria-hidden="true" className="shrink-0 text-akcent">→</span>
+        </Link>
+      </li>
+    );
+  };
 
   return (
     <div>
-      <form className="grid gap-3 sm:grid-cols-[1fr_auto]" onSubmit={(e) => e.preventDefault()} role="search" aria-label="Szukaj drzew">
-        <label className="block text-sm text-tekst-2">
+      <form onSubmit={(e) => e.preventDefault()} role="search" aria-label="Szukaj drzew">
+        <label className="block max-w-xl text-sm text-tekst-2">
           Nazwisko, nazwa drzewa lub region
           <input type="search" value={q} onChange={(e) => setQ(e.target.value)} className="pole mt-1 w-full" placeholder="np. Lulkiewicz, Kobylin" />
-        </label>
-        <label className="block text-sm text-tekst-2">
-          Sortuj
-          <select value={sortowanie} onChange={(e) => setSortowanie(e.target.value as Sortowanie)} className="pole mt-1 block w-full sm:w-56">
-            {SORTOWANIA.map((s) => (
-              <option key={s.wartosc} value={s.wartosc}>
-                {s.etykieta}
-              </option>
-            ))}
-          </select>
         </label>
       </form>
       <p role="status" aria-live="polite" className="mt-4 text-sm text-tekst-2">
         {wynik.length === drzewa.length ? `Drzew: ${drzewa.length}` : `Znaleziono ${wynik.length} z ${drzewa.length} drzew`}
-        {wynik.length > LIMIT_WYSWIETLANIA && ` · pokazano pierwsze ${LIMIT_WYSWIETLANIA} – wpisz nazwisko, nazwę lub region, aby zawęzić`}
       </p>
       {zapytanie && (
         <p role="status" aria-live="polite" className="szklo mt-3 p-4 text-[15px]">
@@ -75,19 +94,18 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
           )}
         </p>
       )}
-      {zBazy.length >= LIMIT_KATALOGU.wszystkie && (
-        <p className="mt-2 text-sm text-tekst-2">Wyświetlono pierwsze {LIMIT_KATALOGU.wszystkie} publicznych drzew użytkowników.</p>
-      )}
+      {zBazy.length >= LIMIT_KATALOGU.wszystkie && <p className="mt-2 text-sm text-tekst-2">Wyświetlono pierwsze {LIMIT_KATALOGU.wszystkie} publicznych drzew użytkowników.</p>}
       {wynik.length === 0 ? (
         <p className="szklo mt-4 p-6 text-center text-tekst-2">Żadne drzewo nie pasuje do „{q}”. Spróbuj samego nazwiska lub nazwy miejscowości.</p>
       ) : (
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {wynik.slice(0, LIMIT_WYSWIETLANIA).map((d) => (
-            <li key={d.meta.slug}>
-              <KartaDrzewa drzewo={d} pasujaceNazwiska={pasujaceNazwiska(d, q)} />
-            </li>
+        <div className="mt-4 space-y-5">
+          {grupy.map(([litera, drzewaGrupy]) => (
+            <section key={litera} aria-label={zNaglowkami ? `Drzewa na literę ${litera}` : undefined}>
+              {zNaglowkami && <h2 className="mb-1.5 px-1 text-sm font-semibold uppercase tracking-[0.16em] text-tekst-2">{litera}</h2>}
+              <ul className="szklo overflow-hidden !rounded-2xl">{drzewaGrupy.map(pozycja)}</ul>
+            </section>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

@@ -76,8 +76,14 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   await g.p.getByText('Rodzina 24').first().waitFor({ timeout: 10000 });
   ok('drzewo spoza pierwszych 20 jest dostępne przez wyszukiwanie', (await g.p.locator('main ul li').count()) === 1);
   await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('');
-  ok('katalog nie pokazuje pustych drzew, a pozostałe są wszystkie', (await g.p.getByText('Puste drzewo').count()) === 0 && (await g.p.locator('main ul li').count()) === 20 && (await g.p.getByText(/pokazano pierwsze 20/).count()) === 1);
-  ok('katalog pokazuje najwyżej 20 drzew z 25 (po zawężeniu wyszukiwania widać resztę)', true);
+  ok('katalog nie pokazuje pustych drzew, a pozostałe są wszystkie', (await g.p.getByText('Puste drzewo').count()) === 0 && (await g.p.locator('main ul li').count()) === 25);
+  const nazwyListy = await g.p.locator('main ul li a span.font-semibold').allInnerTexts();
+  ok('katalog to lista wszystkich drzew (25), alfabetycznie, z nagłówkami liter', nazwyListy.length === 25 && nazwyListy.join('|') === [...nazwyListy].sort((a, b) => a.localeCompare(b, 'pl')).join('|') && (await g.p.getByRole('heading', { name: 'R', level: 2 }).count()) === 1);
+  await g.p.getByText('Rodzina 15').first().click();
+  await g.p.waitForURL('**/d/?id=seed15*');
+  ok('kliknięcie drzewa na liście od razu otwiera jego ekran', true);
+  await g.p.goBack();
+  await g.p.getByText('Rodzina 25').first().waitFor({ timeout: 10000 });
 
   await g.p.reload();
   await g.p.getByText('Rodzina 15').first().waitFor({ timeout: 15000 });

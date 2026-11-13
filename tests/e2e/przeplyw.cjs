@@ -15,6 +15,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await kartaStworz.getByRole('link', { name: 'Zacznij tu' }).waitFor();
   ok('gość: w karcie „Stwórz własne drzewo” jest przycisk „Zacznij tu” (nie „Załóż konto”)', (await g.p.getByText('Załóż konto', { exact: true }).count()) === 0);
   const naglowek = g.p.getByRole('navigation', { name: 'Główna nawigacja' });
+  await naglowek.getByRole('link', { name: 'Zaloguj się' }).waitFor();
   ok('gość: nagłówek ma „Przegląd drzew”, „Stwórz drzewo” i „Zaloguj się”', (await naglowek.getByRole('link').allInnerTexts()).filter((t) => /Przegląd drzew|Stwórz drzewo|Zaloguj się/.test(t)).length === 3);
   ok('logo w nagłówku', (await g.p.locator('header img[src$="przodkowie_logo.png"]').count()) === 1);
 

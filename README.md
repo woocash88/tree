@@ -302,8 +302,8 @@ Karta „Stwórz własne drzewo” ma przycisk „Zacznij tu” (rejestracja) al
 **Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna nie pobiera
 żadnych drzew: lista publicznych drzew (limit 100) ładuje się dopiero, gdy ktoś kliknie w wyszukiwarkę albo wejdzie do katalogu, a wynik jest
 wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia
-pamięć. Strona przeglądu drzew pokazuje naraz najwyżej 20 drzew (resztę znajdziesz wyszukiwarką), ale przeszukuje do 100 pobranych
-publicznych drzew; przy większej liczbie dalsza skala wymagałaby stronicowania.
+pamięć. Strona przeglądu drzew to alfabetyczna lista (z nagłówkami liter od 12 drzew) wszystkich pobranych publicznych drzew – do 100; kliknięcie
+wiersza otwiera ekran drzewa. Przy większej liczbie dalsza skala wymagałaby stronicowania.
 
 **Numer drzewa („ID drzewa”).** Każde drzewo ma krótki numer: losowy, 5-cyfrowy (np. 48213); gdy wylosowane numery okazują się zajęte
 (pula się zapełnia), numer dostaje o cyfrę więcej (6, 7… do 9 cyfr). Numer widać z przyciskiem „Kopiuj” obok nazwy drzewa, na
