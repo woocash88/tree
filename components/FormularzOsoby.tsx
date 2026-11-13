@@ -5,7 +5,7 @@ import { noweId, parsujDate, type NowaOsoba, type PatchOsoby } from "@/lib/edycj
 import { domyslnieZyjaca } from "@/lib/zyjace";
 import { pelneImie } from "@/lib/format";
 import type { OsobaPanelu } from "@/lib/panel";
-import { potomkowie } from "@/lib/baza/logika";
+import { mozliwiRodzice } from "@/lib/rodzice";
 import type { ApiEdycji } from "./useEdycje";
 
 const POLE = "pole mt-1 block w-full";
@@ -23,7 +23,7 @@ function Pole({ etykieta, podpowiedz, children }: { etykieta: string; podpowiedz
 const PODPOWIEDZ_DATY = "np. 1891, 4.03.1891, ok. 1891 albo ? (nieznana); miejsce po przecinku";
 
 /** Osoba, którą można wybrać na rodzica w formularzu edycji (wystarczą dane do rozpoznania i do wykluczenia potomków). */
-export type KandydatRodzica = Pick<OsobaPanelu, "id" | "imie" | "nazwisko" | "plec" | "lata" | "ojciecId" | "matkaId">;
+export type KandydatRodzica = Pick<OsobaPanelu, "id" | "imie" | "nazwisko" | "plec" | "lata" | "ojciecId" | "matkaId" | "pokolenie" | "rokUr" | "rokSm">;
 
 const MAKS_NA_LISCIE = 60;
 
@@ -72,13 +72,13 @@ export function FormularzEdycji({ osoba, api, naGotowe, osoby }: { osoba: OsobaP
   const [ojciecId, setOjciecId] = useState(osoba.ojciecId ?? "");
   const [matkaId, setMatkaId] = useState(osoba.matkaId ?? "");
   const [blad, setBlad] = useState("");
+  const [bezOgraniczen, setBezOgraniczen] = useState(false);
   const zmianaRodzicow = !!api.mozeZmieniacRodzicow && !!osoby;
-  // Rodzicem nie może zostać sama osoba ani jej potomek; ojcem – kobieta, matką – mężczyzna.
+  // Domyślnie tylko osoby z poprzedniego pokolenia, nie młodsze od edytowanej osoby (lib/rodzice.ts); można to wyłączyć.
   const kandydaci = (() => {
     if (!zmianaRodzicow) return { ojcowie: [], matki: [] };
-    const zakazani = potomkowie({ osoby: osoby! }, osoba.id);
-    const mozliwi = osoby!.filter((k) => k.id !== osoba.id && !zakazani.has(k.id)).sort((a, b) => `${a.nazwisko} ${a.imie}`.localeCompare(`${b.nazwisko} ${b.imie}`, "pl"));
-    return { ojcowie: mozliwi.filter((k) => k.plec !== "K" || k.id === osoba.ojciecId), matki: mozliwi.filter((k) => k.plec !== "M" || k.id === osoba.matkaId) };
+    const posortowani = [...osoby!].sort((a, b) => `${a.nazwisko} ${a.imie}`.localeCompare(`${b.nazwisko} ${b.imie}`, "pl"));
+    return { ojcowie: mozliwiRodzice(osoba, posortowani, "ojciec", bezOgraniczen), matki: mozliwiRodzice(osoba, posortowani, "matka", bezOgraniczen) };
   })();
   const zmieniona = !!api.edycje.osoby[osoba.id];
 
@@ -151,7 +151,16 @@ export function FormularzEdycji({ osoba, api, naGotowe, osoby }: { osoba: OsobaP
           <legend className="px-1 text-sm font-semibold">Rodzice</legend>
           <WyborRodzica etykieta="Ojciec" kandydaci={kandydaci.ojcowie} wartosc={ojciecId} naZmiane={setOjciecId} />
           <WyborRodzica etykieta="Matka" kandydaci={kandydaci.matki} wartosc={matkaId} naZmiane={setMatkaId} />
-          <p className="text-xs text-tekst-2">Na liście nie ma osoby edytowanej ani jej potomków. Gdy wybierzesz oboje rodziców, a nie są jeszcze małżeństwem, zostaną połączeni w małżeństwo.</p>
+          <p className="text-xs text-tekst-2">
+            {bezOgraniczen
+              ? "Na liście są wszystkie osoby poza edytowaną i jej potomkami (ojciec: bez kobiet, matka: bez mężczyzn)."
+              : "Na liście są tylko osoby z poprzedniego pokolenia, które nie są młodsze od edytowanej osoby (według dat urodzenia, a gdy ich brak – według rodziny). Nie ma tu samej osoby ani jej potomków."}{" "}
+            Gdy wybierzesz oboje rodziców, a nie są jeszcze małżeństwem, zostaną połączeni w małżeństwo.
+          </p>
+          <label className="flex items-start gap-2 text-xs text-tekst-2">
+            <input type="checkbox" className="mt-0.5 size-4" checked={bezOgraniczen} onChange={(e) => setBezOgraniczen(e.target.checked)} />
+            Pokaż wszystkie osoby, także z innych pokoleń (gdy w danych są błędne daty lub pokolenia)
+          </label>
         </fieldset>
       )}
       {blad && (

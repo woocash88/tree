@@ -106,12 +106,25 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   const nazwiskaMeta = (await dokument(`drzewa/${id}`)).fields?.nazwiska?.arrayValue?.values?.map((v) => v.stringValue) ?? [];
   ok('zapis osób odświeża listę nazwisk w drzewie (do wyszukiwania)', nazwiskaMeta.includes('Test'), JSON.stringify(nazwiskaMeta));
 
+  // lista rodziców: tylko poprzednie pokolenie i nie młodsi (Dziecko1 ma ojca Jana z 1850 r.)
+  await ala.p.goto(osoba('dziecko1-test'));
+  await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
+  const opcjeOjca = () => ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  const ograniczone = await opcjeOjca();
+  ok('lista ojców: tylko poprzednie pokolenie (jest Jan, nie ma Stefana ani rodzeństwa dziecka)', ograniczone.some((t) => t.includes('Jan Test')) && !ograniczone.some((t) => /Stefan|Dziecko2/.test(t)), ograniczone.join(' | '));
+  await ala.p.getByRole('dialog').getByLabel(/Pokaż wszystkie osoby, także z innych pokoleń/).check();
+  const wszystkie = await opcjeOjca();
+  ok('opcja „pokaż wszystkie osoby” przywraca pozostałe pokolenia (Stefan), nadal bez rodzeństwa-dziecka z potomków', wszystkie.some((t) => t.includes('Stefan')) && wszystkie.length > ograniczone.length);
+  await ala.p.keyboard.press('Escape');
+
   // ── edycja osoby ze strony osoby, w tym zmiana rodzica ──
   await ala.p.goto(osoba('marek-test'));
   await ala.p.getByRole('heading', { name: 'Marek Test', level: 1 }).waitFor();
   await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
   const okno = ala.p.getByRole('dialog');
   await okno.getByLabel('Imię', { exact: true }).fill('Marcin');
+  ok('domyślnie Zona1 (to samo pokolenie co Marek) nie jest proponowana jako matka', !(await okno.locator('fieldset select').nth(1).locator('option').allInnerTexts()).some((t) => t.includes('Zona1')));
+  await okno.getByLabel(/Pokaż wszystkie osoby, także z innych pokoleń/).check();
   await okno.locator('fieldset select').nth(1).selectOption({ label: 'Zona1 NN' });
   await okno.screenshot({ path: require('os').tmpdir() + '/przodkowie-edycja-okno.png' });
   await okno.getByRole('button', { name: 'Zapisz', exact: true }).click();

@@ -7,7 +7,7 @@ import type { OsobaDrzewa } from "./drzewo";
 import { formatDaty, lataZycia, rokZdarzenia, wiek } from "./format";
 import type { DataZdarzenia, Osoba } from "./schemat";
 
-export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rodowe?: string; notatka?: string; ukryta: boolean; zyjaca?: boolean };
+export type OsobaPanelu = OsobaDrzewa & { plec: Osoba["plec"]; ur: string; zm: string; wiek: string | null; pokolenie: number; rokUr: number | null; rokSm: number | null; rodowe?: string; notatka?: string; ukryta: boolean; zyjaca?: boolean };
 
 /** Minimalny kształt osoby wystarczający do zbudowania OsobaPanelu (pasuje do Osoba i do osoby po okrojeniu dat). */
 export type ZrodloPanelu = Pick<Osoba, "id" | "imie" | "nazwisko" | "plec" | "urodzenie" | "ojciecId" | "matkaId" | "galazId"> & Partial<Pick<Osoba, "nazwiskoRodowe" | "smierc" | "notatka" | "niepewne" | "zyjaca">> & { ukryjDaty?: boolean };
@@ -44,6 +44,8 @@ export function osobaPanelu(o: ZrodloPanelu, pokolenie: number): OsobaPanelu {
     zm: o.smierc ? opisZdarzenia(o.smierc) || "data nieznana" : zmarla ? "data nieznana" : "",
     wiek: wiek(o),
     pokolenie,
+    rokUr: rokZdarzenia(o.urodzenie),
+    rokSm: rokZdarzenia(o.smierc),
     ...(o.nazwiskoRodowe ? { rodowe: o.nazwiskoRodowe } : {}),
     ...(o.notatka ? { notatka: o.notatka } : {}),
     ukryta: !!o.ukryjDaty,

@@ -383,7 +383,10 @@ przed udostępnieniem serwisu innym osobom warto ją przeczytać i dopasować do
 drugiego rodzica), a także brakujący ojciec lub matka. Limity pilnuje logika zmian (`lib/baza/logika.ts`), nie tylko widok;
 limit rodzeństwa liczy każdego, kto dzieli z osobą rodzica, a limit dzieci dotyczy każdego z rodziców osobno. Na stronie osoby jest też
 przycisk „✏️ Edytuj dane” (okno z formularzem): oprócz imienia, nazwisk, dat, płci i notatki można w nim **zmienić rodziców** – z listy
-z wyszukiwaniem, bez samej osoby i jej potomków (ojciec: bez kobiet, matka: bez mężczyzn); gdy wybierzesz oboje rodziców, a nie są jeszcze
+z wyszukiwaniem. Domyślnie lista zawiera tylko wiarygodnych rodziców (`lib/rodzice.ts`): z poprzedniego pokolenia, nie młodszych od
+edytowanej osoby (przy znanych datach co najmniej 12 lat starszych; gdy dat brak, rok szacuje się z rodziców i dzieci), niezmarłych przed jej
+urodzeniem, bez samej osoby i jej potomków (ojciec: bez kobiet, matka: bez mężczyzn). Pole „Pokaż wszystkie osoby” wyłącza ograniczenia
+pokolenia i dat, gdy w danych są błędy; gdy wybierzesz oboje rodziców, a nie są jeszcze
 małżeństwem, zostaną połączeni w małżeństwo. W pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
 natychmiast, a zapis idzie w tle w transakcji (równoczesne edycje kolaborantów się nie nadpisują). Poniższy opis dotyczy
 **drzew z repozytorium**, które edytuje tylko administrator serwisu i które działają **lokalnie w przeglądarce**: w panelu osoby
