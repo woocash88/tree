@@ -89,7 +89,8 @@ jobs:
           rm -f "$RUNNER_TEMP/klucz.json"
       - name: Ostrzeżenie o indeksach
         if: steps.indeksy.outcome == 'failure'
-        run: echo "::warning::Nie udało się wdrożyć indeksu Firestore (lista ostatnio dodanych drzew będzie działać wolniej i zużyje więcej odczytów). Nadaj kontu serwisowemu rolę 'Cloud Datastore Index Admin' albo utwórz indeks w konsoli: kolekcja drzewa, pola widocznosc (rosnąco) i utworzono (malejąco)."
+        run: |
+          echo "::warning::Nie udało się wdrożyć indeksu Firestore (lista ostatnio dodanych drzew będzie działać wolniej i zużyje więcej odczytów). Nadaj kontu serwisowemu rolę 'Cloud Datastore Index Admin' albo utwórz indeks w konsoli: kolekcja drzewa, pola widocznosc (rosnąco) i utworzono (malejąco)."
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
