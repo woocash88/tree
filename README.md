@@ -294,16 +294,10 @@ Koszt i prywatność: usługa jest darmowa, ale reCAPTCHA ładuje skrypt Google 
 ustawieniu zmiennej, a polityka prywatności i stopka dostają wtedy odpowiednie informacje (stopka z wymaganym przez Google oznaczeniem,
 plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i testy nie używają App Check.
 
-**Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna pobiera tylko
-12 najnowszych publicznych drzew (pokazuje 6 najnowszych niepustych – sekcja „Ostatnio dodane drzewa”), pełna lista (limit 100: katalog
-i wyszukiwarka na stronie głównej) ładuje się dopiero przy użyciu, a wynik jest wspólny dla całej strony i pamiętany 10 minut w pamięci
-i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia pamięć. Typowa wizyta na stronie głównej to ok. 12
-odczytów. Przy ponad 100 publicznych drzewach katalog pokazuje 100 z nich; dalsza skala wymagałaby stronicowania.
-
-**Indeks Firestore.** Sortowanie „najnowsze” (`widocznosc` = publiczne, `utworzono` malejąco) wymaga indeksu złożonego z pliku
-`firestore.indexes.json`; workflow wdraża go razem z regułami (kontu serwisowemu trzeba nadać rolę *Cloud Datastore Index Admin*;
-bez niej pojawi się ostrzeżenie, a indeks można utworzyć w konsoli: Firestore → Indeksy). Dopóki indeksu nie ma, strona działa:
-pobiera wtedy pełną listę (do 100 drzew) i sortuje ją u siebie, tylko zużywa więcej odczytów. Emulator nie wymaga indeksów.
+**Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna nie pobiera
+żadnych drzew: lista publicznych drzew (limit 100) ładuje się dopiero, gdy ktoś kliknie w wyszukiwarkę albo wejdzie do katalogu, a wynik jest
+wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia
+pamięć. Przy ponad 100 publicznych drzewach katalog pokazuje 100 z nich; dalsza skala wymagałaby stronicowania.
 
 **Numer drzewa („ID drzewa”).** Każde drzewo ma krótki numer: losowy, 5-cyfrowy (np. 48213); gdy wylosowane numery okazują się zajęte
 (pula się zapełnia), numer dostaje o cyfrę więcej (6, 7… do 9 cyfr). Numer widać z przyciskiem „Kopiuj” obok nazwy drzewa, na
@@ -552,7 +546,7 @@ tests/                  testy (vitest); tests/reguly – reguły Firestore na em
 
 `npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
 i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
-kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, liczba zapytań katalogu do bazy (pamięć podręczna, leniwa wyszukiwarka), numery drzew, edycja osoby i rodziców ze strony osoby, usuwanie użytkownika
+kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, liczba zapytań do bazy (strona główna: zero; pamięć podręczna, leniwa wyszukiwarka), numery drzew, edycja osoby i rodziców ze strony osoby, usuwanie użytkownika
 i drzewa, eksport i import JSON/GEDCOM, przeniesienie drzewa z repozytorium do bazy, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
 i zachowanie drzewa po usunięciu konta, opuszczanie drzewa, zmiana adresu e-mail, logowanie hasłem do konta Google. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
 Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Naglowek } from "@/components/Naglowek";
-import { OstatnioDodaneDrzewa } from "@/components/OstatnioDodaneDrzewa";
 import { HeroKonta } from "@/components/konta/HeroKonta";
 import { Stopka } from "@/components/Stopka";
 import { SzukajDrzew } from "@/components/SzukajDrzew";
@@ -31,7 +30,6 @@ export default async function StronaGlowna() {
           </p>
         </section>
 
-        <OstatnioDodaneDrzewa zRepozytorium={drzewa} />
       </main>
       <Stopka />
     </>

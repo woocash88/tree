@@ -272,12 +272,6 @@ export async function listaPublicznych(limit = 100): Promise<WpisDrzewa[]> {
   return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.limit(limit))));
 }
 
-/** Najnowsze publiczne drzewa. Wymaga indeksu złożonego (widocznosc + utworzono) z firestore.indexes.json. */
-export async function listaOstatnich(limit: number): Promise<WpisDrzewa[]> {
-  const { db, F } = await fs();
-  return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.orderBy("utworzono", "desc"), F.limit(limit))));
-}
-
 export async function listaMoich(uid: string): Promise<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[] }> {
   const { db, F } = await fs();
   const [w, k] = await Promise.all([

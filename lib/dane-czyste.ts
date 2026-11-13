@@ -41,8 +41,6 @@ export type PodsumowanieDrzewa = {
   galezi: number;
   /** Najczęstsze nazwiska w drzewie (do wyszukiwania i opisów). */
   nazwiska: string[];
-  /** Kiedy drzewo powstało (ISO) – drzewa z bazy; służy do sortowania „ostatnio dodane”. */
-  utworzono?: string;
 };
 
 /** Okrawa dane osoby żyjącej wg polityki; osoby zmarłe zostają bez zmian. */

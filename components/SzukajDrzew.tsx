@@ -12,7 +12,7 @@ import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
   // Pełną listę drzew z bazy pobieramy dopiero, gdy ktoś kliknie w pole wyszukiwania (oszczędność odczytów).
   const [uzywane, setUzywane] = useState(false);
-  const zBazy = useDrzewaPubliczne("wszystkie", uzywane);
+  const zBazy = useDrzewaPubliczne(uzywane);
   const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
   const wynik = useMemo(() => (q.trim() ? filtrujDrzewa(drzewa, q).slice(0, 6) : []), [drzewa, q]);

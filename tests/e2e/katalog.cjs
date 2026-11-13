@@ -32,21 +32,15 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   const limity = () => zapytania.map((z) => { const t = decodeURIComponent(z.replace(/\+/g, ' ')); return /"limit":\s*(\d+)/.exec(t)?.[1] ?? /"limit":\s*\{\s*"value":\s*(\d+)/.exec(t)?.[1] ?? '?'; });
 
   await g.p.goto(B + '/');
-  await g.p.getByRole('heading', { name: 'Ostatnio dodane drzewa' }).waitFor({ timeout: 15000 });
+  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor({ timeout: 15000 });
+  await g.p.waitForTimeout(2000);
   const poGlownej = zapytania.length;
-  ok('strona główna: jedno zapytanie o najnowsze drzewa (limit 12, sortowanie po utworzono malejąco)', poGlownej === 1 && limity()[0] === '12' && /utworzono/.test(decodeURIComponent((zapytania[0] ?? '').replace(/\+/g, ' '))) && /DESCENDING/.test(decodeURIComponent((zapytania[0] ?? '').replace(/\+/g, ' '))), `zapytań: ${poGlownej}, treść: ${(zapytania[0] ?? '').slice(0, 400)}`);
-  const karty = await g.p.locator('section[aria-labelledby=ostatnio-dodane] li h3').allInnerTexts();
-  const numery = karty.map((k) => Number(/(\d+)/.exec(k)?.[1]));
-  await g.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-strona-glowna.png', fullPage: true });
-  ok('ostatnio dodane: 6 najnowszych drzew, od najnowszego', karty.length === 6 && numery.join(',') === '15,14,13,12,11,10', karty.join(', '));
-  ok('karty drzew mają status „Publiczne”', (await g.p.locator('section[aria-labelledby=ostatnio-dodane] li').getByText('Publiczne', { exact: true }).count()) === 6);
-
-  await g.p.waitForTimeout(1500);
-  ok('samo wejście na stronę nie pobiera pełnej listy (wyszukiwarka jest leniwa)', zapytania.length === poGlownej);
+  ok('strona główna nie pobiera żadnych drzew (zero zapytań)', poGlownej === 0, `zapytań: ${poGlownej}, treść: ${(zapytania[0] ?? '').slice(0, 300)}`);
+  ok('na stronie głównej nie ma listy drzew, jest przycisk „Przeglądaj publiczne drzewa”', (await g.p.getByRole('heading', { name: /Ostatnio dodane|Polecane/ }).count()) === 0 && (await g.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).count()) === 1);
   await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).click();
   await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).fill('rodzina 07');
   await g.p.getByRole('link', { name: /Rodzina 07/ }).first().waitFor({ timeout: 15000 });
-  ok('kliknięcie w wyszukiwarkę pobiera pełną listę (limit 100) raz i znajduje drzewo', zapytania.length === poGlownej + 1 && limity()[1] === '100', `limity: ${limity()}`);
+  ok('kliknięcie w wyszukiwarkę pobiera pełną listę (limit 100) raz i znajduje drzewo', zapytania.length === poGlownej + 1 && limity()[0] === '100', `limity: ${limity()}`);
 
   await g.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).click();
   await g.p.waitForURL('**/drzewa/');
@@ -61,7 +55,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   ok('po odświeżeniu strony lista wraca z sessionStorage (bez zapytania)', zapytania.length === poGlownej + 1, `zapytań: ${zapytania.length}`);
 
   await g.p.goto(B + '/');
-  await g.p.getByRole('heading', { name: 'Ostatnio dodane drzewa' }).waitFor();
+  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor();
   await g.p.waitForTimeout(800);
   ok('powrót na stronę główną też nie odpytuje bazy', zapytania.length === poGlownej + 1, `zapytań: ${zapytania.length}`);
 
