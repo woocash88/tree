@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { KartaOsoby } from "@/components/KartaOsoby";
 import { DodajKrewnego } from "@/components/db/DodajKrewnego";
+import { EdytujOsobe } from "@/components/db/EdytujOsobe";
 import { LinieRodziny } from "@/components/LinieRodziny";
 import { czyZmarla, opisZdarzenia, sciezkaPochodzenia, type Drzewo, type OsobaWidoczna } from "@/lib/dane-czyste";
 import { lataZycia, pelneImie, wiek } from "@/lib/format";
 import { idWidoku } from "@/lib/galezie";
+import { osobaPanelu } from "@/lib/panel";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
 import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_RODZENSTWA } from "@/lib/baza/typy";
 
@@ -66,6 +68,7 @@ export function WidokOsoby({ d, id, mozeDodawac = false }: { d: Drzewo; id: stri
   const wszystkieId = mozeDodawac ? d.osobyLista.map((x) => x.id) : [];
   const dlaFormularza = (x: OsobaWidoczna) => ({ id: x.id, imie: x.imie, nazwisko: x.nazwisko, plec: x.plec, galazId: x.galazId });
   const osobaFormularza = dlaFormularza(o);
+  const kandydaciRodzicow = mozeDodawac ? d.osobyLista.map((x) => ({ id: x.id, imie: x.imie, nazwisko: x.nazwisko, plec: x.plec, lata: lataZycia(x), ojciecId: x.ojciecId, matkaId: x.matkaId })) : [];
   const malzonkowieFormularza = zwiazki.map((z) => dlaFormularza(z.osoba));
   const nazwiskoRodzenstwa = ojciec?.nazwisko ?? (o.nazwiskoRodowe || o.nazwisko);
   const plusRodzic = (rodzaj: "ojciec" | "matka") => <DodajKrewnego rodzaj={rodzaj} osoba={osobaFormularza} wszystkieId={wszystkieId} domyslneNazwisko={rodzaj === "ojciec" ? o.nazwisko : ""} />;
@@ -188,6 +191,11 @@ export function WidokOsoby({ d, id, mozeDodawac = false }: { d: Drzewo; id: stri
                 Pokaż na diagramie
               </Link>
             </div>
+            {mozeDodawac && (
+              <div className="mt-2 flex justify-center">
+                <EdytujOsobe osoba={osobaPanelu(o, d.pokolenie.get(o.id) ?? 1)} kandydaci={kandydaciRodzicow} />
+              </div>
+            )}
           </article>
 
           {(zwiazki.length > 0 || mozeDodawac) && (

@@ -147,9 +147,46 @@ export const dodajRodzica = (dzieckoId: string, rola: "ojciec" | "matka", n: Now
   return wynik;
 };
 
+/** Wszyscy potomkowie osoby (dzieci, wnuki…): nie mogą zostać jej rodzicami. */
+export function potomkowie(d: { osoby: { id: string; ojciecId: string | null; matkaId: string | null }[] }, id: string): Set<string> {
+  const dzieci = new Map<string, string[]>();
+  for (const o of d.osoby) for (const r of [o.ojciecId, o.matkaId]) if (r) dzieci.set(r, [...(dzieci.get(r) ?? []), o.id]);
+  const wynik = new Set<string>();
+  const stos = [id];
+  while (stos.length) {
+    for (const x of dzieci.get(stos.pop()!) ?? []) {
+      if (wynik.has(x)) continue;
+      wynik.add(x);
+      stos.push(x);
+    }
+  }
+  return wynik;
+}
+
+/** Zmiana rodziców osoby: rodzic musi istnieć, nie może być osobą ani jej potomkiem; dwoje rodziców dostaje wspólne małżeństwo. */
+function ustawRodzicow(d: DaneDb, id: string): DaneDb {
+  const o = d.osoby.find((x) => x.id === id)!;
+  const istnieja = new Set(d.osoby.map((x) => x.id));
+  const zakazani = potomkowie(d, id);
+  for (const [pole, rola] of [["ojciecId", "ojciec"], ["matkaId", "matka"]] as const) {
+    const r = o[pole];
+    if (!r) continue;
+    if (!istnieja.has(r)) throw new Error(`Wskazany ${rola === "ojciec" ? "ojciec" : "matka"} już nie istnieje w drzewie.`);
+    if (r === id) throw new Error("Osoba nie może być własnym rodzicem.");
+    if (zakazani.has(r)) throw new Error(`Nie można ustawić ${rola === "ojciec" ? "ojca" : "matki"}: ta osoba jest potomkiem edytowanej osoby.`);
+  }
+  if (o.ojciecId && o.ojciecId === o.matkaId) throw new Error("Ojciec i matka muszą być różnymi osobami.");
+  if (o.ojciecId && o.matkaId && !polaczenie(d, o.ojciecId, o.matkaId) && ileZwiazkow(d, o.ojciecId) < MAKS_MALZONKOW && ileZwiazkow(d, o.matkaId) < MAKS_MALZONKOW) {
+    const k = Math.max(ileZwiazkow(d, o.ojciecId), ileZwiazkow(d, o.matkaId)) + 1;
+    return { ...d, malzenstwa: [...d.malzenstwa, { osobaAId: o.ojciecId, osobaBId: o.matkaId, kolejnosc: k }] };
+  }
+  return d;
+}
+
 export const zapiszOsobe = (id: string, patch: PatchOsoby) => (d: DaneDb): DaneDb => {
   if (!d.osoby.some((o) => o.id === id)) throw new Error("Ta osoba już nie istnieje.");
-  return { ...d, osoby: d.osoby.map((o) => (o.id === id ? zastosujPatch(o, patch) : o)) };
+  const zmiana = { ...d, osoby: d.osoby.map((o) => (o.id === id ? zastosujPatch(o, patch) : o)) };
+  return "ojciecId" in patch || "matkaId" in patch ? ustawRodzicow(zmiana, id) : zmiana;
 };
 
 /** Usuwa osobę, jej małżeństwa i odwołania dzieci do niej (dzieci zostają w drzewie bez tego rodzica). */

@@ -70,8 +70,50 @@ export async function utworzDrzewo(dane: NoweDrzewo, uid: string, wlascicielNazw
   // Dane zapisujemy po utworzeniu drzewa – reguły sprawdzają członkostwo w istniejącym dokumencie drzewa.
   await F.setDoc(F.doc(db, "drzewa", ref.id, "dane", "pelne"), pusteDane());
   await F.setDoc(F.doc(db, "drzewa", ref.id, "dane", "publiczne"), pusteDane());
+  // Numer jest dodatkiem: gdyby jego nadanie się nie udało, właściciel dostanie go przy najbliższym otwarciu drzewa.
+  await przypiszNumer(ref.id).catch(() => null);
   uniewaznijKatalog();
   return ref.id;
+}
+
+/** Losowy numer o podanej liczbie cyfr (bez zera na początku). */
+const losujNumer = (cyfr: number) => String(10 ** (cyfr - 1) + Math.floor(Math.random() * 9 * 10 ** (cyfr - 1)));
+
+const PROB_NA_DLUGOSC = 6;
+const NAJDLUZSZY_NUMER = 8;
+
+/**
+ * Nadaje drzewu krótki numer: 5 cyfr, a gdy wylosowane numery są zajęte (pula się zapełnia) – o cyfrę więcej.
+ * Numer i drzewo zapisują się atomowo (batch); zajęty numer odrzucają reguły, więc losujemy kolejny.
+ * Zwraca nadany numer (albo istniejący, jeśli drzewo już go ma).
+ */
+export async function przypiszNumer(drzewoId: string): Promise<string> {
+  const { db, F } = await fs();
+  const istniejacy = (await F.getDoc(F.doc(db, "drzewa", drzewoId))).data()?.numer as string | undefined;
+  if (istniejacy) return istniejacy;
+  for (let cyfr = 5; cyfr <= NAJDLUZSZY_NUMER; cyfr++) {
+    for (let proba = 0; proba < PROB_NA_DLUGOSC; proba++) {
+      const numer = losujNumer(cyfr);
+      const batch = F.writeBatch(db);
+      batch.set(F.doc(db, "numery", numer), { drzewoId });
+      batch.update(F.doc(db, "drzewa", drzewoId), { numer });
+      try {
+        await batch.commit();
+        return numer;
+      } catch (e) {
+        if ((e as { code?: string }).code !== "permission-denied") throw e;
+        // zajęty numer (albo brak uprawnień – wtedy kolejne próby też się nie powiodą i skończymy błędem)
+      }
+    }
+  }
+  throw new Error("Nie udało się nadać numeru drzewa. Spróbuj ponownie.");
+}
+
+/** Identyfikator drzewa dla numeru podanego przez użytkownika (null, gdy takiego numeru nie ma). */
+export async function drzewoIdZNumeru(numer: string): Promise<string | null> {
+  const { db, F } = await fs();
+  const snap = await F.getDoc(F.doc(db, "numery", numer));
+  return snap.exists() ? ((snap.data() as { drzewoId: string }).drzewoId ?? null) : null;
 }
 
 /**
@@ -139,10 +181,12 @@ export async function usunKolaboranta(id: string, uid: string): Promise<void> {
 
 export async function usunDrzewo(id: string): Promise<void> {
   const { db, F } = await fs();
-  // Najpierw dane i prośby o dołączenie, potem dokument drzewa – reguły sprawdzają uprawnienia w dokumencie drzewa.
+  const numer = (await F.getDoc(F.doc(db, "drzewa", id))).data()?.numer as string | undefined;
+  // Najpierw dane, numer i prośby o dołączenie, potem dokument drzewa – reguły sprawdzają uprawnienia w dokumencie drzewa.
   await F.deleteDoc(F.doc(db, "drzewa", id, "dane", "pelne"));
   await F.deleteDoc(F.doc(db, "drzewa", id, "dane", "publiczne"));
   for (const p of await listaProsbDrzewa(id)) await F.deleteDoc(F.doc(db, "prosby", p.id));
+  if (numer) await F.deleteDoc(F.doc(db, "numery", numer));
   await F.deleteDoc(F.doc(db, "drzewa", id));
   uniewaznijKatalog();
 }
@@ -228,6 +272,12 @@ export async function listaPublicznych(limit = 100): Promise<WpisDrzewa[]> {
   return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.limit(limit))));
 }
 
+/** Najnowsze publiczne drzewa. Wymaga indeksu złożonego (widocznosc + utworzono) z firestore.indexes.json. */
+export async function listaOstatnich(limit: number): Promise<WpisDrzewa[]> {
+  const { db, F } = await fs();
+  return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.orderBy("utworzono", "desc"), F.limit(limit))));
+}
+
 export async function listaMoich(uid: string): Promise<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[] }> {
   const { db, F } = await fs();
   const [w, k] = await Promise.all([
@@ -251,6 +301,22 @@ export async function listaUzytkownikow(): Promise<WpisUzytkownika[]> {
   const { db, F } = await fs();
   const snap = await F.getDocs(F.collection(db, "uzytkownicy"));
   return snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Profil) })).sort((a, b) => `${a.nazwisko} ${a.imie}`.localeCompare(`${b.nazwisko} ${b.imie}`, "pl"));
+}
+
+/**
+ * Administrator zmienia imię i nazwisko użytkownika: w jego profilu oraz w nazwach zapisanych w drzewach
+ * (właściciel i kolaboranci). Adresu e-mail nie zmieniamy – to adres konta logowania w Firebase Authentication.
+ */
+export async function zmienDaneUzytkownika(uid: string, imie: string, nazwisko: string): Promise<void> {
+  const i = imie.trim();
+  const n = nazwisko.trim();
+  if (!i || !n) throw new Error("Podaj imię i nazwisko.");
+  const { db, F } = await fs();
+  await F.updateDoc(F.doc(db, "uzytkownicy", uid), { imie: i, nazwisko: n });
+  const nazwa = `${i} ${n}`;
+  const { wlasne, wspolne } = await listaMoich(uid);
+  for (const d of wlasne) await F.updateDoc(F.doc(db, "drzewa", d.id), { wlascicielNazwa: nazwa });
+  for (const d of wspolne) await F.updateDoc(F.doc(db, "drzewa", d.id), { [`kolaboranciInfo.${uid}`]: { nazwa } });
 }
 
 /**

@@ -29,7 +29,7 @@ function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrze
             {meta.nazwa}
           </Link>
         </h3>
-        <IdDrzewa id={wpis.id} className="mt-1" />
+        <IdDrzewa numer={meta.numer} className="mt-1" />
         <p className="mt-1 flex flex-wrap gap-x-3 text-sm text-tekst-2">
           <span>{meta.widocznosc === "publiczne" ? "Publiczne" : "Prywatne"}</span>
           <span>{ileOsob(meta.statystyki.osob)}</span>

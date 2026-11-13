@@ -74,6 +74,22 @@ jobs:
       - name: Ostrzeżenie o regułach
         if: steps.reguly.outcome == 'failure'
         run: echo "::warning::Nie udało się wdrożyć reguł Firestore automatycznie. Wklej zawartość pliku firestore.rules w konsoli Firebase (Firestore → Reguły → Opublikuj) albo nadaj kontu serwisowemu rolę 'Firebase Rules Admin'."
+      # Indeks do listy „Ostatnio dodane drzewa”. Bez niego strona działa (pobiera wtedy więcej drzew i sortuje u siebie),
+      # więc brak uprawnień nie zatrzymuje wdrożenia. Konto serwisowe potrzebuje roli „Cloud Datastore Index Admin”.
+      - name: Wdróż indeksy bazy (Firestore)
+        id: indeksy
+        if: vars.FIREBASE_API_KEY != ''
+        continue-on-error: true
+        env:
+          KLUCZ: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJEKT: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          printf '%s' "$KLUCZ" > "$RUNNER_TEMP/klucz.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/klucz.json" npx firebase deploy --only firestore:indexes --project "$PROJEKT" --non-interactive
+          rm -f "$RUNNER_TEMP/klucz.json"
+      - name: Ostrzeżenie o indeksach
+        if: steps.indeksy.outcome == 'failure'
+        run: echo "::warning::Nie udało się wdrożyć indeksu Firestore (lista ostatnio dodanych drzew będzie działać wolniej i zużyje więcej odczytów). Nadaj kontu serwisowemu rolę 'Cloud Datastore Index Admin' albo utwórz indeks w konsoli: kolekcja drzewa, pola widocznosc (rosnąco) i utworzono (malejąco)."
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

@@ -21,6 +21,8 @@ export type MetaDb = {
   statystyki: StatystykiDb;
   utworzono: string;
   zaktualizowano: string;
+  /** Krótki numer drzewa (5 cyfr, a gdy się zapełnią – 6 itd.), podawany przy zapraszaniu do współpracy. Starsze drzewa dostają go przy pierwszym otwarciu przez właściciela. */
+  numer?: string;
 };
 
 /** Dokumenty drzewa/{id}/dane/pelne (tylko dla zarządzających) i drzewa/{id}/dane/publiczne (po polityce dat). */
@@ -43,6 +45,12 @@ export const mozeZarzadzac = (d: Dostep) => d === "wlasciciel" || d === "admin";
 
 /** Prośba użytkownika o dołączenie do cudzego drzewa jako kolaborant: prosby/{idDrzewa}_{uid}. */
 export type Prosba = { id: string; drzewoId: string; uid: string; nazwa: string; utworzono: string };
+
+/** Numer drzewa (5–9 cyfr), także z dopiskiem „ID”, „ID drzewa:” albo „#”. Pusty tekst, gdy to nie jest numer. */
+export function numerDrzewaZTekstu(tekst: string): string {
+  const m = /^\s*(?:id(?:\s+drzewa)?\s*:?\s*|#\s*)?([1-9]\d{4,8})\s*$/i.exec(tekst);
+  return m ? m[1] : "";
+}
 
 /** Wyciąga identyfikator drzewa z linku (…/d/?id=XYZ…) albo z samego identyfikatora wklejonego przez użytkownika. */
 export function idDrzewaZTekstu(tekst: string): string {

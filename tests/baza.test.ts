@@ -111,6 +111,52 @@ describe("limity bliskich dodawanych z widoku osoby", () => {
   });
 });
 
+describe("zmiana rodziców w edycji osoby", () => {
+  const rodzina = () => {
+    let d = zaczynajac(); // jan
+    d = L.dodajOsobe(osoba("syn", { ojciecId: "jan" }))(d);
+    d = L.dodajOsobe(osoba("wnuk", { ojciecId: "syn" }))(d);
+    d = L.dodajOsobe(osoba("obcy"))(d);
+    d = L.dodajOsobe(osoba("obca", { plec: "K" }))(d);
+    return d;
+  };
+
+  it("ustawia i usuwa rodzica; dwoje rodziców dostaje wspólne małżeństwo", () => {
+    let d = L.zapiszOsobe("wnuk", { ojciecId: "obcy", matkaId: "obca" })(rodzina());
+    expect(d.osoby.find((o) => o.id === "wnuk")).toMatchObject({ ojciecId: "obcy", matkaId: "obca" });
+    expect(d.malzenstwa).toEqual([{ osobaAId: "obcy", osobaBId: "obca", kolejnosc: 1 }]);
+    d = L.zapiszOsobe("wnuk", { matkaId: null })(d);
+    expect(d.osoby.find((o) => o.id === "wnuk")).toMatchObject({ ojciecId: "obcy", matkaId: null });
+    expect(() => L.sprawdzDane(d)).not.toThrow();
+  });
+
+  it("nie tworzy drugiego małżeństwa, jeśli rodzice już są małżeństwem", () => {
+    let d = L.zapiszOsobe("wnuk", { ojciecId: "obcy", matkaId: "obca" })(rodzina());
+    d = L.zapiszOsobe("syn", { ojciecId: "obcy", matkaId: "obca" })(d);
+    expect(d.malzenstwa).toHaveLength(1);
+  });
+
+  it("odrzuca rodzica będącego samą osobą, jej potomkiem albo nieistniejącego", () => {
+    const d = rodzina();
+    expect(() => L.zapiszOsobe("jan", { ojciecId: "jan" })(d)).toThrow(/własnym rodzicem|potomkiem/);
+    expect(() => L.zapiszOsobe("jan", { ojciecId: "wnuk" })(d)).toThrow(/potomkiem/);
+    expect(() => L.zapiszOsobe("syn", { matkaId: "wnuk" })(d)).toThrow(/potomkiem/);
+    expect(() => L.zapiszOsobe("syn", { ojciecId: "nie-ma" })(d)).toThrow(/już nie istnieje/);
+    expect(() => L.zapiszOsobe("wnuk", { ojciecId: "obcy", matkaId: "obcy" })(d)).toThrow(/różnymi osobami/);
+  });
+
+  it("zwykła edycja danych nie rusza rodziców ani małżeństw", () => {
+    const d = rodzina();
+    const po = L.zapiszOsobe("syn", { imie: "Nowe" })(d);
+    expect(po.malzenstwa).toEqual(d.malzenstwa);
+    expect(po.osoby.find((o) => o.id === "syn")).toMatchObject({ imie: "Nowe", ojciecId: "jan" });
+  });
+
+  it("potomkowie() zwraca całą linię w dół", () => {
+    expect([...L.potomkowie(rodzina(), "jan")].sort()).toEqual(["syn", "wnuk"]);
+  });
+});
+
 describe("prywatność osób żyjących", () => {
   const dane = () => {
     let d = L.dodajOsobe(osoba("dziadek", { urodzenie: { wartosc: "1930-05-01", dokladnosc: "dokladna" }, smierc: { wartosc: "2001", dokladnosc: "rok" }, notatka: "zmarły" }))(L.pusteDane());

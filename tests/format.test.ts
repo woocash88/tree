@@ -27,3 +27,19 @@ describe("formatowanie", () => {
     expect(stulecie(2008).etykieta).toBe("XXI w.");
   });
 });
+
+describe("rozdzielOpis", () => {
+  it("oddziela zdanie o źródle (z adresem) od opisu", async () => {
+    const { rozdzielOpis } = await import("../lib/format");
+    expect(rozdzielOpis("Potomkowie Sebastiana – dziesięć pokoleń, od ok. 1780 r. Źródło danych: genealogia.okiem.pl (https://genealogia.okiem.pl/drzewo/238/lulkiewicz).")).toEqual({
+      opis: "Potomkowie Sebastiana – dziesięć pokoleń, od ok. 1780 r.",
+      zrodlo: { nazwa: "genealogia.okiem.pl", url: "https://genealogia.okiem.pl/drzewo/238/lulkiewicz" },
+    });
+  });
+  it("źródło bez adresu i opis bez źródła", async () => {
+    const { rozdzielOpis } = await import("../lib/format");
+    expect(rozdzielOpis("Rodzina. Źródło danych: księgi parafialne.")).toEqual({ opis: "Rodzina.", zrodlo: { nazwa: "księgi parafialne" } });
+    expect(rozdzielOpis("Zwykły opis.")).toEqual({ opis: "Zwykły opis.", zrodlo: null });
+  });
+});
+

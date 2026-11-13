@@ -15,7 +15,7 @@ import { WidokOsoby } from "@/components/widoki/WidokOsoby";
 import { WidokStronyDrzewa } from "@/components/widoki/WidokStronyDrzewa";
 import { type ApiEdycji } from "@/components/useEdycje";
 import { daneWidoku, indeksSzukaniaDrzewa, przygotujDrzewo, statystykaWidoku } from "@/lib/dane-czyste";
-import { wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
+import { przypiszNumer, wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import * as L from "@/lib/baza/logika";
 import { type DaneDb } from "@/lib/baza/typy";
@@ -158,6 +158,7 @@ export function WidokDrzewaDb() {
       wyczysc: () => {},
       pobierz: () => {},
       dodajMalzonka: (osobaId, nowa) => mutuj(L.dodajMalzonka(osobaId, nowa)),
+      mozeZmieniacRodzicow: true,
       dodajRodzenstwo: (osobaId, nowa) => mutuj(L.dodajRodzenstwo(osobaId, nowa)),
       dodajRodzica: (dzieckoId, rola, nowa) => mutuj(L.dodajRodzica(dzieckoId, rola, nowa)),
       usunOsobe: (osobaId) => mutuj(L.usunOsobe(osobaId)),
@@ -173,6 +174,21 @@ export function WidokDrzewaDb() {
     return przygotujDrzewo(metaDlaWidokow(id, meta, mozeEdytowac), dane);
   }, [id, meta, dane, mozeEdytowac]);
   const indeks = useMemo(() => (drzewo ? indeksSzukaniaDrzewa(drzewo) : []), [drzewo]);
+
+  // Starsze drzewa nie mają jeszcze krótkiego numeru: nadajemy go przy pierwszym otwarciu przez właściciela (lub administratora).
+  const brakNumeru = !!meta && !meta.numer && (dostep === "wlasciciel" || dostep === "admin") && konto.zweryfikowany;
+  useEffect(() => {
+    if (!brakNumeru) return;
+    let aktualne = true;
+    przypiszNumer(id)
+      .then(async () => {
+        if (aktualne) await przeladuj();
+      })
+      .catch(() => null);
+    return () => {
+      aktualne = false;
+    };
+  }, [brakNumeru, id, przeladuj]);
 
   useEffect(() => {
     if (meta) document.title = `${meta.nazwa} – Przodkowie`;
@@ -246,7 +262,7 @@ export function WidokDrzewaDb() {
   } else if (w === "osoby") {
     tresc = <WidokIndeksuOsob d={drzewo} />;
   } else {
-    tresc = <WidokStronyDrzewa d={drzewo} />;
+    tresc = <WidokStronyDrzewa d={drzewo} numer={meta.numer} />;
   }
 
   const pelnoekranowy = w === "galaz" || w === "lista" || w === "diagram";
@@ -259,7 +275,7 @@ export function WidokDrzewaDb() {
             <span>
               <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
             </span>
-            <IdDrzewa id={id} />
+            <IdDrzewa numer={meta.numer} />
             <span className="text-tekst-2" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
             <span className="ml-auto flex gap-3">
               <Link href={sciezkaDrzewa(slug)} className="link">Strona drzewa</Link>

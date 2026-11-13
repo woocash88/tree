@@ -1,1 +1,13 @@
-{ "indexes": [], "fieldOverrides": [] }
+{
+  "indexes": [
+    {
+      "collectionGroup": "drzewa",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "widocznosc", "order": "ASCENDING" },
+        { "fieldPath": "utworzono", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

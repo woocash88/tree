@@ -90,8 +90,8 @@ export function UstawieniaDrzewa({ drzewoId, meta, dane, dostep, naZmiane }: { d
       >
         <h2 className="text-2xl">Ustawienia drzewa</h2>
         <div>
-          <IdDrzewa id={drzewoId} />
-          <p className="mt-1 text-sm text-tekst-2">Aby zaprosić kogoś do współpracy, podaj mu ten identyfikator (albo link). Osoba wkleja go w swoim profilu w sekcji „Dołącz do istniejącego drzewa”, a Ty zatwierdzasz jej prośbę poniżej.</p>
+          <IdDrzewa numer={meta.numer} />
+          <p className="mt-1 text-sm text-tekst-2">Aby zaprosić kogoś do współpracy, podaj mu ten numer (albo link do drzewa). Osoba wkleja go w swoim profilu w sekcji „Dołącz do istniejącego drzewa”, a Ty zatwierdzasz jej prośbę poniżej.</p>
         </div>
         <div>
           <label className="block text-sm text-tekst-2" htmlFor={`${id}-n`}>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { FormularzDziecka, FormularzNowejOsoby, type OsobaFormularza } from "@/components/FormularzOsoby";
+import { OknoModalne } from "@/components/OknoModalne";
 import { pelneImie } from "@/lib/format";
 import { KontekstDb } from "./KontekstDb";
 
@@ -40,15 +41,7 @@ const NAPISY: Record<RodzajKrewnego, { przycisk: string; limitTekst: string }> =
  */
 export function DodajKrewnego({ rodzaj, osoba, malzonkowie = [], wszystkieId, ile = 0, limit, domyslneNazwisko = "", zablokowane, wyglad = "karta" }: Props) {
   const ctx = useContext(KontekstDb);
-  const okno = useRef<HTMLDialogElement>(null);
   const [otwarte, setOtwarte] = useState(false);
-
-  useEffect(() => {
-    const d = okno.current;
-    if (!d) return;
-    if (otwarte && !d.open) d.showModal();
-    if (!otwarte && d.open) d.close();
-  }, [otwarte]);
 
   if (!ctx || !ctx.api.mozeEdytowac) return null;
   const api = ctx.api;
@@ -108,14 +101,9 @@ export function DodajKrewnego({ rodzaj, osoba, malzonkowie = [], wszystkieId, il
         {napisy.przycisk}
       </button>
       {zablokowane && <p className="mt-1 text-center text-xs text-tekst-2">{zablokowane}</p>}
-      <dialog
-        ref={okno}
-        onClose={zamknij}
-        aria-label={napisy.przycisk}
-        className="m-auto max-h-[90dvh] w-[min(30rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-kreska bg-lita p-5 text-tekst shadow-xl backdrop:bg-black/40"
-      >
+      <OknoModalne otwarte={otwarte} naZamkniecie={zamknij} etykieta={napisy.przycisk}>
         {formularz}
-      </dialog>
+      </OknoModalne>
     </>
   );
 }

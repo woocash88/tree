@@ -20,6 +20,9 @@ export type PatchOsoby = {
   plec?: Osoba["plec"];
   /** Osoba żyjąca – jej dane podlegają polityce dat drzewa. `null` zdejmuje flagę. */
   zyjaca?: boolean | null;
+  /** Zmiana rodziców (tylko drzewa z bazy): identyfikator istniejącej osoby albo `null` = brak rodzica. */
+  ojciecId?: string | null;
+  matkaId?: string | null;
 };
 
 /** Dopisana osoba – dokładnie w formacie osoby z rodzina.json. */

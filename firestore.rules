@@ -84,7 +84,8 @@ service cloud.firestore {
 
     function metaPoprawna(m) {
       return m.keys().hasOnly(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
-                               'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano'])
+                               'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano', 'numer'])
+        && (!('numer' in m) || (m.numer is string && numerPoprawny(m.numer)))
         && m.keys().hasAll(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
                             'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano'])
         && niepusty(m.nazwa, 120) && tekst(m.opis, 1000) && tekst(m.region, 120)
@@ -97,16 +98,38 @@ service cloud.firestore {
         && tekst(m.utworzono, 40) && tekst(m.zaktualizowano, 40);
     }
 
+    // ── numery drzew ──
+    // Krótki numer (np. 48213) zastępuje długi identyfikator przy zapraszaniu do współpracy. Dokument numery/{numer}
+    // wskazuje drzewo; powstaje wyłącznie razem z wpisaniem tego numeru do drzewa (batch), dla własnego drzewa bez numeru.
+    function numerPoprawny(n) { return n.matches('[1-9][0-9]{4,8}'); }
+    function drzewoDlaNumeru(d) { return get(/databases/$(database)/documents/drzewa/$(d)).data; }
+
+    match /numery/{n} {
+      allow get: if zalogowany();
+      allow list, update: if false;
+      allow create: if weryfikowany() && numerPoprawny(n)
+        && request.resource.data.keys().hasOnly(['drzewoId'])
+        && tekst(request.resource.data.drzewoId, 128)
+        && (jestAdmin() || drzewoDlaNumeru(request.resource.data.drzewoId).wlascicielId == request.auth.uid)
+        && !('numer' in drzewoDlaNumeru(request.resource.data.drzewoId))
+        && getAfter(/databases/$(database)/documents/drzewa/$(request.resource.data.drzewoId)).data.numer == n;
+      allow delete: if jestAdmin() || (weryfikowany() && (!exists(/databases/$(database)/documents/drzewa/$(resource.data.drzewoId))
+        || drzewoDlaNumeru(resource.data.drzewoId).wlascicielId == request.auth.uid));
+    }
+
     match /drzewa/{id} {
       allow get, list: if resource.data.widocznosc == 'publiczne' || czlonek(resource.data) || jestAdmin();
 
-      allow create: if weryfikowany() && metaPoprawna(request.resource.data)
+      allow create: if weryfikowany() && metaPoprawna(request.resource.data) && !('numer' in request.resource.data)
         && request.resource.data.wlascicielId == request.auth.uid
         && request.resource.data.kolaboranci.size() == 0;
 
       // Właściciel i administrator zmieniają wszystko oprócz właściciela; kolaborant tylko statystyki po edycji osób
       // albo opuszcza drzewo. Właściciel może przekazać drzewo wyłącznie jednemu ze swoich kolaborantów.
+      // Numer można tylko nadać (raz) razem z dokumentem numery/{numer}, nigdy zmienić ani usunąć.
       allow update: if metaPoprawna(request.resource.data)
+        && (request.resource.data.get('numer', '') == resource.data.get('numer', '')
+            || (!('numer' in resource.data) && getAfter(/databases/$(database)/documents/numery/$(request.resource.data.numer)).data.drzewoId == id))
         && ((request.resource.data.wlascicielId == resource.data.wlascicielId
             && (jestAdmin()
                 || (weryfikowany() && resource.data.wlascicielId == request.auth.uid)

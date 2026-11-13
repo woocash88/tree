@@ -105,7 +105,7 @@ export function PanelOsoby({ slug, osoba, osoby, pary, galezie, widok, gora = 15
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4 pt-2">
         {aktywnyTryb === "edycja" ? (
-          <FormularzEdycji key={osoba.id} osoba={osoba} api={api} naGotowe={zamknijFormularz} />
+          <FormularzEdycji key={osoba.id} osoba={osoba} api={api} naGotowe={zamknijFormularz} osoby={[...osoby.values()]} />
         ) : aktywnyTryb === "malzonek" && api.dodajMalzonka ? (
           <FormularzNowejOsoby
             key={`m-${osoba.id}`}

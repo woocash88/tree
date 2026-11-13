@@ -49,15 +49,15 @@ async function zarejestrujPotwierdz(br, imie, nazwisko, email) {
   ok('rejestr adresów dostał nowe imię (widać je przy zapraszaniu)', adr.fields?.nazwa?.stringValue === 'Barbara Kowalska-Nowak', JSON.stringify(adr).slice(0, 200));
 
   // ── prośba o dołączenie ──
-  await basia.p.getByLabel('Link do drzewa lub jego identyfikator').fill('to-nie-link');
+  await basia.p.getByLabel('Numer drzewa lub link do drzewa').fill('to-nie-link');
   await basia.p.getByRole('button', { name: 'Wyślij prośbę' }).click();
-  ok('błędny link do drzewa jest odrzucany z podpowiedzią', (await basia.p.locator('form [role=alert], section [role=alert]').first().innerText()).includes('Wklej link'));
-  await basia.p.getByLabel('Link do drzewa lub jego identyfikator').fill(`${B}/d/?id=${id}`);
+  ok('błędny link do drzewa jest odrzucany z podpowiedzią', (await basia.p.locator('form [role=alert], section [role=alert]').first().innerText()).includes('Wpisz numer drzewa'));
+  await basia.p.getByLabel('Numer drzewa lub link do drzewa').fill(`${B}/d/?id=${id}`);
   await basia.p.getByRole('button', { name: 'Wyślij prośbę' }).click();
   await basia.p.getByText('Prośba została wysłana').waitFor();
   await basia.p.getByText('Wysłane prośby').waitFor();
   ok('prośba wysłana po linku, widoczna na liście oczekujących', (await basia.p.getByRole('button', { name: 'Wycofaj' }).count()) === 1);
-  await basia.p.getByLabel('Link do drzewa lub jego identyfikator').fill('nieistniejace123456789');
+  await basia.p.getByLabel('Numer drzewa lub link do drzewa').fill('nieistniejace123456789');
   await basia.p.getByRole('button', { name: 'Wyślij prośbę' }).click();
   await basia.p.getByText(/drzewo nie istnieje/).waitFor();
   ok('prośba o nieistniejące drzewo daje czytelny komunikat', true);

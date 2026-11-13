@@ -20,5 +20,5 @@ export function metaDlaWidokow(id: string, m: MetaDb, nadpiszPolitykePokaz = fal
 }
 
 export function podsumowanieZBazy(id: string, m: MetaDb): PodsumowanieDrzewa {
-  return { meta: metaDlaWidokow(id, m), osob: m.statystyki.osob, pokolen: m.statystyki.pokolen, galezi: m.statystyki.galezi, nazwiska: [] };
+  return { meta: metaDlaWidokow(id, m), osob: m.statystyki.osob, pokolen: m.statystyki.pokolen, galezi: m.statystyki.galezi, nazwiska: [], utworzono: m.utworzono };
 }

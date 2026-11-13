@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { IdDrzewa } from "@/components/IdDrzewa";
 import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
-import { listaUzytkownikow, listaWszystkich, usunDaneUzytkownika, usunDrzewo, type WpisDrzewa, type WpisUzytkownika } from "@/lib/baza/api";
+import { listaUzytkownikow, listaWszystkich, usunDaneUzytkownika, usunDrzewo, zmienDaneUzytkownika, type WpisDrzewa, type WpisUzytkownika } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import { ileOsob, ilePokolen } from "@/lib/format";
 import { POLITYKI_DAT, type DrzewoMeta, type PolitykaDat } from "@/lib/schemat-drzewa";
@@ -243,11 +243,36 @@ function Stronicowanie({ s }: { s: { biezaca: number; stron: number; znalezione:
 const TH = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.12em] text-tekst-2";
 const TD = "px-3 py-2 align-middle";
 
+type DrzewaUzytkownika = { wlasne: string[]; wspolne: string[] };
+
+/** Krótki opis ról użytkownika w drzewach: „Właściciel: 2 (Rodzina A, Rodzina B)”. */
+function RoleWDrzewach({ d }: { d: DrzewaUzytkownika | undefined }) {
+  if (!d) return <span className="text-tekst-2">…</span>;
+  if (!d.wlasne.length && !d.wspolne.length) return <span className="text-tekst-2">brak drzew</span>;
+  const wiersz = (rola: string, nazwy: string[]) =>
+    nazwy.length > 0 && (
+      <span className="block" title={nazwy.join(", ")}>
+        <strong>{rola}: {nazwy.length}</strong>
+        <span className="text-tekst-2"> ({nazwy.slice(0, 2).join(", ")}{nazwy.length > 2 ? ` i ${nazwy.length - 2} więcej` : ""})</span>
+      </span>
+    );
+  return (
+    <>
+      {wiersz("Właściciel", d.wlasne)}
+      {wiersz("Kolaborant", d.wspolne)}
+    </>
+  );
+}
+
 function SekcjaUzytkownikow() {
   const [lista, setLista] = useState<WpisUzytkownika[] | null>(null);
+  const [drzewa, setDrzewa] = useState<Map<string, DrzewaUzytkownika> | null>(null);
   const [blad, setBlad] = useState("");
   const [info, setInfo] = useState("");
   const [trwa, setTrwa] = useState<string | null>(null);
+  const [edytowany, setEdytowany] = useState<string | null>(null);
+  const [imie, setImie] = useState("");
+  const [nazwisko, setNazwisko] = useState("");
   const strony = useStrony(lista, (u, f) => `${u.imie} ${u.nazwisko} ${u.email}`.toLowerCase().includes(f));
 
   const wczytaj = useCallback(async () => {
@@ -256,11 +281,37 @@ function SekcjaUzytkownikow() {
     } catch (e) {
       setBlad(komunikatBledu(e));
     }
+    try {
+      // Role w drzewach liczymy z listy wszystkich drzew (jeden odczyt na drzewo); brak tej informacji nie blokuje tabeli.
+      const mapa = new Map<string, DrzewaUzytkownika>();
+      const wpis = (uid: string) => mapa.get(uid) ?? mapa.set(uid, { wlasne: [], wspolne: [] }).get(uid)!;
+      for (const { meta } of await listaWszystkich()) {
+        wpis(meta.wlascicielId).wlasne.push(meta.nazwa);
+        for (const k of meta.kolaboranci) wpis(k).wspolne.push(meta.nazwa);
+      }
+      setDrzewa(mapa);
+    } catch {
+      setDrzewa(null);
+    }
   }, []);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- wczytanie listy po wejściu do podstrony
     void wczytaj();
   }, [wczytaj]);
+
+  const zapiszDane = async (u: WpisUzytkownika) => {
+    setTrwa(u.uid);
+    setBlad("");
+    try {
+      await zmienDaneUzytkownika(u.uid, imie, nazwisko);
+      setInfo(`Zmieniono dane użytkownika ${u.email}: ${imie.trim()} ${nazwisko.trim()}.`);
+      setEdytowany(null);
+      await wczytaj();
+    } catch (e) {
+      setBlad(komunikatBledu(e));
+    }
+    setTrwa(null);
+  };
 
   return (
     <section aria-label="Użytkownicy" className="mt-6">
@@ -269,44 +320,96 @@ function SekcjaUzytkownikow() {
       {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
       {info && <p role="status" className="mt-2 text-sm font-semibold">{info}</p>}
       <div className="szklo mt-3 overflow-x-auto">
-        <table className="w-full min-w-[40rem] text-[15px]">
+        <table className="w-full min-w-[56rem] text-[15px]">
           <thead className="border-b border-kreska">
             <tr>
               <th scope="col" className={TH}>Imię i nazwisko</th>
               <th scope="col" className={TH}>E-mail</th>
+              <th scope="col" className={TH}>Drzewa</th>
               <th scope="col" className={TH}>Zarejestrowany</th>
               <th scope="col" className={`${TH} text-right`}>Akcje</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-kreska">
             {strony.wiersze.map((u) => (
-              <tr key={u.uid}>
-                <td className={`${TD} font-semibold`}>{u.imie} {u.nazwisko}</td>
-                <td className={`${TD} break-all text-tekst-2`}>{u.email}</td>
-                <td className={`${TD} whitespace-nowrap tabular-nums text-tekst-2`}>{u.utworzono.slice(0, 10)}</td>
-                <td className={`${TD} text-right`}>
-                  <button
-                    type="button"
-                    className="przycisk !min-h-8"
-                    disabled={trwa === u.uid}
-                    onClick={async () => {
-                      if (!window.confirm(`Usunąć użytkownika ${u.imie} ${u.nazwisko} (${u.email}) wraz z jego drzewami?\n\nTej operacji nie można cofnąć. Konto zostanie zablokowane.`)) return;
-                      setTrwa(u.uid);
-                      setBlad("");
-                      try {
-                        const { drzew } = await usunDaneUzytkownika(u.uid, u.email, { zablokuj: true });
-                        setInfo(`Usunięto użytkownika ${u.email} i jego drzewa (${drzew}).`);
-                        await wczytaj();
-                      } catch (e) {
-                        setBlad(komunikatBledu(e));
-                      }
-                      setTrwa(null);
-                    }}
-                  >
-                    {trwa === u.uid ? "Usuwanie…" : "Usuń użytkownika"}
-                  </button>
-                </td>
-              </tr>
+              <Fragment key={u.uid}>
+                <tr>
+                  <td className={`${TD} font-semibold`}>{u.imie} {u.nazwisko}</td>
+                  <td className={`${TD} break-all text-tekst-2`}>{u.email}</td>
+                  <td className={`${TD} text-sm`}>
+                    <RoleWDrzewach d={drzewa?.get(u.uid) ?? (drzewa ? { wlasne: [], wspolne: [] } : undefined)} />
+                  </td>
+                  <td className={`${TD} whitespace-nowrap tabular-nums text-tekst-2`}>{u.utworzono.slice(0, 10)}</td>
+                  <td className={`${TD} text-right`}>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <button
+                        type="button"
+                        className="przycisk !min-h-8"
+                        aria-expanded={edytowany === u.uid}
+                        onClick={() => {
+                          setEdytowany(edytowany === u.uid ? null : u.uid);
+                          setImie(u.imie);
+                          setNazwisko(u.nazwisko);
+                        }}
+                      >
+                        Edytuj
+                      </button>
+                      <button
+                        type="button"
+                        className="przycisk !min-h-8"
+                        disabled={trwa === u.uid}
+                        onClick={async () => {
+                          if (!window.confirm(`Usunąć użytkownika ${u.imie} ${u.nazwisko} (${u.email}) wraz z jego drzewami?\n\nTej operacji nie można cofnąć. Konto zostanie zablokowane.`)) return;
+                          setTrwa(u.uid);
+                          setBlad("");
+                          try {
+                            const { drzew } = await usunDaneUzytkownika(u.uid, u.email, { zablokuj: true });
+                            setInfo(`Usunięto użytkownika ${u.email} i jego drzewa (${drzew}).`);
+                            await wczytaj();
+                          } catch (e) {
+                            setBlad(komunikatBledu(e));
+                          }
+                          setTrwa(null);
+                        }}
+                      >
+                        {trwa === u.uid ? "Usuwanie…" : "Usuń użytkownika"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {edytowany === u.uid && (
+                  <tr className="bg-najazd">
+                    <td colSpan={5} className="px-3 py-3">
+                      <form
+                        className="flex flex-wrap items-end gap-3"
+                        aria-label={`Edycja użytkownika ${u.email}`}
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          void zapiszDane(u);
+                        }}
+                      >
+                        <label className="block text-sm text-tekst-2">
+                          Imię
+                          <input className="pole mt-1 block w-48" value={imie} onChange={(e) => setImie(e.target.value)} required maxLength={80} />
+                        </label>
+                        <label className="block text-sm text-tekst-2">
+                          Nazwisko
+                          <input className="pole mt-1 block w-56" value={nazwisko} onChange={(e) => setNazwisko(e.target.value)} required maxLength={80} />
+                        </label>
+                        <button type="submit" className="przycisk przycisk-glowny !min-h-10" disabled={trwa === u.uid || !imie.trim() || !nazwisko.trim()}>
+                          Zapisz
+                        </button>
+                        <button type="button" className="przycisk !min-h-10" onClick={() => setEdytowany(null)}>
+                          Anuluj
+                        </button>
+                      </form>
+                      <p className="mt-2 text-xs text-tekst-2">
+                        Zmiana obejmuje profil i nazwy w drzewach tego użytkownika. Adres e-mail ({u.email}) jest adresem konta logowania – zmienia go sam użytkownik w swoim profilu (link potwierdzający na nowy adres); administrator nie ma takiej możliwości bez funkcji serwerowych.
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -321,7 +424,7 @@ function SekcjaDrzewUzytkownikow() {
   const [lista, setLista] = useState<WpisDrzewa[] | null>(null);
   const [blad, setBlad] = useState("");
   const [trwa, setTrwa] = useState<string | null>(null);
-  const strony = useStrony(lista, (w, f) => `${w.meta.nazwa} ${w.meta.wlascicielNazwa} ${w.id}`.toLowerCase().includes(f));
+  const strony = useStrony(lista, (w, f) => `${w.meta.nazwa} ${w.meta.wlascicielNazwa} ${w.meta.numer ?? ""} ${w.id}`.toLowerCase().includes(f));
   const wczytaj = useCallback(async () => {
     try {
       setLista(await listaWszystkich());
@@ -336,7 +439,7 @@ function SekcjaDrzewUzytkownikow() {
   return (
     <section aria-label="Drzewa użytkowników" className="mt-6">
       <h2 className="text-2xl">Drzewa użytkowników ({lista?.length ?? "…"})</h2>
-      <input type="search" className="pole mt-3 w-full max-w-sm" placeholder="Szukaj po nazwie, właścicielu lub ID" value={strony.fraza} onChange={(e) => strony.ustawFraze(e.target.value)} aria-label="Szukaj drzewa" />
+      <input type="search" className="pole mt-3 w-full max-w-sm" placeholder="Szukaj po nazwie, właścicielu lub numerze" value={strony.fraza} onChange={(e) => strony.ustawFraze(e.target.value)} aria-label="Szukaj drzewa" />
       {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
       <div className="szklo mt-3 overflow-x-auto">
         <table className="w-full min-w-[56rem] text-[15px]">
@@ -358,7 +461,7 @@ function SekcjaDrzewUzytkownikow() {
                   <Link href={sciezkaDrzewa(slugDb(id))} className="link">{meta.nazwa}</Link>
                 </td>
                 <td className={TD}>
-                  <IdDrzewa id={id} className="max-w-[13rem]" />
+                  <IdDrzewa numer={meta.numer} />
                 </td>
                 <td className={`${TD} text-tekst-2`}>{meta.widocznosc === "publiczne" ? "publiczne" : "prywatne"}</td>
                 <td className={`${TD} text-right tabular-nums`}>{meta.statystyki.osob}</td>

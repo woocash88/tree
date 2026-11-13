@@ -1,6 +1,6 @@
 // Dodawanie bliskich ze strony osoby (przyciski „+”), limity, ID drzewa obok nazwy, pogrubiona linia na diagramie.
 const { chromium } = require('playwright');
-const { B, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, rejestruj, czekajNaOsoby } = require('./helpery.cjs');
+const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, rejestruj, czekajNaOsoby } = require('./helpery.cjs');
 
 (async () => {
   const br = await chromium.launch();
@@ -28,17 +28,23 @@ const { B, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, reje
   await ala.p.getByRole('button', { name: 'Dodaj osobę' }).click();
   await czekajNaOsoby(id, 1);
 
-  // ── ID drzewa obok nazwy ──
+  // ── numer drzewa (5 cyfr) obok nazwy ──
+  let numer = '';
+  for (let i = 0; i < 40 && !numer; i++) { numer = (await dokument(`drzewa/${id}`)).fields?.numer?.stringValue ?? ''; if (!numer) await new Promise((r) => setTimeout(r, 250)); }
+  ok('nowe drzewo dostało 5-cyfrowy numer', /^[1-9]\d{4}$/.test(numer), numer);
+  ok('dokument numeru wskazuje drzewo', (await dokument(`numery/${numer}`)).fields?.drzewoId?.stringValue === id);
   await ala.p.goto(`${B}/d/?id=${id}`);
   await ala.p.getByRole('heading', { name: 'Rodzina Test', level: 1 }).waitFor();
-  ok('ID drzewa widoczne obok nazwy na stronie drzewa', (await ala.p.locator('main code', { hasText: id }).count()) === 1);
-  ok('ID drzewa w pasku roli (właściciel)', (await ala.p.locator('div.bg-najazd code', { hasText: id }).count()) === 1);
+  await ala.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-strona-drzewa.png', fullPage: true });
+  ok('„ID drzewa: <numer>” widoczne obok nazwy na stronie drzewa', (await ala.p.locator('main code', { hasText: numer }).count()) === 1 && (await ala.p.getByText('ID drzewa:').count()) >= 1);
+  ok('numer drzewa w pasku roli (właściciel)', (await ala.p.locator('div.bg-najazd code', { hasText: numer }).count()) === 1);
   await ala.p.goto(B + '/profil/');
   await ala.p.getByRole('heading', { name: 'Rodzina Test' }).waitFor();
-  ok('ID drzewa na karcie drzewa w profilu', (await ala.p.locator('li code', { hasText: id }).count()) === 1);
+  await ala.p.locator('section[aria-label="Adres e-mail i logowanie"]').screenshot({ path: require('os').tmpdir() + '/przodkowie-profil-email.png' });
+  ok('numer drzewa na karcie drzewa w profilu', (await ala.p.locator('li code', { hasText: numer }).count()) === 1);
   await ala.p.goto(`${B}/d/?id=${id}&w=ustawienia`);
   await ala.p.getByRole('heading', { name: 'Ustawienia drzewa' }).waitFor();
-  ok('ID drzewa w ustawieniach razem z opisem zaproszenia', (await ala.p.locator('form code', { hasText: id }).count()) === 1 && (await ala.p.getByText(/podaj mu ten identyfikator/).count()) === 1);
+  ok('numer drzewa w ustawieniach razem z opisem zaproszenia', (await ala.p.locator('form code', { hasText: numer }).count()) === 1 && (await ala.p.getByText(/podaj mu ten numer/).count()) === 1);
 
   // ── przyciski „+” na stronie osoby ──
   const osoba = (os) => `${B}/d/?id=${id}&w=osoba&os=${os}`;
@@ -95,7 +101,56 @@ const { B, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, reje
   ok('gość nie widzi przycisków dodawania bliskich', (await g.p.locator('main button', { hasText: /Dodaj/ }).count()) === 0);
   await g.p.goto(`${B}/d/?id=${id}`);
   await g.p.getByRole('heading', { name: 'Rodzina Test', level: 1 }).waitFor();
-  ok('gość widzi ID publicznego drzewa obok nazwy', (await g.p.locator('main code', { hasText: id }).count()) === 1);
+  ok('gość widzi numer publicznego drzewa obok nazwy', (await g.p.locator('main code', { hasText: numer }).count()) === 1);
+
+  // ── edycja osoby ze strony osoby, w tym zmiana rodzica ──
+  await ala.p.goto(osoba('marek-test'));
+  await ala.p.getByRole('heading', { name: 'Marek Test', level: 1 }).waitFor();
+  await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
+  const okno = ala.p.getByRole('dialog');
+  await okno.getByLabel('Imię', { exact: true }).fill('Marcin');
+  await okno.locator('fieldset select').nth(1).selectOption({ label: 'Zona1 NN' });
+  await okno.screenshot({ path: require('os').tmpdir() + '/przodkowie-edycja-okno.png' });
+  await okno.getByRole('button', { name: 'Zapisz', exact: true }).click();
+  await ala.p.getByRole('heading', { name: 'Marcin Test', level: 1 }).waitFor();
+  for (let i = 0; i < 40; i++) { const f = (await dokument(`drzewa/${id}/dane/pelne`)).fields.osoby.arrayValue.values.map((v) => v.mapValue.fields).find((x) => x.imie.stringValue === 'Marcin'); if (f) { ok('edycja ze strony osoby: zmienione imię i matka zapisane w bazie', f.matkaId.stringValue.startsWith('zona1') && f.ojciecId.stringValue.startsWith('stefan'), JSON.stringify(f.matkaId)); break; } if (i === 39) ok('edycja ze strony osoby: zapis w bazie', false); await new Promise((r) => setTimeout(r, 250)); }
+  await ala.p.getByRole('heading', { name: 'Rodzice', level: 2 }).waitFor();
+  ok('po zmianie rodzica strona osoby pokazuje nowego rodzica', (await ala.p.getByText('Zona1 NN').count()) > 0);
+  await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
+  const potomek = await ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  ok('lista rodziców nie zawiera samej osoby', !potomek.some((t) => t.includes('Marcin')));
+  await ala.p.keyboard.press('Escape');
+  await ala.p.goto(osoba('stefan-test-1820'));
+  await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
+  const ojcowieStefana = await ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  ok('lista rodziców nie zawiera potomków edytowanej osoby (Jan, Marcin)', !ojcowieStefana.some((t) => /Jan Test|Marcin/.test(t)));
+  await ala.p.keyboard.press('Escape');
+
+  // ── numer dla starszego drzewa (bez numeru) i dołączanie po numerze ──
+  const stare = await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/drzewa/stare1234567890abcdef`, { method: 'PATCH', headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: Object.fromEntries(Object.entries((await dokument(`drzewa/${id}`)).fields).filter(([k]) => k !== 'numer')) }) })).json();
+  ok('przygotowano stare drzewo bez numeru', !stare.fields.numer);
+  await ala.p.goto(`${B}/d/?id=stare1234567890abcdef`);
+  await ala.p.getByRole('heading', { name: 'Rodzina Test' }).first().waitFor({ timeout: 15000 });
+  let nowyNumer = '';
+  for (let i = 0; i < 40 && !nowyNumer; i++) { nowyNumer = (await dokument('drzewa/stare1234567890abcdef')).fields?.numer?.stringValue ?? ''; if (!nowyNumer) await new Promise((r) => setTimeout(r, 250)); }
+  ok('właściciel starszego drzewa: numer nadany automatycznie po otwarciu', /^[1-9]\d{4}$/.test(nowyNumer) && nowyNumer !== numer, nowyNumer);
+
+  const kuba = await nowaKarta(br);
+  const mailKuba = `kuba-${t}@example.org`;
+  await rejestruj(kuba.p, 'Kuba', 'Kolega', mailKuba);
+  await kuba.p.goto(B + '/profil/');
+  await kuba.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor();
+  await potwierdzEmail(mailKuba);
+  await kuba.p.getByRole('button', { name: /Kliknąłem w link/ }).click();
+  await kuba.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor({ state: 'detached' });
+  await kuba.p.getByLabel('Numer drzewa lub link do drzewa').fill('99999');
+  await kuba.p.getByRole('button', { name: 'Wyślij prośbę' }).click();
+  await kuba.p.getByText(/Nie ma drzewa o numerze 99999/).waitFor();
+  ok('nieistniejący numer: czytelny błąd', true);
+  await kuba.p.getByLabel('Numer drzewa lub link do drzewa').fill(`ID drzewa: ${numer}`);
+  await kuba.p.getByRole('button', { name: 'Wyślij prośbę' }).click();
+  await kuba.p.getByText('Prośba została wysłana').waitFor();
+  ok('dołączanie po numerze drzewa wysyła prośbę do właściciela', (await dokument(`prosby/${id}_${(await (await fetch(`${AUTH}/identitytoolkit.googleapis.com/v1/projects/${P}/accounts:batchGet?maxResults=100`, { headers: { Authorization: 'Bearer owner' } })).json()).users.find((u) => u.email === mailKuba).localId}`)).fields?.drzewoId?.stringValue === id);
 
   // ── diagram: wybrana linia pogrubiona dwukrotnie (2,5 → 5) ──
   await ala.p.goto(`${B}/d/?id=${id}&w=diagram&g=cale&os=jan-test-1850`);

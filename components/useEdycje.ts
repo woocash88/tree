@@ -65,6 +65,8 @@ export type ApiEdycji = {
   /** Tylko drzewa z bazy: operacje na strukturze drzewa i stan zapisu. */
   dodajMalzonka?: (osobaId: string, nowa: NowaOsobaTyp) => void;
   dodajRodzenstwo?: (osobaId: string, nowa: NowaOsobaTyp) => void;
+  /** Czy formularz edycji może zmieniać rodziców osoby (drzewa z bazy). */
+  mozeZmieniacRodzicow?: boolean;
   dodajRodzica?: (dzieckoId: string, rola: "ojciec" | "matka", nowa: NowaOsobaTyp) => void;
   usunOsobe?: (id: string) => void;
   zapisuje?: boolean;

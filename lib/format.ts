@@ -18,6 +18,19 @@ export function normalizuj(tekst: string): string {
     .trim();
 }
 
+/**
+ * Opisy drzew z importu kończą się zdaniem „Źródło danych: nazwa (adres).”. Rozdzielamy je: opis zostaje pod nagłówkiem,
+ * a źródło (z adresem, jeśli jest) trafia do ramki „Źródło danych i opiekun”.
+ */
+export function rozdzielOpis(opis: string): { opis: string; zrodlo: { nazwa: string; url?: string } | null } {
+  const m = /\s*Źródło danych:\s*([\s\S]*)$/i.exec(opis);
+  if (!m) return { opis, zrodlo: null };
+  const reszta = m[1].trim().replace(/\.$/, "");
+  const url = /https?:\/\/[^\s)]+/.exec(reszta)?.[0];
+  const nazwa = reszta.replace(/\(?\s*https?:\/\/[^\s)]+\s*\)?/, "").replace(/\s+/g, " ").trim();
+  return { opis: opis.slice(0, m.index).trim(), zrodlo: { nazwa: nazwa || url || reszta, ...(url ? { url } : {}) } };
+}
+
 export function pelneImie(o: { imie: string; nazwisko: string }): string {
   return `${o.imie || "NN"} ${o.nazwisko || "NN"}`;
 }

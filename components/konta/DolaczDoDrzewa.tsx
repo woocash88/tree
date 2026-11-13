@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useId, useState } from "react";
-import { listaMoichProsb, nazwaDrzewa, usunProsbe, wyslijProsbe } from "@/lib/baza/api";
+import { drzewoIdZNumeru, listaMoichProsb, nazwaDrzewa, usunProsbe, wyslijProsbe } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
-import { idDrzewaZTekstu, type Prosba } from "@/lib/baza/typy";
+import { idDrzewaZTekstu, numerDrzewaZTekstu, type Prosba } from "@/lib/baza/typy";
 import { useKonto } from "./AuthProvider";
 
 type WpisProsby = Prosba & { nazwaDrzewa: string | null };
@@ -35,18 +35,24 @@ export function DolaczDoDrzewa({ nazwaUzytkownika }: { nazwaUzytkownika: string 
   return (
     <section className="szklo space-y-3 p-5" aria-label="Dołącz do drzewa">
       <h2 className="text-xl">Dołącz do istniejącego drzewa</h2>
-      <p className="text-sm text-tekst-2">Jako kolaborant możesz dodawać i edytować osoby w drzewie innego użytkownika. Poproś właściciela o link do drzewa, wklej go poniżej i wyślij prośbę – właściciel musi ją zatwierdzić. Gdy to zrobi, drzewo pojawi się w sekcji „Współpracuję przy”.</p>
+      <p className="text-sm text-tekst-2">Jako kolaborant możesz dodawać i edytować osoby w drzewie innego użytkownika. Poproś właściciela o numer drzewa (widoczny obok jego nazwy) albo o link do drzewa, wpisz go poniżej i wyślij prośbę – właściciel musi ją zatwierdzić. Gdy to zrobi, drzewo pojawi się w sekcji „Współpracuję przy”.</p>
       <form
         className="flex flex-wrap items-end gap-2"
         aria-label="Prośba o dołączenie"
         onSubmit={async (e) => {
           e.preventDefault();
           if (!uid) return;
-          const drzewoId = idDrzewaZTekstu(tekst);
-          if (!drzewoId) return setKomunikat({ typ: "blad", tekst: "Wklej link do drzewa (od właściciela) albo jego identyfikator." });
+          const numer = numerDrzewaZTekstu(tekst);
+          if (!numer && !idDrzewaZTekstu(tekst)) return setKomunikat({ typ: "blad", tekst: "Wpisz numer drzewa (np. 48213) albo wklej link do drzewa od właściciela." });
           setTrwa(true);
           setKomunikat(null);
           try {
+            const drzewoId = numer ? await drzewoIdZNumeru(numer) : idDrzewaZTekstu(tekst);
+            if (!drzewoId) {
+              setKomunikat({ typ: "blad", tekst: `Nie ma drzewa o numerze ${numer}. Sprawdź numer u właściciela drzewa.` });
+              setTrwa(false);
+              return;
+            }
             await wyslijProsbe(drzewoId, uid, nazwaUzytkownika);
             setTekst("");
             setKomunikat({ typ: "ok", tekst: "Prośba została wysłana. Właściciel zobaczy ją w ustawieniach drzewa." });
@@ -59,9 +65,9 @@ export function DolaczDoDrzewa({ nazwaUzytkownika }: { nazwaUzytkownika: string 
       >
         <div className="min-w-0 flex-1">
           <label className="block text-sm text-tekst-2" htmlFor={`${id}-l`}>
-            Link do drzewa lub jego identyfikator
+            Numer drzewa lub link do drzewa
           </label>
-          <input id={`${id}-l`} className="pole mt-1 w-full" value={tekst} onChange={(e) => setTekst(e.target.value)} placeholder="https://…/d/?id=…" disabled={!konto.zweryfikowany} />
+          <input id={`${id}-l`} className="pole mt-1 w-full" value={tekst} onChange={(e) => setTekst(e.target.value)} placeholder="np. 48213" disabled={!konto.zweryfikowany} />
         </div>
         <button type="submit" className="przycisk przycisk-glowny !min-h-10" disabled={trwa || !tekst.trim() || !konto.zweryfikowany}>
           Wyślij prośbę

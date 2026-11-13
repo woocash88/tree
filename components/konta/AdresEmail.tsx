@@ -29,16 +29,25 @@ export function AdresEmail() {
     setTrwa(false);
   };
 
+  const sposoby = [s.haslo && "hasłem", s.google && "kontem Google"].filter(Boolean).join(" i ") || "—";
+  const OPIS = "text-sm text-tekst-2";
+  const NAGLOWEK = "text-base font-semibold";
+
   return (
-    <section className="szklo space-y-4 p-5" aria-label="Adres e-mail i logowanie">
-      <h2 className="text-xl">Adres e-mail i logowanie</h2>
-      <p className="text-sm">
-        Adres konta: <strong>{konto.email}</strong>{" "}
-        {konto.zweryfikowany ? <span className="text-tekst-2">(potwierdzony)</span> : <span className="font-semibold text-blad">(niepotwierdzony)</span>}
-        <br />
-        Logowanie: {[s.haslo && "hasłem", s.google && "kontem Google"].filter(Boolean).join(" i ") || "—"}.
-      </p>
-      <p className="text-xs text-tekst-2">Jeśli zalogujesz się przez Google tym samym adresem, którego użyłeś(-aś) przy rejestracji, to nadal jest to jedno konto – z tymi samymi drzewami.</p>
+    <section className="szklo space-y-5 p-5" aria-label="Adres e-mail i logowanie">
+      <div>
+        <h2 className="text-xl">Adres e-mail i logowanie</h2>
+        <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+          <dt className="text-tekst-2">Adres e-mail</dt>
+          <dd className="break-all">
+            <strong>{konto.email}</strong>{" "}
+            {konto.zweryfikowany ? <span className="text-tekst-2">(potwierdzony)</span> : <span className="font-semibold text-blad">(niepotwierdzony)</span>}
+          </dd>
+          <dt className="text-tekst-2">Logowanie</dt>
+          <dd>{sposoby}</dd>
+        </dl>
+        <p className={`${OPIS} mt-2`}>Logowanie przez Google tym samym adresem e-mail prowadzi do tego samego konta i tych samych drzew.</p>
+      </div>
 
       {s.haslo ? (
         <form
@@ -50,11 +59,12 @@ export function AdresEmail() {
               await zmienEmail(nowy, haslo);
               setNowy("");
               setHaslo("");
-              return `Wysłaliśmy link potwierdzający na adres ${nowy.trim()}. Kliknij go, a zmiana nastąpi – potem zalogujesz się ponownie nowym adresem. Do tego czasu logujesz się starym.`;
+              return `Wysłaliśmy link potwierdzający na adres ${nowy.trim()}. Po kliknięciu w link adres się zmieni, a Ty zalogujesz się już nowym adresem. Do tego czasu logujesz się starym.`;
             });
           }}
         >
-          <h3 className="text-sm font-semibold">Zmień adres e-mail</h3>
+          <h3 className={NAGLOWEK}>Zmień adres e-mail</h3>
+          <p className={OPIS}>Wyślemy link potwierdzający na nowy adres. Dla bezpieczeństwa podaj obecne hasło.{s.google && " Logowanie przez Google zostaje przy tym samym koncie także po zmianie adresu."}</p>
           <div className="grid gap-2 sm:grid-cols-2">
             <div>
               <label className="block text-sm text-tekst-2" htmlFor={`${id}-n`}>
@@ -72,11 +82,13 @@ export function AdresEmail() {
           <button type="submit" className="przycisk !min-h-10" disabled={trwa || !nowy.trim() || !haslo}>
             Wyślij link na nowy adres
           </button>
-          {s.google && <p className="text-xs text-tekst-2">Logowanie przez Google zostaje powiązane z tym samym kontem, także po zmianie adresu.</p>}
         </form>
       ) : (
-        <div className="space-y-3">
-          <p className="text-sm text-tekst-2">Adres e-mail tego konta pochodzi z Twojego konta Google i nie można go tu zmienić. Jeśli chcesz używać innego adresu, załóż nowe konto z tym adresem i przekaż mu własność swoich drzew (w ustawieniach drzewa, po dodaniu go jako kolaboranta).</p>
+        <div className="space-y-5">
+          <div className="space-y-1">
+            <h3 className={NAGLOWEK}>Zmiana adresu e-mail</h3>
+            <p className={OPIS}>Adres tego konta pochodzi z Twojego konta Google i nie można go tu zmienić. Aby używać innego adresu, załóż nowe konto z tym adresem i przekaż mu własność swoich drzew (w ustawieniach drzewa, po dodaniu nowego konta jako kolaboranta).</p>
+          </div>
           <form
             className="space-y-2"
             aria-label="Dodaj logowanie hasłem"
@@ -90,7 +102,8 @@ export function AdresEmail() {
               });
             }}
           >
-            <h3 className="text-sm font-semibold">Dodaj logowanie hasłem</h3>
+            <h3 className={NAGLOWEK}>Dodaj logowanie hasłem</h3>
+            <p className={OPIS}>Dzięki temu zalogujesz się adresem e-mail i hasłem albo przez Google.</p>
             <label className="block text-sm text-tekst-2" htmlFor={`${id}-p`}>
               Nowe hasło (min. 8 znaków)
             </label>
@@ -105,12 +118,12 @@ export function AdresEmail() {
       )}
 
       {!s.google && (
-        <div>
-          <h3 className="text-sm font-semibold">Logowanie przez Google</h3>
-          <p className="mt-1 text-xs text-tekst-2">Połączenie powiedzie się tylko, jeśli konto Google ma ten sam adres e-mail co Twoje konto w serwisie.</p>
+        <div className="space-y-2">
+          <h3 className={NAGLOWEK}>Logowanie przez Google</h3>
+          <p className={OPIS}>Połączenie się powiedzie, jeśli konto Google ma ten sam adres e-mail co Twoje konto w serwisie.</p>
           <button
             type="button"
-            className="przycisk mt-2 !min-h-10"
+            className="przycisk !min-h-10"
             disabled={trwa}
             onClick={() =>
               void wykonaj(async () => {

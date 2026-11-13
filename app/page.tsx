@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Naglowek } from "@/components/Naglowek";
-import { PolecaneDrzewa } from "@/components/PolecaneDrzewa";
+import { OstatnioDodaneDrzewa } from "@/components/OstatnioDodaneDrzewa";
 import { HeroKonta } from "@/components/konta/HeroKonta";
 import { Stopka } from "@/components/Stopka";
 import { SzukajDrzew } from "@/components/SzukajDrzew";
@@ -26,12 +26,12 @@ export default async function StronaGlowna() {
           </div>
           <p className="mt-6">
             <Link href={sciezkaIndeksuDrzew()} className="przycisk przycisk-glowny !min-h-11 !px-5">
-              Wszystkie drzewa
+              Przeglądaj publiczne drzewa
             </Link>
           </p>
         </section>
 
-        <PolecaneDrzewa zRepozytorium={drzewa} />
+        <OstatnioDodaneDrzewa zRepozytorium={drzewa} />
       </main>
       <Stopka />
     </>

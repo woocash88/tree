@@ -4,7 +4,7 @@
  * (uruchamia emulator, potem vitest; wymaga Javy). Nie wchodzą w skład `npm test`.
  */
 import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, getDoc, getDocs, collection, query, where, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField, writeBatch } from "firebase/firestore";
 import fs from "node:fs";
 import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
 
@@ -279,5 +279,71 @@ describe("prośby o dołączenie do drzewa", () => {
     await assertSucceeds(deleteDoc(doc(as("ala"), "prosby/prv_ola")));
     await assertSucceeds(getDoc(doc(as("ola"), "drzewa/prv/dane/pelne")));
     await assertFails(setDoc(doc(as("ola"), "prosby/prv_ola"), prosba("ola", "prv"))); // jest już kolaborantem
+  });
+});
+
+describe("numery drzew", () => {
+  const nadaj = (db: ReturnType<typeof as>, drzewo: string, numer: string) => {
+    const b = writeBatch(db);
+    b.set(doc(db, `numery/${numer}`), { drzewoId: drzewo });
+    b.update(doc(db, `drzewa/${drzewo}`), { numer });
+    return b.commit();
+  };
+
+  it("właściciel nadaje własnemu drzewu numer (numer i drzewo atomowo)", async () => {
+    await assertSucceeds(nadaj(as("ala"), "pub", "48213"));
+    await assertSucceeds(getDoc(doc(as("obcy"), "numery/48213")));
+  });
+  it("numer 6- i 9-cyfrowy jest poprawny, 4-cyfrowy, z zerem na początku i z literami – nie", async () => {
+    await assertSucceeds(nadaj(as("ala"), "pub", "123456"));
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => setDoc(doc(ctx.firestore(), "drzewa/pub"), meta()));
+    await assertSucceeds(nadaj(as("ala"), "pub", "987654321"));
+    await env.withSecurityRulesDisabled(async (ctx) => setDoc(doc(ctx.firestore(), "drzewa/pub"), meta()));
+    for (const zly of ["1234", "01234", "12a45", "1234567890"]) await assertFails(nadaj(as("ala"), "pub", zly));
+  });
+  it("zajęty numer odrzucają reguły (nawet właściciel innego drzewa)", async () => {
+    await assertSucceeds(nadaj(as("ala"), "pub", "48213"));
+    await env.withSecurityRulesDisabled(async (ctx) => setDoc(doc(ctx.firestore(), "drzewa/inne"), meta({ wlascicielId: "bob" })));
+    await assertFails(nadaj(as("bob"), "inne", "48213"));
+    await assertSucceeds(nadaj(as("bob"), "inne", "48214"));
+  });
+  it("cudzemu drzewu numeru nie nadasz, kolaborant też nie; administrator tak", async () => {
+    await assertFails(nadaj(as("obcy"), "pub", "11111"));
+    await assertFails(nadaj(as("kuba"), "prv", "11112"));
+    await assertFails(nadaj(as("ala", "ala@example.org", false), "pub", "11113"));
+    await assertSucceeds(nadaj(as("szef"), "pub", "11114"));
+  });
+  it("numeru nie da się wpisać do drzewa bez dokumentu numeru ani zmienić po nadaniu", async () => {
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { numer: "22222" }));
+    await assertSucceeds(nadaj(as("ala"), "pub", "22223"));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { numer: "22224" }));
+    await assertFails(nadaj(as("ala"), "pub", "22225"));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { numer: deleteField() }));
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/pub"), { nazwa: "Nowa nazwa" }));
+  });
+  it("numer nie może wskazywać na cudze drzewo ani zawierać obcych pól", async () => {
+    const db = as("ala");
+    const b = writeBatch(db);
+    b.set(doc(db, "numery/33333"), { drzewoId: "pub", wlascicielId: "ala" });
+    b.update(doc(db, "drzewa/pub"), { numer: "33333" });
+    await assertFails(b.commit());
+    await assertFails(setDoc(doc(as("ala"), "numery/33334"), { drzewoId: "pub" }));
+  });
+  it("tworząc drzewo nie można od razu wpisać numeru", async () => {
+    await assertFails(setDoc(doc(as("ala"), "drzewa/nowe"), meta({ numer: "44444" })));
+    await assertSucceeds(setDoc(doc(as("ala"), "drzewa/nowe"), meta()));
+  });
+  it("odczyt numeru: tylko zalogowany, pojedynczo; listowanie zabronione", async () => {
+    await assertSucceeds(nadaj(as("ala"), "pub", "55555"));
+    await assertFails(getDoc(doc(gosc(), "numery/55555")));
+    await assertFails(getDocs(collection(as("ala"), "numery")));
+    await assertFails(updateDoc(doc(as("ala"), "numery/55555"), { drzewoId: "prv" }));
+  });
+  it("usunięcie numeru: właściciel i administrator tak, obcy i kolaborant nie", async () => {
+    await assertSucceeds(nadaj(as("ala"), "pub", "66666"));
+    await assertFails(deleteDoc(doc(as("obcy"), "numery/66666")));
+    await assertFails(deleteDoc(doc(as("kuba"), "numery/66666")));
+    await assertSucceeds(deleteDoc(doc(as("ala"), "numery/66666")));
   });
 });

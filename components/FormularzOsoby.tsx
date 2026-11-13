@@ -5,6 +5,7 @@ import { noweId, parsujDate, type NowaOsoba, type PatchOsoby } from "@/lib/edycj
 import { domyslnieZyjaca } from "@/lib/zyjace";
 import { pelneImie } from "@/lib/format";
 import type { OsobaPanelu } from "@/lib/panel";
+import { potomkowie } from "@/lib/baza/logika";
 import type { ApiEdycji } from "./useEdycje";
 
 const POLE = "pole mt-1 block w-full";
@@ -21,8 +22,44 @@ function Pole({ etykieta, podpowiedz, children }: { etykieta: string; podpowiedz
 
 const PODPOWIEDZ_DATY = "np. 1891, 4.03.1891, ok. 1891 albo ? (nieznana); miejsce po przecinku";
 
-/** Edycja imienia, nazwisk, dat i notatki. Zmiany zapisują się lokalnie w tej przeglądarce. */
-export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; api: ApiEdycji; naGotowe: () => void }) {
+/** Osoba, którą można wybrać na rodzica w formularzu edycji (wystarczą dane do rozpoznania i do wykluczenia potomków). */
+export type KandydatRodzica = Pick<OsobaPanelu, "id" | "imie" | "nazwisko" | "plec" | "lata" | "ojciecId" | "matkaId">;
+
+const MAKS_NA_LISCIE = 60;
+
+/** Wybór rodzica: pole szukania zawęża listę (w dużych drzewach jest kilkaset osób); wybrana osoba zawsze zostaje na liście. */
+function WyborRodzica({ etykieta, kandydaci, wartosc, naZmiane }: { etykieta: string; kandydaci: KandydatRodzica[]; wartosc: string; naZmiane: (id: string) => void }) {
+  const [fraza, setFraza] = useState("");
+  const f = fraza.trim().toLowerCase();
+  const opis = (k: KandydatRodzica) => `${pelneImie(k)}${k.lata ? ` (${k.lata})` : ""}`;
+  const pasujace = kandydaci.filter((k) => !f || opis(k).toLowerCase().includes(f));
+  const widoczne = pasujace.slice(0, MAKS_NA_LISCIE);
+  const wybrany = kandydaci.find((k) => k.id === wartosc);
+  const lista = wybrany && !widoczne.includes(wybrany) ? [wybrany, ...widoczne] : widoczne;
+  return (
+    <div className="text-sm text-tekst-2">
+      <label className="block">
+        {etykieta}
+        <select className={POLE} value={wartosc} onChange={(e) => naZmiane(e.target.value)}>
+          <option value="">brak / nieznany</option>
+          {lista.map((k) => (
+            <option key={k.id} value={k.id}>
+              {opis(k)}
+            </option>
+          ))}
+        </select>
+      </label>
+      {kandydaci.length > 12 && (
+        <input type="search" className={`${POLE} !min-h-9`} value={fraza} onChange={(e) => setFraza(e.target.value)} placeholder="Szukaj osoby (imię, nazwisko, rok)…" aria-label={`Szukaj: ${etykieta}`} autoComplete="off" />
+      )}
+      {pasujace.length > MAKS_NA_LISCIE && <span className="mt-0.5 block text-xs">Pokazano {MAKS_NA_LISCIE} z {pasujace.length} – wpisz fragment nazwiska, aby zawęzić.</span>}
+      {pasujace.length === 0 && <span className="mt-0.5 block text-xs">Brak osób pasujących do wyszukiwania.</span>}
+    </div>
+  );
+}
+
+/** Edycja imienia, nazwisk, dat, notatki i (w drzewach z bazy) rodziców. Zmiany w drzewach z repozytorium zapisują się lokalnie w tej przeglądarce. */
+export function FormularzEdycji({ osoba, api, naGotowe, osoby }: { osoba: OsobaPanelu; api: ApiEdycji; naGotowe: () => void; osoby?: KandydatRodzica[] }) {
   const id = useId();
   const [imie, setImie] = useState(osoba.imie);
   const [nazwisko, setNazwisko] = useState(osoba.nazwisko);
@@ -32,7 +69,17 @@ export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; 
   const [notatka, setNotatka] = useState(osoba.notatka ?? "");
   const [plec, setPlec] = useState(osoba.plec);
   const [zyjaca, setZyjaca] = useState(!!osoba.zyjaca);
+  const [ojciecId, setOjciecId] = useState(osoba.ojciecId ?? "");
+  const [matkaId, setMatkaId] = useState(osoba.matkaId ?? "");
   const [blad, setBlad] = useState("");
+  const zmianaRodzicow = !!api.mozeZmieniacRodzicow && !!osoby;
+  // Rodzicem nie może zostać sama osoba ani jej potomek; ojcem – kobieta, matką – mężczyzna.
+  const kandydaci = (() => {
+    if (!zmianaRodzicow) return { ojcowie: [], matki: [] };
+    const zakazani = potomkowie({ osoby: osoby! }, osoba.id);
+    const mozliwi = osoby!.filter((k) => k.id !== osoba.id && !zakazani.has(k.id)).sort((a, b) => `${a.nazwisko} ${a.imie}`.localeCompare(`${b.nazwisko} ${b.imie}`, "pl"));
+    return { ojcowie: mozliwi.filter((k) => k.plec !== "K" || k.id === osoba.ojciecId), matki: mozliwi.filter((k) => k.plec !== "M" || k.id === osoba.matkaId) };
+  })();
   const zmieniona = !!api.edycje.osoby[osoba.id];
 
   const zapisz = (e: React.FormEvent) => {
@@ -42,6 +89,7 @@ export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; 
     if (!u.ok) return setBlad(`Urodzenie: ${u.blad}`);
     if (!s.ok) return setBlad(`Śmierć: ${s.blad}`);
     if (!imie.trim() && !nazwisko.trim()) return setBlad("Podaj imię lub nazwisko.");
+    if (zmianaRodzicow && ojciecId && ojciecId === matkaId) return setBlad("Ojciec i matka muszą być różnymi osobami.");
     const patch: PatchOsoby = {
       imie: imie.trim(),
       nazwisko: nazwisko.trim(),
@@ -52,6 +100,9 @@ export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; 
       plec,
       // Osoba z datą śmierci nie jest żyjąca.
       zyjaca: zyjaca && !s.data ? true : null,
+      // Rodziców dopisujemy do zmiany tylko wtedy, gdy rzeczywiście je zmieniono.
+      ...(zmianaRodzicow && ojciecId !== (osoba.ojciecId ?? "") ? { ojciecId: ojciecId || null } : {}),
+      ...(zmianaRodzicow && matkaId !== (osoba.matkaId ?? "") ? { matkaId: matkaId || null } : {}),
     };
     api.zapiszOsobe(osoba.id, patch);
     naGotowe();
@@ -95,6 +146,14 @@ export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; 
       <Pole etykieta="Notatka">
         <textarea className={`${POLE} !py-2`} rows={2} value={notatka} onChange={(e) => setNotatka(e.target.value)} />
       </Pole>
+      {zmianaRodzicow && (
+        <fieldset className="space-y-2.5 rounded-xl border border-kreska p-3">
+          <legend className="px-1 text-sm font-semibold">Rodzice</legend>
+          <WyborRodzica etykieta="Ojciec" kandydaci={kandydaci.ojcowie} wartosc={ojciecId} naZmiane={setOjciecId} />
+          <WyborRodzica etykieta="Matka" kandydaci={kandydaci.matki} wartosc={matkaId} naZmiane={setMatkaId} />
+          <p className="text-xs text-tekst-2">Na liście nie ma osoby edytowanej ani jej potomków. Gdy wybierzesz oboje rodziców, a nie są jeszcze małżeństwem, zostaną połączeni w małżeństwo.</p>
+        </fieldset>
+      )}
       {blad && (
         <p role="alert" className="text-sm font-medium text-blad">
           {blad}

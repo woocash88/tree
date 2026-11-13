@@ -39,7 +39,7 @@ Kopie źródłowe w repozytorium:
 | `/rejestracja/`, `/logowanie/` | zakładanie konta (e-mail albo Google) i logowanie |
 | `/profil/` | profil użytkownika: dane, moje drzewa, drzewa, przy których współpracuje, tworzenie drzewa, usunięcie konta |
 | `/d/?id=<id>` | drzewo użytkownika; parametr `w` wybiera widok: brak = strona drzewa, `galaz` (lista; `g` = gałąź, `os` = osoba), `diagram`, `osoba`, `osoby`, `ustawienia` |
-| `/admin/` | panel administratora serwisu, podzielony na podstrony `?s=uzytkownicy`, `?s=drzewa` (z ID drzew) i `?s=repozytorium`: tabele z wyszukiwaniem i stronicowaniem po 25 wierszy (poza indeksowaniem) |
+| `/admin/` | panel administratora serwisu, podzielony na podstrony `?s=uzytkownicy`, `?s=drzewa` (z ID drzew) i `?s=repozytorium`: tabele z wyszukiwaniem i stronicowaniem po 25 wierszy; w tabeli użytkowników widać role w drzewach (właściciel / kolaborant) i można zmienić imię i nazwisko użytkownika (profil i nazwy w jego drzewach); adres e-mail jest adresem konta logowania i zmienia go sam użytkownik (poza indeksowaniem) |
 | `/dane/szukaj-<drzewo>.json` | indeks wyszukiwania osób jednego drzewa (ładowany dopiero na stronie tego drzewa) |
 | `/sitemap.xml`, `/robots.txt` | generowane z listy drzew |
 
@@ -231,8 +231,8 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
   `dane/pelne` (tylko dla zarządzających) i `dane/publiczne` (kopia już okrojona według polityki, przeliczana
   przy każdej zmianie). Odwiedzający nigdy nie pobierają dat osób żyjących.
 - **Kolaboranci** można dodać na dwa sposoby. (1) Właściciel wpisuje adres e-mail zarejestrowanego użytkownika (ustawienia
-  drzewa). (2) Użytkownik wkleja w profilu („Dołącz do istniejącego drzewa”) link do drzewa **albo samo ID drzewa** od właściciela (ID jest
-  widoczne z przyciskiem „Kopiuj” obok nazwy drzewa: na stronie drzewa, w pasku roli, w profilu i w ustawieniach) albo otwiera
+  drzewa). (2) Użytkownik wkleja w profilu („Dołącz do istniejącego drzewa”) link do drzewa **albo sam numer drzewa** od właściciela (numer jest
+  widoczny jako „ID drzewa: …” z przyciskiem „Kopiuj” obok nazwy drzewa: na stronie drzewa, w pasku roli, w profilu i w ustawieniach) albo otwiera
   link do prywatnego drzewa i klika „Poproś o dostęp”; **prośbę zatwierdza albo odrzuca właściciel** (ustawienia drzewa,
   w profilu widać liczbę oczekujących próśb). Kolaborant widzi drzewo w profilu w sekcji „Współpracuję przy” i może
   je tam opuścić. Prośba zawiera tylko imię i nazwisko autora i znika po zatwierdzeniu lub odrzuceniu.
@@ -295,10 +295,23 @@ ustawieniu zmiennej, a polityka prywatności i stopka dostają wtedy odpowiednie
 plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i testy nie używają App Check.
 
 **Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna pobiera tylko
-12 publicznych drzew (pokazuje 6 największych z nich), pełna lista (limit 100: katalog i wyszukiwarka na stronie głównej) ładuje się
-dopiero przy użyciu, a wynik jest wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa
-(utworzenie, ustawienia, usunięcie) unieważnia pamięć. Typowa wizyta na stronie głównej to ok. 12 odczytów. Przy ponad 100 publicznych
-drzewach katalog pokazuje 100 z nich; dalsza skala wymagałaby indeksu złożonego i stronicowania.
+12 najnowszych publicznych drzew (pokazuje 6 najnowszych niepustych – sekcja „Ostatnio dodane drzewa”), pełna lista (limit 100: katalog
+i wyszukiwarka na stronie głównej) ładuje się dopiero przy użyciu, a wynik jest wspólny dla całej strony i pamiętany 10 minut w pamięci
+i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia pamięć. Typowa wizyta na stronie głównej to ok. 12
+odczytów. Przy ponad 100 publicznych drzewach katalog pokazuje 100 z nich; dalsza skala wymagałaby stronicowania.
+
+**Indeks Firestore.** Sortowanie „najnowsze” (`widocznosc` = publiczne, `utworzono` malejąco) wymaga indeksu złożonego z pliku
+`firestore.indexes.json`; workflow wdraża go razem z regułami (kontu serwisowemu trzeba nadać rolę *Cloud Datastore Index Admin*;
+bez niej pojawi się ostrzeżenie, a indeks można utworzyć w konsoli: Firestore → Indeksy). Dopóki indeksu nie ma, strona działa:
+pobiera wtedy pełną listę (do 100 drzew) i sortuje ją u siebie, tylko zużywa więcej odczytów. Emulator nie wymaga indeksów.
+
+**Numer drzewa („ID drzewa”).** Każde drzewo ma krótki numer: losowy, 5-cyfrowy (np. 48213); gdy wylosowane numery okazują się zajęte
+(pula się zapełnia), numer dostaje o cyfrę więcej (6, 7… do 9 cyfr). Numer widać z przyciskiem „Kopiuj” obok nazwy drzewa, na
+karcie drzewa w profilu, w ustawieniach i w panelu administratora. Technicznie: dokument `numery/{numer}` wskazuje drzewo (`drzewoId`),
+a pole `numer` w drzewie jest ustawiane atomowo razem z nim (batch); reguły pozwalają nadać numer tylko raz, tylko własnemu drzewu
+i tylko wolny (zajęty numer odrzucają, wtedy losujemy kolejny). Starsze drzewa bez numeru dostają go automatycznie przy pierwszym
+otwarciu przez właściciela lub administratora. Kto zna numer, może wysłać prośbę o dołączenie (profil → „Dołącz do istniejącego drzewa”);
+sam numer nie daje wglądu w dane, o dostępie decyduje właściciel i reguły. Adres drzewa nadal zawiera długi identyfikator dokumentu.
 
 **Limity i koszty.** Wszystko mieści się w darmowym planie Spark dla typowego użytku rodzinnego (Firestore: 50 tys. odczytów
 i 20 tys. zapisów dziennie). Jedno drzewo użytkownika to dokumenty o rozmiarze do 1 MiB, czyli ok. 2000 osób
@@ -374,7 +387,10 @@ przed udostępnieniem serwisu innym osobom warto ją przeczytać i dopasować do
 „👨 Dodaj ojca” / „👩 Dodaj matkę”. Bliskich można też dodawać przyciskami „+” na **stronie osoby**: rodzeństwo
 (do 15; dostaje tych samych rodziców, więc wymaga co najmniej jednego rodzica), małżonek (do 4) i dziecko (do 15, z wyborem
 drugiego rodzica), a także brakujący ojciec lub matka. Limity pilnuje logika zmian (`lib/baza/logika.ts`), nie tylko widok;
-limit rodzeństwa liczy każdego, kto dzieli z osobą rodzica, a limit dzieci dotyczy każdego z rodziców osobno. W pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
+limit rodzeństwa liczy każdego, kto dzieli z osobą rodzica, a limit dzieci dotyczy każdego z rodziców osobno. Na stronie osoby jest też
+przycisk „✏️ Edytuj dane” (okno z formularzem): oprócz imienia, nazwisk, dat, płci i notatki można w nim **zmienić rodziców** – z listy
+z wyszukiwaniem, bez samej osoby i jej potomków (ojciec: bez kobiet, matka: bez mężczyzn); gdy wybierzesz oboje rodziców, a nie są jeszcze
+małżeństwem, zostaną połączeni w małżeństwo. W pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
 natychmiast, a zapis idzie w tle w transakcji (równoczesne edycje kolaborantów się nie nadpisują). Poniższy opis dotyczy
 **drzew z repozytorium**, które edytuje tylko administrator serwisu i które działają **lokalnie w przeglądarce**: w panelu osoby
 (lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci
@@ -536,7 +552,7 @@ tests/                  testy (vitest); tests/reguly – reguły Firestore na em
 
 `npm run test:e2e` buduje stronę w trybie testowym (`NEXT_PUBLIC_FIREBASE_EMULATOR=1`), uruchamia emulatory Auth i Firestore
 i przechodzi dwa scenariusze w Chromium (`tests/e2e/`): rejestracja i potwierdzenie e-maila, tworzenie drzewa i osób,
-kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, liczba zapytań katalogu do bazy (pamięć podręczna, leniwa wyszukiwarka), usuwanie użytkownika
+kolaborant, odwiedzający (brak dat osób żyjących w publicznym drzewie i w bazie), administrator, liczba zapytań katalogu do bazy (pamięć podręczna, leniwa wyszukiwarka), numery drzew, edycja osoby i rodziców ze strony osoby, usuwanie użytkownika
 i drzewa, eksport i import JSON/GEDCOM, przeniesienie drzewa z repozytorium do bazy, usuwanie własnego konta, edycja profilu, prośby o dołączenie (zatwierdzanie i odrzucanie), przekazanie własności
 i zachowanie drzewa po usunięciu konta, opuszczanie drzewa, zmiana adresu e-mail, logowanie hasłem do konta Google. Wymaga Javy i Playwrighta (`npm install --no-save playwright && npx playwright install chromium`).
 Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest sztuczne poświadczenie Google
