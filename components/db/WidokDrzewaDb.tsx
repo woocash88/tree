@@ -7,6 +7,7 @@ import { FormularzNowejOsoby } from "@/components/FormularzOsoby";
 import { ListaGalezi } from "@/components/ListaGalezi";
 import { Naglowek } from "@/components/Naglowek";
 import { PlotnoDrzewa } from "@/components/PlotnoDrzewa";
+import { IdDrzewa } from "@/components/IdDrzewa";
 import { Stopka } from "@/components/Stopka";
 import { useKonto } from "@/components/konta/AuthProvider";
 import { WidokIndeksuOsob } from "@/components/widoki/WidokIndeksuOsob";
@@ -157,6 +158,7 @@ export function WidokDrzewaDb() {
       wyczysc: () => {},
       pobierz: () => {},
       dodajMalzonka: (osobaId, nowa) => mutuj(L.dodajMalzonka(osobaId, nowa)),
+      dodajRodzenstwo: (osobaId, nowa) => mutuj(L.dodajRodzenstwo(osobaId, nowa)),
       dodajRodzica: (dzieckoId, rola, nowa) => mutuj(L.dodajRodzica(dzieckoId, rola, nowa)),
       usunOsobe: (osobaId) => mutuj(L.usunOsobe(osobaId)),
       zapisuje: zapisujeLicznik > 0,
@@ -240,7 +242,7 @@ export function WidokDrzewaDb() {
       </main>
     );
   } else if (w === "osoba") {
-    tresc = drzewo.osoby.has(os) ? <WidokOsoby d={drzewo} id={os} /> : <p className="px-4 py-16 text-center text-tekst-2">Nie ma takiej osoby w tym drzewie.</p>;
+    tresc = drzewo.osoby.has(os) ? <WidokOsoby d={drzewo} id={os} mozeDodawac={mozeEdytowac} /> : <p className="px-4 py-16 text-center text-tekst-2">Nie ma takiej osoby w tym drzewie.</p>;
   } else if (w === "osoby") {
     tresc = <WidokIndeksuOsob d={drzewo} />;
   } else {
@@ -257,6 +259,7 @@ export function WidokDrzewaDb() {
             <span>
               <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
             </span>
+            <IdDrzewa id={id} />
             <span className="text-tekst-2" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
             <span className="ml-auto flex gap-3">
               <Link href={sciezkaDrzewa(slug)} className="link">Strona drzewa</Link>

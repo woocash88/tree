@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Naglowek } from "@/components/Naglowek";
 import { PanelAdmina } from "@/components/PanelAdmina";
 import { Stopka } from "@/components/Stopka";
@@ -15,8 +16,10 @@ export default async function StronaAdmina() {
   return (
     <>
       <Naglowek />
-      <main id="tresc" className="mx-auto w-full max-w-5xl flex-1 px-4 pb-8 pt-8">
-        <PanelAdmina drzewa={drzewa} />
+      <main id="tresc" className="mx-auto w-full max-w-6xl flex-1 px-4 pb-8 pt-8">
+        <Suspense fallback={<p className="py-16 text-center text-tekst-2" role="status">Wczytywanie…</p>}>
+          <PanelAdmina drzewa={drzewa} />
+        </Suspense>
       </main>
       <Stopka />
     </>

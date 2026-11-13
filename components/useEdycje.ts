@@ -64,6 +64,7 @@ export type ApiEdycji = {
   mozeEdytowac: boolean;
   /** Tylko drzewa z bazy: operacje na strukturze drzewa i stan zapisu. */
   dodajMalzonka?: (osobaId: string, nowa: NowaOsobaTyp) => void;
+  dodajRodzenstwo?: (osobaId: string, nowa: NowaOsobaTyp) => void;
   dodajRodzica?: (dzieckoId: string, rola: "ojciec" | "matka", nowa: NowaOsobaTyp) => void;
   usunOsobe?: (id: string) => void;
   zapisuje?: boolean;

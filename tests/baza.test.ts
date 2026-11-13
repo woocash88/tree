@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as L from "../lib/baza/logika";
 import type { NowaOsoba } from "../lib/edycje";
-import { MAKS_OSOB } from "../lib/baza/typy";
+import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_OSOB, MAKS_RODZENSTWA } from "../lib/baza/typy";
 
 const osoba = (id: string, extra: Partial<NowaOsoba> = {}): NowaOsoba => ({
   id,
@@ -73,6 +73,41 @@ describe("zmiany w drzewie użytkownika", () => {
     expect("notatka" in d.osoby[0]).toBe(false);
     d = L.zapiszOsobe("jan", { zyjaca: null })(d);
     expect("zyjaca" in d.osoby[0]).toBe(false);
+  });
+});
+
+describe("limity bliskich dodawanych z widoku osoby", () => {
+  it("rodzeństwo dostaje rodziców wskazanej osoby, a bez rodzica nie da się go dodać", () => {
+    let d = zaczynajac();
+    expect(() => L.dodajRodzenstwo("jan", osoba("brat"))(d)).toThrow(/najpierw dodaj rodzica/);
+    d = L.dodajRodzica("jan", "ojciec", osoba("ojciec"))(d);
+    d = L.dodajRodzenstwo("jan", osoba("brat"))(d);
+    const brat = d.osoby.find((o) => o.id === "brat")!;
+    expect(brat).toMatchObject({ ojciecId: "ojciec", matkaId: null, galazId: "glowna" });
+    expect(() => L.sprawdzDane(d)).not.toThrow();
+  });
+
+  it("rodzeństwo: najwyżej 15 osób (każdy, kto dzieli z nią rodzica)", () => {
+    let d = L.dodajRodzica("jan", "ojciec", osoba("ojciec"))(zaczynajac());
+    for (let i = 1; i <= MAKS_RODZENSTWA; i++) d = L.dodajRodzenstwo("jan", osoba(`r${i}`))(d);
+    expect(() => L.dodajRodzenstwo("jan", osoba("r16"))(d)).toThrow(/rodzeństwa \(15\)/);
+  });
+
+  it("małżonkowie: najwyżej 4", () => {
+    let d = zaczynajac();
+    for (let i = 1; i <= MAKS_MALZONKOW; i++) d = L.dodajMalzonka("jan", osoba(`m${i}`, { plec: "K" }))(d);
+    expect(d.malzenstwa.map((m) => m.kolejnosc)).toEqual([1, 2, 3, 4]);
+    expect(() => L.dodajMalzonka("jan", osoba("m5", { plec: "K" }))(d)).toThrow(/małżonków \(4\)/);
+  });
+
+  it("dzieci: najwyżej 15 u każdego z rodziców", () => {
+    let d = zaczynajac();
+    for (let i = 1; i <= MAKS_DZIECI; i++) d = L.dodajOsobe(osoba(`d${i}`, { ojciecId: "jan" }))(d);
+    expect(() => L.dodajOsobe(osoba("d16", { ojciecId: "jan" }))(d)).toThrow(/dzieci \(15\)/);
+    // limit dotyczy też drugiego rodzica
+    d = L.dodajMalzonka("jan", osoba("zona", { plec: "K" }))(d);
+    expect(() => L.dodajOsobe(osoba("d17", { ojciecId: "jan", matkaId: "zona" }))(d)).toThrow(/dzieci \(15\)/);
+    expect(() => L.dodajOsobe(osoba("d18", { matkaId: "zona" }))(d)).not.toThrow();
   });
 });
 

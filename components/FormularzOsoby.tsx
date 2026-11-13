@@ -153,7 +153,10 @@ export function FormularzEdycji({ osoba, api, naGotowe }: { osoba: OsobaPanelu; 
 }
 
 /** Dodawanie dziecka wybranej osoby (opcjonalnie z jednym z jej małżonków jako drugim rodzicem). */
-export function FormularzDziecka({ osoba, malzonkowie, wszystkieId, api, naDodane, naGotowe }: { osoba: OsobaPanelu; malzonkowie: OsobaPanelu[]; wszystkieId: ReadonlySet<string>; api: ApiEdycji; naDodane: (id: string) => void; naGotowe: () => void }) {
+/** Dane osoby potrzebne formularzom dodawania bliskich (pasują i do OsobaPanelu, i do osoby ze strony osoby). */
+export type OsobaFormularza = Pick<OsobaPanelu, "id" | "imie" | "nazwisko" | "plec" | "galazId">;
+
+export function FormularzDziecka({ osoba, malzonkowie, wszystkieId, api, naDodane, naGotowe }: { osoba: OsobaFormularza; malzonkowie: OsobaFormularza[]; wszystkieId: ReadonlySet<string>; api: ApiEdycji; naDodane: (id: string) => void; naGotowe: () => void }) {
   const id = useId();
   // Nazwisko podpowiadamy po ojcu: po osobie, jeśli to mężczyzna, w przeciwnym razie po jej mężu.
   const [drugi, setDrugi] = useState(malzonkowie.length === 1 ? malzonkowie[0].id : "");

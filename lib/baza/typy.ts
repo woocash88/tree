@@ -33,6 +33,10 @@ export type Dostep = "wlasciciel" | "kolaborant" | "admin" | "gosc";
 /** Twardy limit osób w jednym drzewie (dokument Firestore ma najwyżej 1 MiB). */
 export const MAKS_OSOB = 2000;
 export const MAKS_KOLABORANTOW = 20;
+/** Limity dodawania bliskich z widoku osoby: rodzeństwo osoby, jej małżonkowie i jej dzieci. */
+export const MAKS_RODZENSTWA = 15;
+export const MAKS_MALZONKOW = 4;
+export const MAKS_DZIECI = 15;
 
 export const mozeEdytowacDane = (d: Dostep) => d !== "gosc";
 export const mozeZarzadzac = (d: Dostep) => d === "wlasciciel" || d === "admin";

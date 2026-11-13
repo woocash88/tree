@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { KartaOsoby } from "@/components/KartaOsoby";
+import { DodajKrewnego } from "@/components/db/DodajKrewnego";
 import { LinieRodziny } from "@/components/LinieRodziny";
 import { czyZmarla, opisZdarzenia, sciezkaPochodzenia, type Drzewo, type OsobaWidoczna } from "@/lib/dane-czyste";
 import { lataZycia, pelneImie, wiek } from "@/lib/format";
 import { idWidoku } from "@/lib/galezie";
 import { sciezkaDiagramu, sciezkaGalezi, sciezkaOsoby } from "@/lib/sciezki";
+import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_RODZENSTWA } from "@/lib/baza/typy";
 
 const NIEPEWNE: Record<string, string> = {
   imie: "imię nieznane",
@@ -29,7 +31,7 @@ function Lacznik() {
 }
 
 /** Treść widoku osoby: wspólna dla stron statycznych drzew z repozytorium i drzew z bazy. Zakłada, że osoba istnieje. */
-export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
+export function WidokOsoby({ d, id, mozeDodawac = false }: { d: Drzewo; id: string; mozeDodawac?: boolean }) {
   const o = d.osoby.get(id)!;
   const slug = d.meta.slug;
 
@@ -59,6 +61,14 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
     const drugi = (dz.ojciecId === o.id ? dz.matkaId : dz.ojciecId) ?? "";
     grupyDzieci.set(drugi, [...(grupyDzieci.get(drugi) ?? []), dz]);
   }
+
+  // Przyciski „+” (tylko drzewa z bazy, tylko dla osób z prawem edycji): dane dla formularzy dodawania bliskich.
+  const wszystkieId = mozeDodawac ? d.osobyLista.map((x) => x.id) : [];
+  const dlaFormularza = (x: OsobaWidoczna) => ({ id: x.id, imie: x.imie, nazwisko: x.nazwisko, plec: x.plec, galazId: x.galazId });
+  const osobaFormularza = dlaFormularza(o);
+  const malzonkowieFormularza = zwiazki.map((z) => dlaFormularza(z.osoba));
+  const nazwiskoRodzenstwa = ojciec?.nazwisko ?? (o.nazwiskoRodowe || o.nazwisko);
+  const plusRodzic = (rodzaj: "ojciec" | "matka") => <DodajKrewnego rodzaj={rodzaj} osoba={osobaFormularza} wszystkieId={wszystkieId} domyslneNazwisko={rodzaj === "ojciec" ? o.nazwisko : ""} />;
 
   const sciezka = sciezkaPochodzenia(d, o.id);
   const lata = lataZycia(o);
@@ -103,12 +113,12 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
         )}
 
         <LinieRodziny maDzieci={dzieci.length > 0}>
-        {(ojciec || matka) && (
+        {(ojciec || matka || mozeDodawac) && (
           <>
             <Poziom tytul="Rodzice">
-              <ul data-linia="rodzice" className={`mx-auto grid max-w-2xl gap-2 ${ojciec && matka ? "grid-cols-2" : "max-w-xs grid-cols-1"}`}>
-                {ojciec && <li>{karta(ojciec, "ojciec", false, "👨")}</li>}
-                {matka && <li>{karta(matka, "matka", false, "👩")}</li>}
+              <ul data-linia={ojciec || matka ? "rodzice" : undefined} className={`mx-auto grid max-w-2xl gap-2 ${(ojciec && matka) || mozeDodawac ? "grid-cols-2" : "max-w-xs grid-cols-1"}`}>
+                {ojciec ? <li>{karta(ojciec, "ojciec", false, "👨")}</li> : mozeDodawac && <li>{plusRodzic("ojciec")}</li>}
+                {matka ? <li>{karta(matka, "matka", false, "👩")}</li> : mozeDodawac && <li>{plusRodzic("matka")}</li>}
               </ul>
               {o.niepewne?.includes("rodzice") && <p className="mt-1 text-center text-sm text-tekst-2">Przypisanie rodziców jest w źródle niejednoznaczne.</p>}
             </Poziom>
@@ -116,7 +126,7 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
             <div className="lg:hidden">
               <Lacznik />
             </div>
-            <div aria-hidden="true" className="hidden h-16 lg:block" />
+            {(ojciec || matka) ? <div aria-hidden="true" className="hidden h-16 lg:block" /> : <div aria-hidden="true" className="hidden h-6 lg:block" />}
           </>
         )}
 
@@ -180,7 +190,7 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
             </div>
           </article>
 
-          {zwiazki.length > 0 && (
+          {(zwiazki.length > 0 || mozeDodawac) && (
             <Poziom tytul={zwiazki.length > 1 ? "Małżonkowie" : "Małżonek"} className="lg:col-start-3 lg:row-start-1 lg:pl-10">
               <ul className="grid gap-2">
                 {zwiazki.map((z) => (
@@ -193,29 +203,48 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
                   </li>
                 ))}
               </ul>
+              {mozeDodawac && (
+                <div className="mt-2">
+                  <DodajKrewnego rodzaj="malzonek" osoba={osobaFormularza} wszystkieId={wszystkieId} ile={zwiazki.length} limit={MAKS_MALZONKOW} />
+                </div>
+              )}
             </Poziom>
           )}
 
-          {rodzenstwo.length > 0 && (
-            <Poziom tytul={`Rodzeństwo (${rodzenstwo.length})`} className="lg:col-start-1 lg:row-start-1" linia="rodzenstwo">
+          {(rodzenstwo.length > 0 || mozeDodawac) && (
+            <Poziom tytul={rodzenstwo.length ? `Rodzeństwo (${rodzenstwo.length})` : "Rodzeństwo"} className="lg:col-start-1 lg:row-start-1" linia={rodzenstwo.length ? "rodzenstwo" : undefined}>
               <ul className="grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {rodzenstwo.map((r) => (
                   <li key={r.osoba.id}>{karta(r.osoba, r.przyrodnie ? "rodzeństwo przyrodnie" : undefined, true)}</li>
                 ))}
               </ul>
+              {mozeDodawac && (
+                <div className="mt-2">
+                  <DodajKrewnego
+                    rodzaj="rodzenstwo"
+                    osoba={osobaFormularza}
+                    wszystkieId={wszystkieId}
+                    ile={rodzenstwo.length}
+                    limit={MAKS_RODZENSTWA}
+                    domyslneNazwisko={nazwiskoRodzenstwa}
+                    zablokowane={!ojciec && !matka ? "Najpierw dodaj rodzica tej osoby." : undefined}
+                  />
+                </div>
+              )}
             </Poziom>
           )}
         </div>
         </LinieRodziny>
 
-        {dzieci.length > 0 && (
+        {(dzieci.length > 0 || mozeDodawac) && (
           <>
-            <Lacznik />
-            <Poziom tytul={`Dzieci (${dzieci.length})`}>
-              <Lacznik />
+            {dzieci.length > 0 ? <Lacznik /> : <div aria-hidden="true" className="h-4" />}
+            <Poziom tytul={dzieci.length ? `Dzieci (${dzieci.length})` : "Dzieci"}>
+              {dzieci.length > 0 && <Lacznik />}
               <div className="grid gap-4">
-                {[...grupyDzieci.entries()].map(([drugiId, lista]) => {
+                {(grupyDzieci.size ? [...grupyDzieci.entries()] : ([["", []]] as [string, OsobaWidoczna[]][])).map(([drugiId, lista], nr, wszystkie) => {
                   const drugi = osoba(drugiId || null);
+                  const ostatnia = nr === wszystkie.length - 1;
                   return (
                     <div key={drugiId || "brak"}>
                       {(grupyDzieci.size > 1 || zwiazki.length > 1) && (
@@ -232,12 +261,17 @@ export function WidokOsoby({ d, id }: { d: Drzewo; id: string }) {
                           )}
                         </p>
                       )}
-                      <ul className="dzieci-linie flex flex-wrap justify-center gap-2">
+                      <ul className={`${lista.length ? "dzieci-linie " : ""}flex flex-wrap justify-center gap-2`}>
                         {lista.map((dz) => (
                           <li key={dz.id} className="basis-[calc(50%-0.25rem)] sm:basis-[calc(33.333%-0.34rem)] lg:basis-[calc(25%-0.375rem)] xl:basis-[calc(20%-0.4rem)]">
                             {karta(dz, undefined, true, "👶")}
                           </li>
                         ))}
+                        {mozeDodawac && ostatnia && (
+                          <li className="basis-[calc(50%-0.25rem)] sm:basis-[calc(33.333%-0.34rem)] lg:basis-[calc(25%-0.375rem)] xl:basis-[calc(20%-0.4rem)]">
+                            <DodajKrewnego rodzaj="dziecko" osoba={osobaFormularza} malzonkowie={malzonkowieFormularza} wszystkieId={wszystkieId} ile={dzieci.length} limit={MAKS_DZIECI} />
+                          </li>
+                        )}
                       </ul>
                     </div>
                   );

@@ -116,6 +116,8 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await g.p.goto(`${B}/d/?id=${idDrzewa}&w=osoba&os=stefan-nowak-1920`);
   await g.p.getByRole('heading', { name: 'Stefan Nowak' }).waitFor();
   ok('gość widzi dane zmarłego przodka', (await g.p.locator('main').innerText()).includes('1920'));
+  // katalog jest pamiętany 10 min w sessionStorage (patrz katalog.cjs) – ten gość oglądał go, gdy drzewo było jeszcze prywatne
+  await g.p.evaluate(() => sessionStorage.clear());
   await g.p.goto(B + '/drzewa/');
   await g.p.getByText('Rodzina Nowak').first().waitFor({ timeout: 10000 });
   ok('publiczne drzewo pojawia się w katalogu', true);
@@ -152,17 +154,27 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await potwierdzEmail(mail('szef'));
   await nadajAdmina(await uidPo(mail('szef')));
   await szef.p.goto(B + '/admin/');
+  await szef.p.getByRole('heading', { name: 'Administracja' }).waitFor({ timeout: 15000 });
+  const wyborSekcji = await szef.p.getByRole('navigation', { name: 'Sekcje panelu administratora' }).getByRole('link').allInnerTexts();
+  ok('panel admina zaczyna od wyboru sekcji (Użytkownicy, Drzewa), bez list', wyborSekcji.some((t) => t.includes('Użytkownicy')) && wyborSekcji.some((t) => /^Drzewa\b/.test(t.trim())) && (await szef.p.locator('table').count()) === 0);
+  await szef.p.getByRole('navigation', { name: 'Sekcje panelu administratora' }).getByRole('link', { name: /Użytkownicy/ }).click();
   await szef.p.getByRole('heading', { name: /Użytkownicy \(\d+\)/ }).waitFor({ timeout: 15000 });
+  ok('podstrona użytkowników to tabela z kolumnami', (await szef.p.locator('table th').allInnerTexts()).join('|').toLowerCase().includes('e-mail'));
   await szef.p.getByText(`Ala Nowak`).first().waitFor();
   ok('administrator widzi listę użytkowników', (await szef.p.getByText(mail('kuba')).count()) > 0);
+  await szef.p.getByRole('navigation', { name: 'Sekcje panelu administratora' }).getByRole('link', { name: /^Drzewa$/ }).click();
   await szef.p.getByRole('heading', { name: /Drzewa użytkowników \(1\)/ }).waitFor();
-  ok('administrator widzi drzewa użytkowników', true);
+  ok('administrator widzi drzewa użytkowników w tabeli, razem z ID', (await szef.p.locator('table tbody tr', { hasText: idDrzewa }).count()) === 1);
+  await szef.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-admin-drzewa.png' });
+  await szef.p.getByLabel('Szukaj drzewa').fill('nie ma takiego');
+  await szef.p.getByText('Brak drzew pasujących do wyszukiwania').waitFor();
+  ok('wyszukiwanie w tabeli drzew filtruje wiersze', true);
   await szef.p.goto(lista('jan-nowak'));
   await szef.p.getByRole('button', { name: '✏️ Edytuj dane' }).waitFor({ timeout: 15000 });
   ok('administrator może edytować cudze drzewo', true);
-  await szef.p.goto(B + '/admin/');
+  await szef.p.goto(B + '/admin/?s=uzytkownicy');
   await szef.p.getByText(mail('kuba')).waitFor();
-  await szef.p.locator('li', { hasText: mail('kuba') }).getByRole('button', { name: 'Usuń użytkownika' }).click();
+  await szef.p.locator('tr', { hasText: mail('kuba') }).getByRole('button', { name: 'Usuń użytkownika' }).click();
   await szef.p.getByText(/Usunięto użytkownika/).waitFor({ timeout: 15000 });
   ok('administrator usunął użytkownika (Kuba)', (await szef.p.getByText(mail('kuba'), { exact: false }).count()) <= 1);
   await kuba.p.goto(B + '/profil/');
@@ -170,8 +182,8 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   ok('usunięty użytkownik widzi „Konto usunięte” i nie ma dostępu', true);
   const kub = await dokument(`drzewa/${idDrzewa}`);
   ok('usunięty kolaborant zniknął z drzewa', !JSON.stringify(kub.fields.kolaboranci).includes('stringValue'));
-  await szef.p.goto(B + '/admin/');
-  await szef.p.locator('li', { hasText: 'Rodzina Nowak' }).getByRole('button', { name: 'Usuń' }).click();
+  await szef.p.goto(B + '/admin/?s=drzewa');
+  await szef.p.locator('tr', { hasText: 'Rodzina Nowak' }).getByRole('button', { name: 'Usuń' }).click();
   await szef.p.getByText(/Użytkownicy nie utworzyli jeszcze żadnych drzew/).waitFor({ timeout: 15000 });
   ok('administrator usunął drzewo użytkownika', (await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/drzewa/${idDrzewa}`, { headers: { Authorization: 'Bearer owner' } })).status) === 404);
 

@@ -12,6 +12,7 @@ import type { Widocznosc } from "@/lib/baza/typy";
 import { ileOsob } from "@/lib/format";
 import { sciezkaDrzewa, sciezkaUstawienDrzewa, slugDb } from "@/lib/sciezki";
 import { AdresEmail } from "./AdresEmail";
+import { IdDrzewa } from "@/components/IdDrzewa";
 import { useKonto } from "./AuthProvider";
 import { DolaczDoDrzewa } from "./DolaczDoDrzewa";
 
@@ -28,6 +29,7 @@ function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrze
             {meta.nazwa}
           </Link>
         </h3>
+        <IdDrzewa id={wpis.id} className="mt-1" />
         <p className="mt-1 flex flex-wrap gap-x-3 text-sm text-tekst-2">
           <span>{meta.widocznosc === "publiczne" ? "Publiczne" : "Prywatne"}</span>
           <span>{ileOsob(meta.statystyki.osob)}</span>

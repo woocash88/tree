@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Wyszukiwarka } from "@/components/Wyszukiwarka";
 import { statystykaWidoku, type Drzewo } from "@/lib/dane-czyste";
 import { dataPL, ileOsob, pelneImie } from "@/lib/format";
-import { sciezkaDiagramu, sciezkaGalezi, sciezkaIndeksuOsob, sciezkaOsoby } from "@/lib/sciezki";
+import { IdDrzewa } from "@/components/IdDrzewa";
+import { czyDb, idZeSlugu, sciezkaDiagramu, sciezkaGalezi, sciezkaIndeksuOsob, sciezkaOsoby } from "@/lib/sciezki";
 
 /** Strona główna drzewa (statystyki, gałęzie, źródło): wspólna dla drzew z repozytorium i z bazy. */
 export function WidokStronyDrzewa({ d }: { d: Drzewo }) {
@@ -22,6 +23,7 @@ export function WidokStronyDrzewa({ d }: { d: Drzewo }) {
             <p className="mb-3 w-fit rounded-full border border-kreska bg-najazd px-3 py-1 text-xs font-semibold text-tekst">Drzewo przykładowe – dane są fikcyjne</p>
           )}
           <h1 className="text-4xl sm:text-5xl">{meta.nazwa}</h1>
+          {czyDb(meta.slug) && <IdDrzewa id={idZeSlugu(meta.slug)} className="mt-2" />}
           <p className="mt-3 text-lg text-tekst-2">{meta.opis}</p>
           <p className="mt-2 text-sm text-tekst-2">
             {meta.zakresLat.od}–{meta.zakresLat.do} · {meta.region}

@@ -394,7 +394,7 @@ function Plotno({ slug, osoby: osobyBazowe, pary, galezie, galazId }: Props) {
         focusable: false,
         selectable: false,
         zIndex: naSciezce ? 1 : 0,
-        style: naSciezce ? { stroke: "var(--akcent)", strokeWidth: 2.5 } : undefined,
+        style: naSciezce ? { stroke: "var(--akcent)", strokeWidth: 5 } : undefined,
       } as Edge);
     }
     return wynik;

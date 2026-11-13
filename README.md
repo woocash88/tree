@@ -39,7 +39,7 @@ Kopie źródłowe w repozytorium:
 | `/rejestracja/`, `/logowanie/` | zakładanie konta (e-mail albo Google) i logowanie |
 | `/profil/` | profil użytkownika: dane, moje drzewa, drzewa, przy których współpracuje, tworzenie drzewa, usunięcie konta |
 | `/d/?id=<id>` | drzewo użytkownika; parametr `w` wybiera widok: brak = strona drzewa, `galaz` (lista; `g` = gałąź, `os` = osoba), `diagram`, `osoba`, `osoby`, `ustawienia` |
-| `/admin/` | panel administratora serwisu: użytkownicy, wszystkie drzewa użytkowników, drzewa z repozytorium (bez linku w serwisie, poza indeksowaniem) |
+| `/admin/` | panel administratora serwisu, podzielony na podstrony `?s=uzytkownicy`, `?s=drzewa` (z ID drzew) i `?s=repozytorium`: tabele z wyszukiwaniem i stronicowaniem po 25 wierszy (poza indeksowaniem) |
 | `/dane/szukaj-<drzewo>.json` | indeks wyszukiwania osób jednego drzewa (ładowany dopiero na stronie tego drzewa) |
 | `/sitemap.xml`, `/robots.txt` | generowane z listy drzew |
 
@@ -231,7 +231,8 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
   `dane/pelne` (tylko dla zarządzających) i `dane/publiczne` (kopia już okrojona według polityki, przeliczana
   przy każdej zmianie). Odwiedzający nigdy nie pobierają dat osób żyjących.
 - **Kolaboranci** można dodać na dwa sposoby. (1) Właściciel wpisuje adres e-mail zarejestrowanego użytkownika (ustawienia
-  drzewa). (2) Użytkownik wkleja w profilu („Dołącz do istniejącego drzewa”) link do drzewa od właściciela albo otwiera
+  drzewa). (2) Użytkownik wkleja w profilu („Dołącz do istniejącego drzewa”) link do drzewa **albo samo ID drzewa** od właściciela (ID jest
+  widoczne z przyciskiem „Kopiuj” obok nazwy drzewa: na stronie drzewa, w pasku roli, w profilu i w ustawieniach) albo otwiera
   link do prywatnego drzewa i klika „Poproś o dostęp”; **prośbę zatwierdza albo odrzuca właściciel** (ustawienia drzewa,
   w profilu widać liczbę oczekujących próśb). Kolaborant widzi drzewo w profilu w sekcji „Współpracuję przy” i może
   je tam opuścić. Prośba zawiera tylko imię i nazwisko autora i znika po zatwierdzeniu lub odrzuceniu.
@@ -370,7 +371,10 @@ przed udostępnieniem serwisu innym osobom warto ją przeczytać i dopasować do
 
 **Drzewa użytkowników** edytuje się w panelu osoby bezpośrednio w bazie (właściciel, kolaboranci, administrator):
 „✏️ Edytuj dane” (w tym płeć i oznaczenie „żyjąca”, usunięcie osoby), „👶 Dodaj dziecko”, „💍 Dodaj małżonka”,
-„👨 Dodaj ojca” / „👩 Dodaj matkę”; w pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
+„👨 Dodaj ojca” / „👩 Dodaj matkę”. Bliskich można też dodawać przyciskami „+” na **stronie osoby**: rodzeństwo
+(do 15; dostaje tych samych rodziców, więc wymaga co najmniej jednego rodzica), małżonek (do 4) i dziecko (do 15, z wyborem
+drugiego rodzica), a także brakujący ojciec lub matka. Limity pilnuje logika zmian (`lib/baza/logika.ts`), nie tylko widok;
+limit rodzeństwa liczy każdego, kto dzieli z osobą rodzica, a limit dzieci dotyczy każdego z rodziców osobno. W pustym drzewie pierwszą osobę dodaje formularz na stronie drzewa. Zmiana pojawia się
 natychmiast, a zapis idzie w tle w transakcji (równoczesne edycje kolaborantów się nie nadpisują). Poniższy opis dotyczy
 **drzew z repozytorium**, które edytuje tylko administrator serwisu i które działają **lokalnie w przeglądarce**: w panelu osoby
 (lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci

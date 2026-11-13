@@ -8,7 +8,7 @@ import { zastosujPatch, type NowaOsoba, type PatchOsoby } from "../edycje";
 import type { Galaz, Malzenstwo, Osoba } from "../schemat";
 import type { PolitykaDat } from "../schemat-drzewa";
 import { walidujRodzine } from "../walidacja";
-import { MAKS_OSOB, type DaneDb, type MetaDb, type StatystykiDb } from "./typy";
+import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_OSOB, MAKS_RODZENSTWA, type DaneDb, type MetaDb, type StatystykiDb } from "./typy";
 
 export const DOMYSLNA_GALAZ: Galaz = { id: "glowna", nazwa: "Główna gałąź", kolor: "#3540d1", opis: "" };
 
@@ -100,11 +100,33 @@ function dodaj(d: DaneDb, n: NowaOsoba): DaneDb {
   return { ...d, osoby: [...d.osoby, nowa(n)] };
 }
 
-/** Pierwsza osoba pustego drzewa albo dziecko (rodzice podani w NowaOsoba). */
-export const dodajOsobe = (n: NowaOsoba) => (d: DaneDb) => dodaj(d, { ...n, galazId: n.galazId || d.galezie[0].id });
+const dzieciOsoby = (d: DaneDb, id: string) => d.osoby.filter((o) => o.ojciecId === id || o.matkaId === id).length;
+const rodzenstwoOsoby = (d: DaneDb, o: Osoba) => d.osoby.filter((x) => x.id !== o.id && ((o.ojciecId && x.ojciecId === o.ojciecId) || (o.matkaId && x.matkaId === o.matkaId)));
+
+function sprawdzLimitDzieci(d: DaneDb, ...rodzice: (string | null | undefined)[]) {
+  for (const r of rodzice) {
+    if (r && dzieciOsoby(d, r) >= MAKS_DZIECI) throw new Error(`Ta osoba ma już maksymalną liczbę dzieci (${MAKS_DZIECI}).`);
+  }
+}
+
+/** Pierwsza osoba pustego drzewa albo dziecko (rodzice podani w NowaOsoba; limit dzieci dotyczy każdego z rodziców). */
+export const dodajOsobe = (n: NowaOsoba) => (d: DaneDb) => {
+  sprawdzLimitDzieci(d, n.ojciecId, n.matkaId);
+  return dodaj(d, { ...n, galazId: n.galazId || d.galezie[0].id });
+};
+
+/** Rodzeństwo: nowa osoba dostaje tych samych rodziców co wskazana (wymaga co najmniej jednego rodzica). */
+export const dodajRodzenstwo = (osobaId: string, n: NowaOsoba) => (d: DaneDb): DaneDb => {
+  const o = d.osoby.find((x) => x.id === osobaId);
+  if (!o) throw new Error("Osoba, której dopisujesz rodzeństwo, już nie istnieje.");
+  if (!o.ojciecId && !o.matkaId) throw new Error("Aby dodać rodzeństwo, najpierw dodaj rodzica tej osoby.");
+  if (rodzenstwoOsoby(d, o).length >= MAKS_RODZENSTWA) throw new Error(`Ta osoba ma już maksymalną liczbę rodzeństwa (${MAKS_RODZENSTWA}).`);
+  return dodaj(d, { ...n, ojciecId: o.ojciecId, matkaId: o.matkaId, galazId: o.galazId });
+};
 
 export const dodajMalzonka = (osobaId: string, n: NowaOsoba) => (d: DaneDb): DaneDb => {
   if (!d.osoby.some((o) => o.id === osobaId)) throw new Error("Osoba, której dopisujesz małżonka, już nie istnieje.");
+  if (ileZwiazkow(d, osobaId) >= MAKS_MALZONKOW) throw new Error(`Ta osoba ma już maksymalną liczbę małżonków (${MAKS_MALZONKOW}).`);
   const zDodana = dodaj(d, { ...n, ojciecId: null, matkaId: null });
   const m: Malzenstwo = { osobaAId: osobaId, osobaBId: n.id, kolejnosc: ileZwiazkow(d, osobaId) + 1 };
   return { ...zDodana, malzenstwa: [...zDodana.malzenstwa, m] };
@@ -118,7 +140,7 @@ export const dodajRodzica = (dzieckoId: string, rola: "ojciec" | "matka", n: Now
   const drugiId = rola === "ojciec" ? dziecko.matkaId : dziecko.ojciecId;
   let wynik = dodaj(d, { ...n, ojciecId: null, matkaId: null, galazId: dziecko.galazId });
   wynik = { ...wynik, osoby: wynik.osoby.map((o) => (o.id === dzieckoId ? { ...o, [pole]: n.id } : o)) };
-  if (drugiId && !polaczenie(wynik, drugiId, n.id)) {
+  if (drugiId && !polaczenie(wynik, drugiId, n.id) && ileZwiazkow(wynik, drugiId) < MAKS_MALZONKOW) {
     const k = Math.max(ileZwiazkow(wynik, drugiId), ileZwiazkow(wynik, n.id)) + 1;
     wynik = { ...wynik, malzenstwa: [...wynik.malzenstwa, { osobaAId: drugiId, osobaBId: n.id, kolejnosc: k }] };
   }
