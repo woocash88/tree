@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/space-grotesk/wght.css";
 
 /*
  * Motyw „glass”. Wszystkie kolory to zmienne CSS przełączane między trybem jasnym i ciemnym:
@@ -428,3 +429,100 @@ h1, h2, h3 {
   :root:not([data-theme="jasny"]) .dark-odwroc { filter: invert(1); }
 }
 :root[data-theme="ciemny"] .dark-odwroc { filter: invert(1); }
+
+
+/* ───────────────────────── strona główna (wzór „glass”) ─────────────────────────
+ * Własna paleta strony głównej: szkło, turkusowy akcent i kolorowe plamy w tle. Jasny i ciemny wariant
+ * przełączają się tak samo jak reszta serwisu (prefers-color-scheme albo data-theme na <html>). */
+.glowna {
+  --g-tlo: #e9effc;
+  --g-tekst: #0f172a;
+  --g-tekst2: #475569;
+  --g-tekst3: #526179;
+  --g-akcent: #0f766e;
+  --g-akcent-tekst: #0f766e;
+  --g-szklo: rgba(255, 255, 255, 0.58);
+  --g-szklo-lita: #f4f7ff;
+  --g-ramka: rgba(255, 255, 255, 0.85);
+  --g-cien: 0 8px 32px rgba(31, 41, 90, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --g-chip: rgba(15, 23, 42, 0.06);
+  --g-kreska: rgba(15, 23, 42, 0.12);
+  --g-orb-1: rgba(45, 212, 191, 0.38);
+  --g-orb-2: rgba(167, 139, 250, 0.45);
+  --g-orb-3: rgba(96, 165, 250, 0.38);
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 auto;
+  background: var(--g-tlo);
+  color: var(--g-tekst);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="jasny"]) .glowna {
+    --g-tlo: #0a0f1f;
+    --g-tekst: #e8eef9;
+    --g-tekst2: #b4c0d6;
+    --g-tekst3: #9fb0c9;
+    --g-akcent-tekst: #2dd4bf;
+    --g-szklo: rgba(22, 31, 62, 0.58);
+    --g-szklo-lita: #141c3a;
+    --g-ramka: rgba(255, 255, 255, 0.13);
+    --g-cien: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --g-chip: rgba(255, 255, 255, 0.08);
+    --g-kreska: rgba(255, 255, 255, 0.14);
+    --g-orb-1: rgba(45, 212, 191, 0.22);
+    --g-orb-2: rgba(139, 92, 246, 0.3);
+    --g-orb-3: rgba(59, 130, 246, 0.22);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="ciemny"] .glowna {
+  --g-tlo: #0a0f1f;
+  --g-tekst: #e8eef9;
+  --g-tekst2: #b4c0d6;
+  --g-tekst3: #9fb0c9;
+  --g-akcent-tekst: #2dd4bf;
+  --g-szklo: rgba(22, 31, 62, 0.58);
+  --g-szklo-lita: #141c3a;
+  --g-ramka: rgba(255, 255, 255, 0.13);
+  --g-cien: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --g-chip: rgba(255, 255, 255, 0.08);
+  --g-kreska: rgba(255, 255, 255, 0.14);
+  --g-orb-1: rgba(45, 212, 191, 0.22);
+  --g-orb-2: rgba(139, 92, 246, 0.3);
+  --g-orb-3: rgba(59, 130, 246, 0.22);
+  color-scheme: dark;
+}
+.glowna a { color: inherit; text-decoration: none; }
+.glowna :focus-visible { outline: 2px solid var(--g-akcent-tekst); outline-offset: 2px; }
+.glowna .g-display { font-family: "Space Grotesk Variable", "Inter Variable", system-ui, sans-serif; }
+.glowna .g-szklo {
+  background: var(--g-szklo);
+  border: 1px solid var(--g-ramka);
+  box-shadow: var(--g-cien);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+.glowna .g-lita { background: var(--g-szklo-lita) !important; }
+.glowna .g-chip { background: var(--g-chip); border: 1px solid var(--g-ramka); }
+.glowna .g-t2 { color: var(--g-tekst2); }
+.glowna .g-t3 { color: var(--g-tekst3); }
+.glowna .g-akcent { color: var(--g-akcent-tekst); }
+.glowna .g-przycisk {
+  background: var(--g-akcent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+  transition: filter 0.15s;
+}
+.glowna .g-przycisk:hover { filter: brightness(1.1); }
+.glowna .g-link:hover { background: var(--g-chip); color: var(--g-tekst); }
+.glowna .g-orb { position: absolute; border-radius: 50%; pointer-events: none; }
+.glowna input::placeholder { color: var(--g-tekst3); opacity: 1; }
+@media (prefers-reduced-transparency: reduce) {
+  .glowna .g-szklo { background: var(--g-szklo-lita); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glowna .g-szklo { background: var(--g-szklo-lita); }
+}

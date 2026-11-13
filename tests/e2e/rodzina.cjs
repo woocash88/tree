@@ -171,6 +171,26 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await kuba.p.getByText('Prośba została wysłana').waitFor();
   ok('dołączanie po numerze drzewa wysyła prośbę do właściciela', (await dokument(`prosby/${id}_${(await (await fetch(`${AUTH}/identitytoolkit.googleapis.com/v1/projects/${P}/accounts:batchGet?maxResults=100`, { headers: { Authorization: 'Bearer owner' } })).json()).users.find((u) => u.email === mailKuba).localId}`)).fields?.drzewoId?.stringValue === id);
 
+  // ── rejestracja z „Stwórz drzewo”: po potwierdzeniu e-maila formularz nowego drzewa otwiera się sam ──
+  const nowa = await nowaKarta(br);
+  const mailNowa = `nowa-${t}@example.org`;
+  await nowa.p.goto(`${B}/rejestracja/?po=nowe`);
+  await nowa.p.getByText(/Aby stworzyć drzewo, najpierw załóż konto/).waitFor();
+  await nowa.p.getByLabel('Imię', { exact: true }).fill('Nowa');
+  await nowa.p.getByLabel('Nazwisko', { exact: true }).fill('Osoba');
+  await nowa.p.getByLabel('Adres e-mail').fill(mailNowa);
+  await nowa.p.getByLabel('Hasło (min. 8 znaków)').fill('haslo12345');
+  await nowa.p.getByLabel('Powtórz hasło').fill('haslo12345');
+  await nowa.p.getByRole('checkbox').check();
+  await nowa.p.getByRole('button', { name: 'Załóż konto' }).click();
+  await nowa.p.getByRole('heading', { name: 'Sprawdź skrzynkę' }).waitFor();
+  await nowa.p.getByRole('link', { name: 'Przejdź do profilu' }).click();
+  await nowa.p.waitForURL('**/profil/?nowe=1');
+  await nowa.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor();
+  await potwierdzEmail(mailNowa);
+  await nowa.p.getByRole('button', { name: 'Utwórz drzewo' }).waitFor({ timeout: 20000 });
+  ok('rejestracja przez „Stwórz drzewo”: po potwierdzeniu e-maila formularz nowego drzewa jest otwarty', true);
+
   // ── diagram: wybrana linia pogrubiona dwukrotnie (2,5 → 5) ──
   await ala.p.goto(`${B}/d/?id=${id}&w=diagram&g=cale&os=jan-test-1850`);
   await ala.p.locator('.react-flow__edge-path').first().waitFor({ timeout: 20000 });

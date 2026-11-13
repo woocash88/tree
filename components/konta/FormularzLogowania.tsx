@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { komunikatBledu, resetHasla, zalogujEmail } from "@/lib/baza/konta";
 import { useKonto } from "./AuthProvider";
+import { celPoLogowaniu, PARAM_PO, useChceStworzycDrzewo, WARTOSC_PO_NOWE } from "./cel";
 import { PrzyciskGoogle } from "./PrzyciskGoogle";
 
 export function FormularzLogowania() {
@@ -16,9 +17,10 @@ export function FormularzLogowania() {
   const [blad, setBlad] = useState("");
   const [info, setInfo] = useState("");
   const [trwa, setTrwa] = useState(false);
+  const chceStworzyc = useChceStworzycDrzewo();
 
   useEffect(() => {
-    if (konto.status === "zalogowany") router.replace("/profil/");
+    if (konto.status === "zalogowany") router.replace(celPoLogowaniu());
   }, [konto.status, router]);
 
   if (konto.status === "wylaczone") return <p className="szklo p-6 text-tekst-2">Konta użytkowników nie są jeszcze włączone w tym serwisie.</p>;
@@ -50,6 +52,11 @@ export function FormularzLogowania() {
   return (
     <div className="szklo p-6">
       <h1 className="text-3xl">Zaloguj się</h1>
+      {chceStworzyc && (
+        <p role="note" className="mt-3 rounded-xl border border-kreska bg-najazd px-3 py-2 text-sm">
+          Aby stworzyć drzewo, najpierw zaloguj się lub załóż konto. Zaraz po tym przejdziesz do formularza nowego drzewa.
+        </p>
+      )}
       <div className="mt-5">
         <PrzyciskGoogle etykieta="Zaloguj się przez Google" naSukces={() => {}} naBlad={setBlad} />
       </div>
@@ -88,7 +95,7 @@ export function FormularzLogowania() {
       </form>
       <p className="mt-5 border-t border-kreska pt-4 text-center text-sm text-tekst-2">
         Nie masz konta?{" "}
-        <Link href="/rejestracja/" className="link">
+        <Link href={chceStworzyc ? `/rejestracja/?${PARAM_PO}=${WARTOSC_PO_NOWE}` : "/rejestracja/"} className="link">
           Zarejestruj się
         </Link>
       </p>

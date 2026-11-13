@@ -60,7 +60,13 @@ function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrze
 function NoweDrzewo({ uid, nazwaWlasciciela, mozeTworzyc }: { uid: string; nazwaWlasciciela: string; mozeTworzyc: boolean }) {
   const id = useId();
   const router = useRouter();
-  const [otwarte, setOtwarte] = useState(false);
+  // „Stwórz drzewo” ze strony głównej kieruje tu z ?nowe=1: formularz jest od razu otwarty (jeśli e-mail potwierdzony).
+  const [otwarte, setOtwarte] = useState(() => mozeTworzyc && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("nowe") === "1");
+  // Gdy e-mail zostanie potwierdzony już na tej stronie (po rejestracji), formularz otwiera się wtedy.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reakcja na potwierdzenie adresu e-mail
+    if (mozeTworzyc && new URLSearchParams(window.location.search).get("nowe") === "1") setOtwarte(true);
+  }, [mozeTworzyc]);
   const [nazwa, setNazwa] = useState("");
   const [opis, setOpis] = useState("");
   const [region, setRegion] = useState("");

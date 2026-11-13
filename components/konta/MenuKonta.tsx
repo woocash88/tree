@@ -7,7 +7,7 @@ import { sciezkaAdmina } from "@/lib/sciezki";
 import { useKonto } from "./AuthProvider";
 
 /** Prawa strona nagłówka: logowanie i rejestracja albo menu zalogowanego użytkownika. */
-export function MenuKonta() {
+export function MenuKonta({ wariant = "domyslny" }: { wariant?: "domyslny" | "glowna" }) {
   const konto = useKonto();
   const [otwarte, setOtwarte] = useState(false);
   const korzen = useRef<HTMLDivElement>(null);
@@ -26,6 +26,14 @@ export function MenuKonta() {
 
   if (konto.status === "wylaczone") return null;
   if (konto.status === "ladowanie") return <span aria-hidden="true" className="inline-block h-8 w-24" />;
+  if (konto.status === "gosc" && wariant === "glowna") {
+    // Strona główna: rejestracja jest w karcie „Zacznij tu”, w nagłówku wystarczy logowanie.
+    return (
+      <Link href="/logowanie/" className="g-link flex min-h-11 items-center rounded-full px-3.5 text-[15px] font-medium g-t2">
+        Zaloguj się
+      </Link>
+    );
+  }
   if (konto.status === "gosc") {
     return (
       <div className="flex items-center gap-1.5">
@@ -41,7 +49,7 @@ export function MenuKonta() {
   const nazwa = konto.profil ? `${konto.profil.imie} ${konto.profil.nazwisko}` : (konto.email ?? "Konto");
   return (
     <div ref={korzen} className="relative">
-      <button type="button" className="przycisk !min-h-8 max-w-48" aria-expanded={otwarte} aria-haspopup="menu" onClick={() => setOtwarte((o) => !o)}>
+      <button type="button" className={wariant === "glowna" ? "g-chip flex min-h-11 max-w-48 items-center gap-2 rounded-full px-4 text-[15px] font-medium" : "przycisk !min-h-8 max-w-48"} aria-expanded={otwarte} aria-haspopup="menu" onClick={() => setOtwarte((o) => !o)}>
         <span aria-hidden="true">👤</span>
         <span className="truncate">{konto.profil?.imie ?? "Konto"}</span>
       </button>

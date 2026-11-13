@@ -9,11 +9,28 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   // ── 1. gość: hero i nagłówek ──
   const g = await nowaKarta(br);
   await g.p.goto(B + '/');
-  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor();
+  await g.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor();
   ok('nagłówek strony to „Przodkowie”', (await g.p.title()).includes('Przodkowie') && !(await g.p.title()).includes('Nasi'));
-  await g.p.locator('section[aria-label="Rejestracja i logowanie"]').waitFor();
-  ok('gość widzi w hero rejestrację i logowanie', (await g.p.locator('section[aria-label="Rejestracja i logowanie"] a').allInnerTexts()).join('|') === 'Zarejestruj się|Zaloguj się');
+  const kartaStworz = g.p.getByRole('article', { name: 'Stwórz własne drzewo' });
+  await kartaStworz.getByRole('link', { name: 'Zacznij tu' }).waitFor();
+  ok('gość: w karcie „Stwórz własne drzewo” jest przycisk „Zacznij tu” (nie „Załóż konto”)', (await g.p.getByText('Załóż konto', { exact: true }).count()) === 0);
+  const naglowek = g.p.getByRole('navigation', { name: 'Główna nawigacja' });
+  ok('gość: nagłówek ma „Przegląd drzew”, „Stwórz drzewo” i „Zaloguj się”', (await naglowek.getByRole('link').allInnerTexts()).filter((t) => /Przegląd drzew|Stwórz drzewo|Zaloguj się/.test(t)).length === 3);
   ok('logo w nagłówku', (await g.p.locator('header img[src$="przodkowie_logo.png"]').count()) === 1);
+
+  // „Stwórz drzewo” bez logowania prowadzi do logowania/rejestracji, a po zalogowaniu do formularza nowego drzewa
+  await naglowek.getByRole('link', { name: 'Stwórz drzewo' }).click();
+  await g.p.waitForURL('**/logowanie/?po=nowe');
+  await g.p.getByText(/Aby stworzyć drzewo, najpierw zaloguj się lub załóż konto/).waitFor();
+  ok('gość klikający „Stwórz drzewo” trafia do logowania z wyjaśnieniem', true);
+  await g.p.getByRole('link', { name: 'Zarejestruj się' }).last().click();
+  await g.p.waitForURL('**/rejestracja/?po=nowe');
+  ok('przejście logowanie → rejestracja zachowuje cel „stwórz drzewo”', true);
+  await g.p.goto(B + '/');
+  await g.p.getByRole('article', { name: 'Stwórz własne drzewo' }).getByRole('link', { name: 'Zacznij tu' }).click();
+  await g.p.waitForURL('**/rejestracja/?po=nowe');
+  ok('„Zacznij tu” prowadzi do rejestracji', true);
+  await g.p.goto(B + '/');
   ok('brak starych przycisków edycji u gościa', (await g.p.getByRole('button', { name: /Edytuj|Dodaj/ }).count()) === 0);
 
   // ── 2. rejestracja Ali ──
@@ -28,8 +45,16 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   ok('po potwierdzeniu e-maila baner znika', true);
   await ala.p.goto(B + '/');
   await ala.p.waitForTimeout(1500);
-  ok('po zalogowaniu hero z rejestracją znika', (await ala.p.locator('section[aria-label="Rejestracja i logowanie"]').count()) === 0);
-  ok('nagłówek pokazuje menu konta', await ala.p.getByRole('button', { name: /Ala/ }).isVisible());
+  ok('po zalogowaniu karta pokazuje „Moje drzewa” zamiast „Zacznij tu”', (await ala.p.getByRole('article', { name: 'Stwórz własne drzewo' }).getByRole('link', { name: 'Moje drzewa' }).count()) === 1 && (await ala.p.getByRole('link', { name: 'Zacznij tu' }).count()) === 0);
+  ok('nagłówek pokazuje profil (menu konta) i nie ma „Zaloguj się”', (await ala.p.getByRole('button', { name: /Ala/ }).isVisible()) && (await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link', { name: 'Zaloguj się' }).count()) === 0);
+  const kolejnosc = await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).locator('a, button').allInnerTexts();
+  const iStworz = kolejnosc.findIndex((t) => t.includes('Stwórz drzewo'));
+  const iProfil = kolejnosc.findIndex((t) => t.includes('Ala'));
+  ok('profil jest po prawej stronie przycisku „Stwórz drzewo”', iStworz >= 0 && iProfil > iStworz, kolejnosc.join('|'));
+  await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link', { name: 'Stwórz drzewo' }).click();
+  await ala.p.waitForURL('**/profil/?nowe=1');
+  await ala.p.getByRole('button', { name: 'Utwórz drzewo' }).waitFor();
+  ok('zalogowany: „Stwórz drzewo” prowadzi do profilu z otwartym formularzem nowego drzewa', true);
 
   // ── 3. tworzenie drzewa i osób ──
   await ala.p.goto(B + '/profil/');

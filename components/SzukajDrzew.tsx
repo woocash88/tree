@@ -1,61 +1,95 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
 import { ileOsob } from "@/lib/format";
 import { sciezkaDrzewa, sciezkaIndeksuDrzew } from "@/lib/sciezki";
 import { drzewaZNazwiskiem, filtrujDrzewa, pasujaceNazwiska } from "@/lib/szukaj-drzew";
 import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
-/** Wyszukiwarka drzew na stronie głównej: wyniki pojawiają się pod polem. */
+/**
+ * Wyszukiwarka drzew na stronie głównej (wzór „glass”): wyniki pojawiają się pod polem, „Szukaj” otwiera indeks drzew.
+ * Skrót „/” ustawia fokus w polu. Styl pochodzi z klas .glowna (app/globals.css).
+ */
 export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
   // Pełną listę drzew z bazy pobieramy dopiero, gdy ktoś kliknie w pole wyszukiwania (oszczędność odczytów).
   const [uzywane, setUzywane] = useState(false);
   const zBazy = useDrzewaPubliczne(uzywane);
   const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
   const [q, setQ] = useState("");
-  const wynik = useMemo(() => (q.trim() ? filtrujDrzewa(drzewa, q).slice(0, 6) : []), [drzewa, q]);
-  const ileZNazwiskiem = useMemo(() => (q.trim() ? drzewaZNazwiskiem(drzewa, q).length : 0), [drzewa, q]);
+  const pole = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const zapytanie = q.trim();
+  const wynik = useMemo(() => (zapytanie ? filtrujDrzewa(drzewa, zapytanie).slice(0, 6) : []), [drzewa, zapytanie]);
+  const ileZNazwiskiem = useMemo(() => (zapytanie ? drzewaZNazwiskiem(drzewa, zapytanie).length : 0), [drzewa, zapytanie]);
+
+  useEffect(() => {
+    const naKlawisz = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const cel = e.target as HTMLElement | null;
+      if (cel && (cel.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(cel.tagName))) return;
+      e.preventDefault();
+      pole.current?.focus();
+    };
+    document.addEventListener("keydown", naKlawisz);
+    return () => document.removeEventListener("keydown", naKlawisz);
+  }, []);
+
   return (
-    <div role="search" className="mx-auto w-full max-w-2xl text-left">
-      <label htmlFor="szukaj-drzew" className="sr-only">
-        Szukaj drzewa po nazwisku, nazwie lub regionie
-      </label>
-      <div className="relative">
-        <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-tekst-2">
-          <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-          <path d="M12.8 12.8 17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <div role="search" className="mx-auto w-full max-w-[700px] text-left">
+      <form
+        className="g-szklo flex items-center gap-2.5 rounded-[26px] py-2.5 pl-5 pr-2.5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          router.push(`${sciezkaIndeksuDrzew()}${zapytanie ? `?q=${encodeURIComponent(zapytanie)}` : ""}`);
+        }}
+      >
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="g-t3 flex-none">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
         </svg>
+        <label htmlFor="szukaj-drzew" className="sr-only">
+          Szukaj drzewa po nazwisku, nazwie lub regionie
+        </label>
         <input
           id="szukaj-drzew"
+          ref={pole}
           type="search"
           value={q}
           onFocus={() => setUzywane(true)}
           onChange={(e) => setQ(e.target.value)}
           autoComplete="off"
-          placeholder="Szukaj drzewa: nazwisko, region…"
-          className="pole !min-h-14 w-full !rounded-2xl !pl-12 text-lg shadow-szklo"
+          placeholder="Nazwisko, nazwa drzewa lub region…"
+          className="h-14 min-w-0 flex-1 border-0 bg-transparent text-base outline-0 sm:text-lg"
+          style={{ color: "var(--g-tekst)" }}
         />
-      </div>
-      {q.trim() && (
-        <ul aria-label="Znalezione drzewa" className="szklo !bg-lita mt-2 divide-y divide-kreska overflow-hidden !rounded-2xl">
-          {wynik.length === 0 && <li className="px-4 py-3 text-tekst-2">Nie znaleziono nazwiska ani drzewa „{q.trim()}” wśród publicznych drzew.</li>}
+        <kbd aria-hidden="true" className="g-chip g-t3 hidden flex-none rounded-lg px-2 py-0.5 text-[13px] sm:block">
+          /
+        </kbd>
+        <button type="submit" className="g-przycisk h-14 flex-none rounded-[18px] px-5 text-base sm:px-7">
+          Szukaj
+        </button>
+      </form>
+      {zapytanie && (
+        <ul aria-label="Znalezione drzewa" className="g-szklo g-lita mt-2 divide-y overflow-hidden rounded-[22px]" style={{ borderColor: "var(--g-kreska)" }}>
+          {wynik.length === 0 && <li className="g-t2 px-4 py-3">Nie znaleziono nazwiska ani drzewa „{zapytanie}” wśród publicznych drzew.</li>}
           {ileZNazwiskiem > 0 && <li className="px-4 py-2 text-sm font-semibold">Tak, takie nazwisko już jest – w {ileZNazwiskiem === 1 ? "1 drzewie" : `${ileZNazwiskiem} drzewach`}.</li>}
           {wynik.map((d) => (
-            <li key={d.meta.slug}>
-              <Link href={sciezkaDrzewa(d.meta.slug)} className="flex items-baseline gap-3 px-4 py-3 hover:bg-najazd">
+            <li key={d.meta.slug} style={{ borderColor: "var(--g-kreska)" }}>
+              <Link href={sciezkaDrzewa(d.meta.slug)} className="g-link flex items-baseline gap-3 px-4 py-3">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{d.meta.nazwa}</span>
-                  {pasujaceNazwiska(d, q, 3).length > 0 && <span className="block truncate text-sm text-tekst-2">Nazwisko: {pasujaceNazwiska(d, q, 3).join(", ")}</span>}
+                  {pasujaceNazwiska(d, zapytanie, 3).length > 0 && <span className="g-t2 block truncate text-sm">Nazwisko: {pasujaceNazwiska(d, zapytanie, 3).join(", ")}</span>}
                 </span>
-                <span className="hidden shrink-0 text-sm text-tekst-2 sm:inline">{d.meta.region}</span>
-                <span className="shrink-0 text-sm tabular-nums text-tekst-2">{ileOsob(d.osob)}</span>
+                <span className="g-t2 hidden shrink-0 text-sm sm:inline">{d.meta.region}</span>
+                <span className="g-t2 shrink-0 text-sm tabular-nums">{ileOsob(d.osob)}</span>
               </Link>
             </li>
           ))}
-          <li>
-            <Link href={`${sciezkaIndeksuDrzew()}?q=${encodeURIComponent(q.trim())}`} className="block px-4 py-2.5 text-sm font-medium text-akcent hover:bg-najazd">
+          <li style={{ borderColor: "var(--g-kreska)" }}>
+            <Link href={`${sciezkaIndeksuDrzew()}?q=${encodeURIComponent(zapytanie)}`} className="g-link g-akcent block px-4 py-2.5 text-sm font-semibold">
               Pokaż w indeksie drzew →
             </Link>
           </li>

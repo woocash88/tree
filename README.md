@@ -28,7 +28,7 @@ Kopie źródłowe w repozytorium:
 
 | adres | zawartość |
 |---|---|
-| `/` | strona główna: wyszukiwarka drzew, wyróżnione drzewa, krótki opis |
+| `/` | strona główna według wzoru „glass”: nagłówek-pigułka, wyszukiwarka drzew (po nazwisku, nazwie, regionie), karty „Wyszukiwanie”, „Stwórz własne drzewo” i „O portalu” |
 | `/drzewa/` | indeks drzew: karty (nazwa, opis, lata, osoby, pokolenia, region, aktualizacja), wyszukiwanie po nazwie/nazwisku/regionie, sortowanie (alfabetycznie, największe, ostatnio zaktualizowane) |
 | `/drzewa/<drzewo>/` | strona drzewa: statystyki, kafelki gałęzi, wyszukiwarka osób, źródło i opiekun |
 | `/drzewa/<drzewo>/galaz/<galaz>/` | **lista gałęzi** (widok główny): zwijana lista z wcięciami, panel osoby; `cale` = „Całe drzewo” |
@@ -294,6 +294,11 @@ Koszt i prywatność: usługa jest darmowa, ale reCAPTCHA ładuje skrypt Google 
 ustawieniu zmiennej, a polityka prywatności i stopka dostają wtedy odpowiednie informacje (stopka z wymaganym przez Google oznaczeniem,
 plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i testy nie używają App Check.
 
+**„Stwórz drzewo” i logowanie.** „Stwórz drzewo” w nagłówku strony głównej prowadzi zalogowanego prosto do profilu z otwartym formularzem nowego
+drzewa (`/profil/?nowe=1`), a niezalogowanego do logowania z wyjaśnieniem (`/logowanie/?po=nowe`; rejestracja tak samo). Po zalogowaniu lub
+rejestracji użytkownik trafia do tego formularza (przy niepotwierdzonym e-mailu formularz otwiera się, gdy adres zostanie potwierdzony).
+Karta „Stwórz własne drzewo” ma przycisk „Zacznij tu” (rejestracja) albo, po zalogowaniu, „Moje drzewa”; profil jest w nagłówku obok „Stwórz drzewo”.
+
 **Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna nie pobiera
 żadnych drzew: lista publicznych drzew (limit 100) ładuje się dopiero, gdy ktoś kliknie w wyszukiwarkę albo wejdzie do katalogu, a wynik jest
 wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia
@@ -526,7 +531,8 @@ Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardo
 ```
 app/                    strony i układy (/, /drzewa, /drzewa/[drzewo]/…, /d, /profil, /logowanie, /rejestracja, /admin), sitemap.ts, robots.ts
 components/             Naglowek, Wyszukiwarka, KatalogDrzew, ListaGalezi, PanelOsoby, PlotnoDrzewa, IndeksOsob, …
-components/konta/       AuthProvider, MenuKonta, formularze logowania/rejestracji, PanelProfilu, HeroKonta
+components/konta/       AuthProvider, MenuKonta, formularze logowania/rejestracji, PanelProfilu
+components/glowna/      nagłówek i przyciski „Stwórz drzewo” / „Zacznij tu” strony głównej (style: klasy .glowna w app/globals.css)
 components/db/          WidokDrzewaDb (strona /d/), UstawieniaDrzewa, kontekst i hooki drzew z bazy
 components/widoki/      widoki wspólne dla drzew z repozytorium i z bazy (osoba, strona drzewa, indeks osób)
 lib/baza/               Firebase: firebase.ts (inicjalizacja), konta.ts, api.ts (Firestore), logika.ts (czyste zmiany drzewa), typy.ts

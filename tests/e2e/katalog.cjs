@@ -32,11 +32,27 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   const limity = () => zapytania.map((z) => { const t = decodeURIComponent(z.replace(/\+/g, ' ')); return /"limit":\s*(\d+)/.exec(t)?.[1] ?? /"limit":\s*\{\s*"value":\s*(\d+)/.exec(t)?.[1] ?? '?'; });
 
   await g.p.goto(B + '/');
-  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor({ timeout: 15000 });
+  await g.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor({ timeout: 15000 });
   await g.p.waitForTimeout(2000);
+  await g.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-glowna-komputer.png', fullPage: true });
+  const tel = await nowaKarta(br, { width: 390, height: 844 });
+  await tel.p.goto(B + '/');
+  await tel.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor();
+  await tel.p.waitForTimeout(800);
+  await tel.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-glowna-telefon.png', fullPage: true });
+  ok('telefon: brak poziomego przewijania strony głównej', await tel.p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  ok('telefon: jest link „Przeglądaj publiczne drzewa”', await tel.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).isVisible());
+  const ciemny = await nowaKarta(br);
+  await ciemny.p.emulateMedia({ colorScheme: 'dark' });
+  await ciemny.p.goto(B + '/');
+  await ciemny.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor();
+  await ciemny.p.waitForTimeout(500);
+  await ciemny.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-glowna-ciemna.png', fullPage: true });
+  const jasnoscTla = await ciemny.p.evaluate(() => { const c = getComputedStyle(document.querySelector('.glowna')).backgroundColor.match(/\d+/g).map(Number); return (c[0] + c[1] + c[2]) / 3; });
+  ok('ciemny motyw: tło strony głównej jest ciemne', jasnoscTla < 60, String(jasnoscTla));
   const poGlownej = zapytania.length;
   ok('strona główna nie pobiera żadnych drzew (zero zapytań)', poGlownej === 0, `zapytań: ${poGlownej}, treść: ${(zapytania[0] ?? '').slice(0, 300)}`);
-  ok('na stronie głównej nie ma listy drzew, jest przycisk „Przeglądaj publiczne drzewa”', (await g.p.getByRole('heading', { name: /Ostatnio dodane|Polecane/ }).count()) === 0 && (await g.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).count()) === 1);
+  ok('na stronie głównej nie ma listy drzew, jest link „Przegląd drzew”', (await g.p.getByRole('heading', { name: /Ostatnio dodane|Polecane/ }).count()) === 0 && (await g.p.getByRole('link', { name: 'Przegląd drzew' }).count()) === 1);
   await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).click();
   await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).fill('rodzina 07');
   await g.p.getByRole('link', { name: /Rodzina 07/ }).first().waitFor({ timeout: 15000 });
@@ -45,7 +61,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).fill('stanislaw');
   await g.p.getByText(/Tak, takie nazwisko już jest – w 2 drzewach/).waitFor({ timeout: 15000 });
   ok('wyszukiwarka na głównej: nazwisko bez polskich znaków znajduje drzewa i mówi, że takie nazwisko już jest', (await g.p.getByText('Nazwisko: Stanisławski').count()) === 1);
-  await g.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).click();
+  await g.p.getByRole('link', { name: 'Przegląd drzew' }).click();
   await g.p.waitForURL('**/drzewa/');
   await g.p.getByText('Rodzina 15').first().waitFor({ timeout: 15000 });
   await g.p.waitForTimeout(800);
@@ -65,7 +81,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   ok('po odświeżeniu strony lista wraca z sessionStorage (bez zapytania)', zapytania.length === poGlownej + 1, `zapytań: ${zapytania.length}`);
 
   await g.p.goto(B + '/');
-  await g.p.getByRole('heading', { name: 'Przodkowie', level: 1 }).waitFor();
+  await g.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor();
   await g.p.waitForTimeout(800);
   ok('powrót na stronę główną też nie odpytuje bazy', zapytania.length === poGlownej + 1, `zapytań: ${zapytania.length}`);
 
