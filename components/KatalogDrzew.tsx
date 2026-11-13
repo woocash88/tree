@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { PodsumowanieDrzewa } from "@/lib/dane";
-import { filtrujDrzewa, SORTOWANIA, sortujDrzewa, type Sortowanie } from "@/lib/szukaj-drzew";
+import { drzewaZNazwiskiem, filtrujDrzewa, pasujaceNazwiska, SORTOWANIA, sortujDrzewa, type Sortowanie } from "@/lib/szukaj-drzew";
 import { KartaDrzewa } from "./KartaDrzewa";
 import { LIMIT_KATALOGU } from "@/lib/baza/katalog";
 import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
-/** Indeks drzew: wyszukiwanie po nazwie, nazwisku i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
+/** Indeks drzew: wyszukiwanie po nazwisku (osób w drzewach), nazwie drzewa i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
 export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
   const zBazy = useDrzewaPubliczne();
   const drzewa = useMemo(() => [...drzewaZRepozytorium, ...zBazy], [drzewaZRepozytorium, zBazy]);
@@ -34,13 +34,15 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
   }, [gotowe, q, sortowanie]);
 
   const wynik = useMemo(() => sortujDrzewa(filtrujDrzewa(drzewa, q), sortowanie), [drzewa, q, sortowanie]);
+  const zapytanie = q.trim();
+  const zNazwiskiem = useMemo(() => (zapytanie ? drzewaZNazwiskiem(drzewa, zapytanie).length : 0), [drzewa, zapytanie]);
 
   return (
     <div>
       <form className="grid gap-3 sm:grid-cols-[1fr_auto]" onSubmit={(e) => e.preventDefault()} role="search" aria-label="Szukaj drzew">
         <label className="block text-sm text-tekst-2">
-          Nazwa, nazwisko lub region
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} className="pole mt-1 w-full" placeholder="np. nazwisko rodziny albo region" />
+          Nazwisko, nazwa drzewa lub region
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} className="pole mt-1 w-full" placeholder="np. Lulkiewicz, Kobylin" />
         </label>
         <label className="block text-sm text-tekst-2">
           Sortuj
@@ -56,6 +58,19 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
       <p role="status" aria-live="polite" className="mt-4 text-sm text-tekst-2">
         {wynik.length === drzewa.length ? `Drzew: ${drzewa.length}` : `Znaleziono ${wynik.length} z ${drzewa.length} drzew`}
       </p>
+      {zapytanie && (
+        <p role="status" aria-live="polite" className="szklo mt-3 p-4 text-[15px]">
+          {zNazwiskiem > 0 ? (
+            <>
+              <strong>Tak, takie nazwisko już jest.</strong> Nazwisko „{zapytanie}” (lub podobne) występuje w {zNazwiskiem === 1 ? "1 drzewie" : `${zNazwiskiem} drzewach`} – zobacz poniżej.
+            </>
+          ) : (
+            <>
+              <strong>Nie znaleziono nazwiska „{zapytanie}”</strong> w żadnym z publicznych drzew. Drzewa prywatne nie są przeszukiwane, a nazwiska w drzewach tworzonych dawniej pojawiają się po ich ponownym otwarciu przez właściciela.
+            </>
+          )}
+        </p>
+      )}
       {zBazy.length >= LIMIT_KATALOGU.wszystkie && (
         <p className="mt-2 text-sm text-tekst-2">Wyświetlono pierwsze {LIMIT_KATALOGU.wszystkie} publicznych drzew użytkowników.</p>
       )}
@@ -65,7 +80,7 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {wynik.map((d) => (
             <li key={d.meta.slug}>
-              <KartaDrzewa drzewo={d} />
+              <KartaDrzewa drzewo={d} pasujaceNazwiska={pasujaceNazwiska(d, q)} />
             </li>
           ))}
         </ul>

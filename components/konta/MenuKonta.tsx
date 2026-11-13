@@ -46,7 +46,7 @@ export function MenuKonta() {
         <span className="truncate">{konto.profil?.imie ?? "Konto"}</span>
       </button>
       {otwarte && (
-        <div role="menu" className="szklo absolute right-0 top-full z-50 mt-2 w-64 p-2 text-sm">
+        <div role="menu" className="szklo !bg-lita absolute right-0 top-full z-50 mt-2 w-64 p-2 text-sm">
           <p className="truncate px-3 py-2 font-semibold" title={nazwa}>
             {nazwa}
           </p>

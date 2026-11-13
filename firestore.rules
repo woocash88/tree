@@ -84,8 +84,9 @@ service cloud.firestore {
 
     function metaPoprawna(m) {
       return m.keys().hasOnly(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
-                               'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano', 'numer'])
+                               'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano', 'numer', 'nazwiska'])
         && (!('numer' in m) || (m.numer is string && numerPoprawny(m.numer)))
+        && (!('nazwiska' in m) || (m.nazwiska is list && m.nazwiska.size() <= 300))
         && m.keys().hasAll(['nazwa', 'opis', 'region', 'widocznosc', 'politykaDatZyjacych', 'wlascicielId', 'wlascicielNazwa',
                             'kolaboranci', 'kolaboranciInfo', 'zakresLat', 'statystyki', 'utworzono', 'zaktualizowano'])
         && niepusty(m.nazwa, 120) && tekst(m.opis, 1000) && tekst(m.region, 120)
@@ -134,7 +135,7 @@ service cloud.firestore {
             && (jestAdmin()
                 || (weryfikowany() && resource.data.wlascicielId == request.auth.uid)
                 || (weryfikowany() && request.auth.uid in resource.data.kolaboranci
-                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['zakresLat', 'statystyki', 'zaktualizowano']))
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['zakresLat', 'statystyki', 'nazwiska', 'zaktualizowano']))
                 // kolaborant może opuścić drzewo (usunąć wyłącznie siebie)
                 || (zalogowany() && request.auth.uid in resource.data.kolaboranci
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kolaboranci', 'kolaboranciInfo'])

@@ -24,6 +24,21 @@ export function filtrujDrzewa(drzewa: PodsumowanieDrzewa[], zapytanie: string): 
   });
 }
 
+/** Nazwiska z drzewa zaczynające się od któregoś słowa zapytania (bez polskich znaków) – żeby pokazać, że ktoś taki w drzewie jest. */
+export function pasujaceNazwiska(d: PodsumowanieDrzewa, zapytanie: string, ile = 4): string[] {
+  const slowa = normalizuj(zapytanie).split(" ").filter(Boolean);
+  if (!slowa.length) return [];
+  return d.nazwiska.filter((n) => {
+    const nn = normalizuj(n);
+    return slowa.some((s) => nn.startsWith(s));
+  }).slice(0, ile);
+}
+
+/** Drzewa, w których występuje nazwisko pasujące do zapytania (odpowiedź na „czy ktoś taki już jest?”). */
+export function drzewaZNazwiskiem(drzewa: PodsumowanieDrzewa[], zapytanie: string): PodsumowanieDrzewa[] {
+  return drzewa.filter((d) => pasujaceNazwiska(d, zapytanie, 1).length > 0);
+}
+
 export function sortujDrzewa(drzewa: PodsumowanieDrzewa[], sortowanie: Sortowanie): PodsumowanieDrzewa[] {
   const alfa = (a: PodsumowanieDrzewa, b: PodsumowanieDrzewa) => a.meta.nazwa.localeCompare(b.meta.nazwa, "pl");
   const kopia = drzewa.slice();

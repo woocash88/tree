@@ -4,7 +4,7 @@ import { dataPL, ileGalezi, ileOsob, ilePokolen, rozdzielOpis } from "@/lib/form
 import { sciezkaDrzewa } from "@/lib/sciezki";
 
 /** Karta drzewa w siatce: nazwa, opis, zakres lat, liczby, region i data aktualizacji. Cała karta jest klikalna. */
-export function KartaDrzewa({ drzewo }: { drzewo: PodsumowanieDrzewa }) {
+export function KartaDrzewa({ drzewo, pasujaceNazwiska = [] }: { drzewo: PodsumowanieDrzewa; pasujaceNazwiska?: string[] }) {
   const { meta } = drzewo;
   return (
     <article className="szklo group relative flex h-full flex-col p-5 transition-transform duration-200 hover:-translate-y-0.5">
@@ -18,6 +18,12 @@ export function KartaDrzewa({ drzewo }: { drzewo: PodsumowanieDrzewa }) {
         </Link>
       </h3>
       <p className="mt-2 flex-1 text-sm leading-relaxed text-tekst-2">{rozdzielOpis(meta.opis).opis}</p>
+      {pasujaceNazwiska.length > 0 && (
+        <p className="mt-3 text-sm">
+          <span className="text-tekst-2">Nazwisko w drzewie: </span>
+          <strong>{pasujaceNazwiska.join(", ")}</strong>
+        </p>
+      )}
       <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
         <div>
           <dt className="text-xs uppercase tracking-wide text-tekst-2">Lata</dt>

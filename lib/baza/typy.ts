@@ -23,6 +23,8 @@ export type MetaDb = {
   zaktualizowano: string;
   /** Krótki numer drzewa (5 cyfr, a gdy się zapełnią – 6 itd.), podawany przy zapraszaniu do współpracy. Starsze drzewa dostają go przy pierwszym otwarciu przez właściciela. */
   numer?: string;
+  /** Nazwiska występujące w drzewie (te widoczne dla gości; najczęstsze pierwsze) – do wyszukiwania drzew po nazwisku. Brak w drzewach sprzed tej funkcji. */
+  nazwiska?: string[];
 };
 
 /** Dokumenty drzewa/{id}/dane/pelne (tylko dla zarządzających) i drzewa/{id}/dane/publiczne (po polityce dat). */
@@ -39,6 +41,8 @@ export const MAKS_KOLABORANTOW = 20;
 export const MAKS_RODZENSTWA = 15;
 export const MAKS_MALZONKOW = 4;
 export const MAKS_DZIECI = 15;
+/** Ile nazwisk zapisujemy w opisie drzewa na potrzeby wyszukiwania. */
+export const MAKS_NAZWISK_W_META = 300;
 
 export const mozeEdytowacDane = (d: Dostep) => d !== "gosc";
 export const mozeZarzadzac = (d: Dostep) => d === "wlasciciel" || d === "admin";

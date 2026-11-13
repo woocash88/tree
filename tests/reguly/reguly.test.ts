@@ -347,3 +347,18 @@ describe("numery drzew", () => {
     await assertSucceeds(deleteDoc(doc(as("ala"), "numery/66666")));
   });
 });
+
+describe("nazwiska drzewa (wyszukiwanie)", () => {
+  it("właściciel i kolaborant aktualizują listę nazwisk razem ze statystykami; obcy nie", async () => {
+    const zmiana = { nazwiska: ["Nowak"], statystyki: { osob: 2, pokolen: 1, galezi: 1 } };
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/pub"), zmiana));
+    await assertSucceeds(updateDoc(doc(as("kuba"), "drzewa/prv"), zmiana));
+    await assertFails(updateDoc(doc(as("obcy"), "drzewa/pub"), zmiana));
+  });
+  it("kolaborant nie zmieni innych pól razem z nazwiskami, a lista nie może być dłuższa niż 300", async () => {
+    await assertFails(updateDoc(doc(as("kuba"), "drzewa/prv"), { nazwiska: ["X"], nazwa: "Przejęte" }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { nazwiska: Array.from({ length: 301 }, (_, i) => `N${i}`) }));
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/pub"), { nazwiska: Array.from({ length: 300 }, (_, i) => `N${i}`) }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { nazwiska: "nie lista" }));
+  });
+});

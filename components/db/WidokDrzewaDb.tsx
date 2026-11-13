@@ -15,7 +15,7 @@ import { WidokOsoby } from "@/components/widoki/WidokOsoby";
 import { WidokStronyDrzewa } from "@/components/widoki/WidokStronyDrzewa";
 import { type ApiEdycji } from "@/components/useEdycje";
 import { daneWidoku, indeksSzukaniaDrzewa, przygotujDrzewo, statystykaWidoku } from "@/lib/dane-czyste";
-import { przypiszNumer, wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
+import { przypiszNumer, uzupelnijNazwiska, wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import * as L from "@/lib/baza/logika";
 import { type DaneDb } from "@/lib/baza/typy";
@@ -189,6 +189,13 @@ export function WidokDrzewaDb() {
       aktualne = false;
     };
   }, [brakNumeru, id, przeladuj]);
+
+  // To samo z listą nazwisk do wyszukiwania drzew po nazwisku (drzewa sprzed tej funkcji).
+  const brakNazwisk = !!meta && !meta.nazwiska && (dostep === "wlasciciel" || dostep === "admin") && konto.zweryfikowany;
+  useEffect(() => {
+    if (!brakNazwisk) return;
+    uzupelnijNazwiska(id).catch(() => null);
+  }, [brakNazwisk, id]);
 
   useEffect(() => {
     if (meta) document.title = `${meta.nazwa} – Przodkowie`;

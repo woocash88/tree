@@ -2,7 +2,7 @@
 import { adresId } from "./konta-adres";
 import { pobierzFirebase } from "./firebase";
 import { uniewaznijKatalog } from "./katalog";
-import { daneDlaGosci, doFirestore, pusteDane, sprawdzDane, statystykiDanych, zakresLatDanych } from "./logika";
+import { daneDlaGosci, doFirestore, nazwiskaDanych, pusteDane, sprawdzDane, statystykiDanych, zakresLatDanych } from "./logika";
 import type { Dostep, DaneDb, MetaDb, Profil, Prosba, Widocznosc } from "./typy";
 import { MAKS_KOLABORANTOW } from "./typy";
 import type { PolitykaDat } from "../schemat-drzewa";
@@ -62,6 +62,7 @@ export async function utworzDrzewo(dane: NoweDrzewo, uid: string, wlascicielNazw
     kolaboranci: [],
     kolaboranciInfo: {},
     zakresLat: null,
+    nazwiska: [],
     statystyki: { osob: 0, pokolen: 0, galezi: 1 },
     utworzono: teraz,
     zaktualizowano: teraz.slice(0, 10),
@@ -109,6 +110,20 @@ export async function przypiszNumer(drzewoId: string): Promise<string> {
   throw new Error("Nie udało się nadać numeru drzewa. Spróbuj ponownie.");
 }
 
+/** Uzupełnia listę nazwisk (do wyszukiwania) w drzewie utworzonym, zanim ta funkcja powstała. Tylko właściciel lub administrator. */
+export async function uzupelnijNazwiska(drzewoId: string): Promise<void> {
+  const { db, F } = await fs();
+  await F.runTransaction(db, async (tx) => {
+    const mRef = F.doc(db, "drzewa", drzewoId);
+    const mSnap = await tx.get(mRef);
+    if (!mSnap.exists() || (mSnap.data() as MetaDb).nazwiska) return;
+    const meta = mSnap.data() as MetaDb;
+    const pSnap = await tx.get(F.doc(db, "drzewa", drzewoId, "dane", "pelne"));
+    const publiczne = daneDlaGosci(pSnap.exists() ? (pSnap.data() as DaneDb) : pusteDane(), meta.politykaDatZyjacych);
+    tx.update(mRef, { nazwiska: nazwiskaDanych(publiczne) });
+  });
+}
+
 /** Identyfikator drzewa dla numeru podanego przez użytkownika (null, gdy takiego numeru nie ma). */
 export async function drzewoIdZNumeru(numer: string): Promise<string | null> {
   const { db, F } = await fs();
@@ -135,7 +150,7 @@ export async function zapiszDane(id: string, zmiana: (d: DaneDb) => DaneDb): Pro
     const publiczne = daneDlaGosci(nowe, meta.politykaDatZyjacych);
     tx.set(pelneRef, doFirestore(nowe));
     tx.set(publRef, doFirestore(publiczne));
-    tx.update(mRef, { statystyki: statystykiDanych(nowe), zakresLat: zakresLatDanych(publiczne), zaktualizowano: dzis() });
+    tx.update(mRef, { statystyki: statystykiDanych(nowe), zakresLat: zakresLatDanych(publiczne), nazwiska: nazwiskaDanych(publiczne), zaktualizowano: dzis() });
   });
 }
 
@@ -153,7 +168,7 @@ export async function zapiszUstawienia(id: string, u: UstawieniaDrzewa): Promise
     const pelne = pSnap.exists() ? (pSnap.data() as DaneDb) : pusteDane();
     const publiczne = daneDlaGosci(pelne, u.politykaDatZyjacych);
     tx.set(F.doc(db, "drzewa", id, "dane", "publiczne"), doFirestore(publiczne));
-    tx.update(mRef, { nazwa: u.nazwa.trim(), opis: u.opis.trim(), region: u.region.trim(), widocznosc: u.widocznosc, politykaDatZyjacych: u.politykaDatZyjacych, zakresLat: zakresLatDanych(publiczne), zaktualizowano: dzis() });
+    tx.update(mRef, { nazwa: u.nazwa.trim(), opis: u.opis.trim(), region: u.region.trim(), widocznosc: u.widocznosc, politykaDatZyjacych: u.politykaDatZyjacych, zakresLat: zakresLatDanych(publiczne), nazwiska: nazwiskaDanych(publiczne), zaktualizowano: dzis() });
   });
   uniewaznijKatalog();
 }

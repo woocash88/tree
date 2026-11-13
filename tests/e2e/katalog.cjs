@@ -9,8 +9,8 @@ const wartosc = (v) => {
   if (Array.isArray(v)) return { arrayValue: { values: v.map(wartosc) } };
   return { mapValue: { fields: Object.fromEntries(Object.entries(v).map(([k, x]) => [k, wartosc(x)])) } };
 };
-async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00Z') {
-  const meta = { nazwa, opis: '', region: '', widocznosc: 'publiczne', politykaDatZyjacych: 'ukryj', wlascicielId: 'wlasciciel', wlascicielNazwa: 'Właściciel', kolaboranci: [], kolaboranciInfo: {}, zakresLat: { od: 1900, do: 1950 }, statystyki: { osob, pokolen: 2, galezi: 1 }, utworzono, zaktualizowano: '2026-11-12' };
+async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00Z', nazwiska = []) {
+  const meta = { nazwa, opis: '', region: '', widocznosc: 'publiczne', politykaDatZyjacych: 'ukryj', wlascicielId: 'wlasciciel', wlascicielNazwa: 'Właściciel', kolaboranci: [], kolaboranciInfo: {}, zakresLat: { od: 1900, do: 1950 }, nazwiska, statystyki: { osob, pokolen: 2, galezi: 1 }, utworzono, zaktualizowano: '2026-11-12' };
   await fetch(`${REST}/drzewa/${id}`, { method: 'PATCH', headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: wartosc(meta).mapValue.fields }) });
 }
 
@@ -18,7 +18,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   const br = await chromium.launch();
   await wyczysc();
   // 15 publicznych drzew i jedno puste (niewidoczne w katalogu)
-  for (let i = 1; i <= 15; i++) await dodajDrzewo(`seed${String(i).padStart(2, '0')}`, `Rodzina ${String(i).padStart(2, '0')}`, 3 + i, `2026-11-12T10:${String(i).padStart(2, '0')}:00Z`);
+  for (let i = 1; i <= 15; i++) await dodajDrzewo(`seed${String(i).padStart(2, '0')}`, `Rodzina ${String(i).padStart(2, '0')}`, 3 + i, `2026-11-12T10:${String(i).padStart(2, '0')}:00Z`, i === 7 ? ['Stanisławski', 'Olejnik'] : i === 9 ? ['Stanisławska'] : ['Kowalski']);
   await dodajDrzewo('puste', 'Puste drzewo', 0);
 
   const g = await nowaKarta(br);
@@ -42,11 +42,21 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   await g.p.getByRole('link', { name: /Rodzina 07/ }).first().waitFor({ timeout: 15000 });
   ok('kliknięcie w wyszukiwarkę pobiera pełną listę (limit 100) raz i znajduje drzewo', zapytania.length === poGlownej + 1 && limity()[0] === '100', `limity: ${limity()}`);
 
+  await g.p.getByRole('searchbox', { name: /Szukaj drzewa/ }).fill('stanislaw');
+  await g.p.getByText(/Tak, takie nazwisko już jest – w 2 drzewach/).waitFor({ timeout: 15000 });
+  ok('wyszukiwarka na głównej: nazwisko bez polskich znaków znajduje drzewa i mówi, że takie nazwisko już jest', (await g.p.getByText('Nazwisko: Stanisławski').count()) === 1);
   await g.p.getByRole('link', { name: 'Przeglądaj publiczne drzewa' }).click();
   await g.p.waitForURL('**/drzewa/');
   await g.p.getByText('Rodzina 15').first().waitFor({ timeout: 15000 });
   await g.p.waitForTimeout(800);
   ok('katalog korzysta z pamięci podręcznej – bez nowego zapytania', zapytania.length === poGlownej + 1, `zapytań: ${zapytania.length}`);
+  await g.p.getByRole('searchbox', { name: /Szukaj drzew/ }).or(g.p.getByLabel('Nazwisko, nazwa drzewa lub region')).first().fill('Stanisławsk');
+  await g.p.getByText(/Tak, takie nazwisko już jest/).waitFor({ timeout: 10000 });
+  ok('katalog: wpisanie nazwiska pokazuje, że takie nazwisko już istnieje, i drzewa, w których występuje', (await g.p.locator('main ul li').count()) === 2 && (await g.p.getByText('Nazwisko w drzewie:').count()) === 2);
+  await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('Zielińskowski');
+  await g.p.getByText(/Nie znaleziono nazwiska „Zielińskowski”/).waitFor({ timeout: 10000 });
+  ok('katalog: nieistniejące nazwisko – wyraźna informacja, że nie ma go w publicznych drzewach', true);
+  await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('');
   ok('katalog nie pokazuje pustych drzew, a pozostałe są wszystkie', (await g.p.getByText('Puste drzewo').count()) === 0 && (await g.p.locator('main ul li').count()) === 15);
 
   await g.p.reload();

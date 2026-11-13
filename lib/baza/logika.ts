@@ -8,7 +8,7 @@ import { zastosujPatch, type NowaOsoba, type PatchOsoby } from "../edycje";
 import type { Galaz, Malzenstwo, Osoba } from "../schemat";
 import type { PolitykaDat } from "../schemat-drzewa";
 import { walidujRodzine } from "../walidacja";
-import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_OSOB, MAKS_RODZENSTWA, type DaneDb, type MetaDb, type StatystykiDb } from "./typy";
+import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_NAZWISK_W_META, MAKS_OSOB, MAKS_RODZENSTWA, type DaneDb, type MetaDb, type StatystykiDb } from "./typy";
 
 export const DOMYSLNA_GALAZ: Galaz = { id: "glowna", nazwa: "Główna gałąź", kolor: "#3540d1", opis: "" };
 
@@ -28,6 +28,21 @@ export function daneDlaGosci(d: DaneDb, polityka: PolitykaDat): DaneDb {
       return reszta;
     }),
   };
+}
+
+/**
+ * Nazwiska (i rodowe) z danych widocznych dla gości, od najczęstszych. Liczone z kopii publicznej, więc nie zdradzają nic,
+ * czego goście i tak nie zobaczą w drzewie (polityka dat nie ukrywa imion i nazwisk).
+ */
+export function nazwiskaDanych(publiczne: DaneDb): string[] {
+  const licznik = new Map<string, number>();
+  for (const o of publiczne.osoby) {
+    for (const n of [o.nazwisko, o.nazwiskoRodowe]) {
+      const t = n?.trim();
+      if (t && t !== "—" && t.length <= 60) licznik.set(t, (licznik.get(t) ?? 0) + 1);
+    }
+  }
+  return [...licznik.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pl")).slice(0, MAKS_NAZWISK_W_META).map(([n]) => n);
 }
 
 function pokolenia(d: DaneDb): number {

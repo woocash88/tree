@@ -103,6 +103,9 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await g.p.getByRole('heading', { name: 'Rodzina Test', level: 1 }).waitFor();
   ok('gość widzi numer publicznego drzewa obok nazwy', (await g.p.locator('main code', { hasText: numer }).count()) === 1);
 
+  const nazwiskaMeta = (await dokument(`drzewa/${id}`)).fields?.nazwiska?.arrayValue?.values?.map((v) => v.stringValue) ?? [];
+  ok('zapis osób odświeża listę nazwisk w drzewie (do wyszukiwania)', nazwiskaMeta.includes('Test'), JSON.stringify(nazwiskaMeta));
+
   // ── edycja osoby ze strony osoby, w tym zmiana rodzica ──
   await ala.p.goto(osoba('marek-test'));
   await ala.p.getByRole('heading', { name: 'Marek Test', level: 1 }).waitFor();
@@ -127,13 +130,16 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await ala.p.keyboard.press('Escape');
 
   // ── numer dla starszego drzewa (bez numeru) i dołączanie po numerze ──
-  const stare = await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/drzewa/stare1234567890abcdef`, { method: 'PATCH', headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: Object.fromEntries(Object.entries((await dokument(`drzewa/${id}`)).fields).filter(([k]) => k !== 'numer')) }) })).json();
+  const stare = await (await fetch(`${FS}/v1/projects/${P}/databases/(default)/documents/drzewa/stare1234567890abcdef`, { method: 'PATCH', headers: { Authorization: 'Bearer owner', 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: Object.fromEntries(Object.entries((await dokument(`drzewa/${id}`)).fields).filter(([k]) => k !== 'numer' && k !== 'nazwiska')) }) })).json();
   ok('przygotowano stare drzewo bez numeru', !stare.fields.numer);
   await ala.p.goto(`${B}/d/?id=stare1234567890abcdef`);
   await ala.p.getByRole('heading', { name: 'Rodzina Test' }).first().waitFor({ timeout: 15000 });
   let nowyNumer = '';
   for (let i = 0; i < 40 && !nowyNumer; i++) { nowyNumer = (await dokument('drzewa/stare1234567890abcdef')).fields?.numer?.stringValue ?? ''; if (!nowyNumer) await new Promise((r) => setTimeout(r, 250)); }
   ok('właściciel starszego drzewa: numer nadany automatycznie po otwarciu', /^[1-9]\d{4}$/.test(nowyNumer) && nowyNumer !== numer, nowyNumer);
+  let maNazwiska = false;
+  for (let i = 0; i < 40 && !maNazwiska; i++) { maNazwiska = !!(await dokument('drzewa/stare1234567890abcdef')).fields?.nazwiska; if (!maNazwiska) await new Promise((r) => setTimeout(r, 250)); }
+  ok('starsze drzewo dostało listę nazwisk automatycznie po otwarciu', maNazwiska);
 
   const kuba = await nowaKarta(br);
   const mailKuba = `kuba-${t}@example.org`;

@@ -198,3 +198,20 @@ describe("prywatność osób żyjących", () => {
     expect(L.doFirestore({ a: 1, b: undefined, c: { d: undefined, e: 2 } })).toEqual({ a: 1, c: { e: 2 } });
   });
 });
+
+describe("nazwiska drzewa do wyszukiwania", () => {
+  it("zbiera nazwiska i rodowe, najczęstsze pierwsze, bez pustych i bez „—”", () => {
+    let d = zaczynajac(); // jan Kowalski
+    d = L.dodajOsobe(osoba("a", { nazwisko: "Nowak", ojciecId: "jan" }))(d);
+    d = L.dodajOsobe(osoba("b", { nazwisko: "Nowak", plec: "K", nazwiskoRodowe: "Zielińska" }))(d);
+    d = L.dodajOsobe(osoba("c", { nazwisko: "", ojciecId: "jan" }))(d);
+    d = L.dodajOsobe(osoba("d", { nazwisko: "—" }))(d);
+    expect(L.nazwiskaDanych(d)).toEqual(["Nowak", "Kowalski", "Zielińska"]);
+  });
+
+  it("nie wymyśla nazwisk z danych okrojonych polityką dat", () => {
+    const d = L.dodajOsobe(osoba("z", { nazwisko: "Żyjący", urodzenie: { wartosc: "2001", dokladnosc: "rok" }, zyjaca: true }))(zaczynajac());
+    // goście i tak widzą imię i nazwisko osób żyjących – kopia publiczna zawiera to nazwisko
+    expect(L.nazwiskaDanych(L.daneDlaGosci(d, "ukryj"))).toContain("Żyjący");
+  });
+});

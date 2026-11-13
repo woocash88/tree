@@ -55,3 +55,21 @@ describe("wyszukiwarka drzew", () => {
     expect(sortujDrzewa(nowsze, "aktualizacja").map((d) => d.meta.slug)).toEqual([drzewa[1].meta.slug, drzewa[0].meta.slug]);
   });
 });
+
+import { drzewaZNazwiskiem, pasujaceNazwiska } from "../lib/szukaj-drzew";
+
+describe("szukanie drzew po nazwisku osób", () => {
+  const drzewo = (slug: string, nazwiska: string[]) => ({ meta: { slug, nazwa: slug, region: "", zaktualizowano: "2026-01-01" }, osob: 1, pokolen: 1, galezi: 1, nazwiska }) as never;
+  const lista = [drzewo("a", ["Stanisławski", "Lulkiewicz"]), drzewo("b", ["Kowalski"])];
+
+  it("znajduje nazwisko po początku, bez polskich znaków i wielkości liter", () => {
+    expect(pasujaceNazwiska(lista[0], "stanislaw")).toEqual(["Stanisławski"]);
+    expect(pasujaceNazwiska(lista[0], "ŁULK")).toEqual(["Lulkiewicz"]);
+    expect(pasujaceNazwiska(lista[0], "kowal")).toEqual([]);
+    expect(pasujaceNazwiska(lista[0], "  ")).toEqual([]);
+  });
+  it("odpowiada, w ilu drzewach nazwisko występuje", () => {
+    expect(drzewaZNazwiskiem(lista, "kowalski")).toHaveLength(1);
+    expect(drzewaZNazwiskiem(lista, "nowak")).toHaveLength(0);
+  });
+});
