@@ -18,7 +18,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   const br = await chromium.launch();
   await wyczysc();
   // 15 publicznych drzew i jedno puste (niewidoczne w katalogu)
-  for (let i = 1; i <= 15; i++) await dodajDrzewo(`seed${String(i).padStart(2, '0')}`, `Rodzina ${String(i).padStart(2, '0')}`, 3 + i, `2026-11-12T10:${String(i).padStart(2, '0')}:00Z`, i === 7 ? ['Stanisławski', 'Olejnik'] : i === 9 ? ['Stanisławska'] : ['Kowalski']);
+  for (let i = 1; i <= 25; i++) await dodajDrzewo(`seed${String(i).padStart(2, '0')}`, `Rodzina ${String(i).padStart(2, '0')}`, 3 + i, `2026-11-12T10:${String(i).padStart(2, '0')}:00Z`, i === 7 ? ['Stanisławski', 'Olejnik'] : i === 9 ? ['Stanisławska'] : ['Kowalski']);
   await dodajDrzewo('puste', 'Puste drzewo', 0);
 
   const g = await nowaKarta(br);
@@ -72,8 +72,12 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('Zielińskowski');
   await g.p.getByText(/Nie znaleziono nazwiska „Zielińskowski”/).waitFor({ timeout: 10000 });
   ok('katalog: nieistniejące nazwisko – wyraźna informacja, że nie ma go w publicznych drzewach', true);
+  await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('Rodzina 24');
+  await g.p.getByText('Rodzina 24').first().waitFor({ timeout: 10000 });
+  ok('drzewo spoza pierwszych 20 jest dostępne przez wyszukiwanie', (await g.p.locator('main ul li').count()) === 1);
   await g.p.getByLabel('Nazwisko, nazwa drzewa lub region').fill('');
-  ok('katalog nie pokazuje pustych drzew, a pozostałe są wszystkie', (await g.p.getByText('Puste drzewo').count()) === 0 && (await g.p.locator('main ul li').count()) === 15);
+  ok('katalog nie pokazuje pustych drzew, a pozostałe są wszystkie', (await g.p.getByText('Puste drzewo').count()) === 0 && (await g.p.locator('main ul li').count()) === 20 && (await g.p.getByText(/pokazano pierwsze 20/).count()) === 1);
+  ok('katalog pokazuje najwyżej 20 drzew z 25 (po zawężeniu wyszukiwania widać resztę)', true);
 
   await g.p.reload();
   await g.p.getByText('Rodzina 15').first().waitFor({ timeout: 15000 });

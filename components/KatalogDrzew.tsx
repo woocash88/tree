@@ -7,6 +7,9 @@ import { KartaDrzewa } from "./KartaDrzewa";
 import { LIMIT_KATALOGU } from "@/lib/baza/katalog";
 import { useDrzewaPubliczne } from "./db/useDrzewaPubliczne";
 
+/** Najwięcej drzew pokazywanych naraz na stronie przeglądu (szukanie obejmuje wszystkie pobrane drzewa, nie tylko te pokazane). */
+export const LIMIT_WYSWIETLANIA = 20;
+
 /** Indeks drzew: wyszukiwanie po nazwisku (osób w drzewach), nazwie drzewa i regionie oraz sortowanie. Stan w adresie (?q=&sort=). */
 export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: PodsumowanieDrzewa[] }) {
   const zBazy = useDrzewaPubliczne();
@@ -57,6 +60,7 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
       </form>
       <p role="status" aria-live="polite" className="mt-4 text-sm text-tekst-2">
         {wynik.length === drzewa.length ? `Drzew: ${drzewa.length}` : `Znaleziono ${wynik.length} z ${drzewa.length} drzew`}
+        {wynik.length > LIMIT_WYSWIETLANIA && ` · pokazano pierwsze ${LIMIT_WYSWIETLANIA} – wpisz nazwisko, nazwę lub region, aby zawęzić`}
       </p>
       {zapytanie && (
         <p role="status" aria-live="polite" className="szklo mt-3 p-4 text-[15px]">
@@ -78,7 +82,7 @@ export function KatalogDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumow
         <p className="szklo mt-4 p-6 text-center text-tekst-2">Żadne drzewo nie pasuje do „{q}”. Spróbuj samego nazwiska lub nazwy miejscowości.</p>
       ) : (
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {wynik.map((d) => (
+          {wynik.slice(0, LIMIT_WYSWIETLANIA).map((d) => (
             <li key={d.meta.slug}>
               <KartaDrzewa drzewo={d} pasujaceNazwiska={pasujaceNazwiska(d, q)} />
             </li>
