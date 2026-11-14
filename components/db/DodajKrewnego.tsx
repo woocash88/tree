@@ -97,7 +97,11 @@ export function DodajKrewnego({ rodzaj, osoba, malzonkowie = [], wszystkieId, il
         onClick={() => setOtwarte(true)}
         className={`group flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-kreska px-3 text-sm font-semibold text-akcent transition-colors hover:border-akcent hover:bg-najazd disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-kreska disabled:hover:bg-transparent ${wyglad === "karta" ? "min-h-[4.25rem] py-3" : "min-h-11 py-2"}`}
       >
-        <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none">+</span>
+        <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-akcent bg-lita">
+          <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </span>
         {napisy.przycisk}
       </button>
       {zablokowane && <p className="mt-1 text-center text-xs text-tekst-2">{zablokowane}</p>}

@@ -38,7 +38,7 @@ export default async function StronaGalezi({ params }: Props) {
   return (
     <>
       <ListaGalezi slug={d.meta.slug} {...daneWidoku(d)} galazId={galaz} liczbaOsob={s.osob} />
-      <Stopka drzewo={d.meta} />
+      <Stopka />
     </>
   );
 }

@@ -50,6 +50,7 @@ async function dodajDrzewo(id, nazwa, osob = 3, utworzono = '2026-11-12T10:00:00
   await ciemny.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-glowna-ciemna.png', fullPage: true });
   const jasnoscTla = await ciemny.p.evaluate(() => { const c = getComputedStyle(document.querySelector('.glowna')).backgroundColor.match(/\d+/g).map(Number); return (c[0] + c[1] + c[2]) / 3; });
   ok('ciemny motyw: tło strony głównej jest ciemne', jasnoscTla < 60, String(jasnoscTla));
+  ok('stopka strony głównej: tylko „Polityka prywatności”', (await g.p.locator('footer').innerText()).trim() === 'Polityka prywatności');
   const poGlownej = zapytania.length;
   ok('strona główna nie pobiera żadnych drzew (zero zapytań)', poGlownej === 0, `zapytań: ${poGlownej}, treść: ${(zapytania[0] ?? '').slice(0, 300)}`);
   ok('na stronie głównej nie ma listy drzew, jest link „Przegląd drzew”', (await g.p.getByRole('heading', { name: /Ostatnio dodane|Polecane/ }).count()) === 0 && (await g.p.getByRole('link', { name: 'Przegląd drzew' }).count()) === 1);

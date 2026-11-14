@@ -326,7 +326,7 @@ export function WidokDrzewaDb() {
           <p role="alert" className="mx-auto mt-3 w-full max-w-7xl px-4 text-sm font-semibold text-blad">{blad}</p>
         )}
         {tresc}
-        {!pelnoekranowy || w === "galaz" || w === "lista" ? <Stopka drzewo={metaDlaWidokow(id, meta)} /> : null}
+        {!pelnoekranowy || w === "galaz" || w === "lista" ? <Stopka /> : null}
       </div>
     </KontekstDb.Provider>
   );

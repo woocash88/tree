@@ -291,8 +291,9 @@ Reguły chronią dane, ale nie ograniczają ruchu: skrypt spoza strony mógłby 
    Włączenie od razu zablokuje każdego, kto ma jeszcze starą wersję strony w przeglądarce.
 
 Koszt i prywatność: usługa jest darmowa, ale reCAPTCHA ładuje skrypt Google u każdego odwiedzającego – dlatego jest włączana tylko po
-ustawieniu zmiennej, a polityka prywatności i stopka dostają wtedy odpowiednie informacje (stopka z wymaganym przez Google oznaczeniem,
-plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i testy nie używają App Check.
+ustawieniu zmiennej, a polityka prywatności dostaje wtedy odpowiednią sekcję. Stopka każdej strony zawiera tylko link do polityki
+prywatności, więc plakietka reCAPTCHA (wymagane przez Google oznaczenie) jest widoczna w rogu ekranu – nie wolno jej ukrywać bez
+dopisania tekstu oznaczenia w widocznym miejscu. Emulatory i testy nie używają App Check.
 
 **„Stwórz drzewo” i logowanie.** „Stwórz drzewo” w nagłówku strony głównej prowadzi zalogowanego prosto do profilu z otwartym formularzem nowego
 drzewa (`/profil/?nowe=1`), a niezalogowanego do logowania z wyjaśnieniem (`/logowanie/?po=nowe`; rejestracja tak samo). Po zalogowaniu lub

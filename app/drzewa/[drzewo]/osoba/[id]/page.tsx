@@ -41,7 +41,7 @@ export default async function StronaOsoby({ params }: Props) {
   return (
     <>
       <WidokOsoby d={d} id={id} />
-      <Stopka drzewo={d.meta} />
+      <Stopka />
     </>
   );
 }

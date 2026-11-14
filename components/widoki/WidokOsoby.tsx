@@ -205,7 +205,11 @@ export function WidokOsoby({ d, id, mozeDodawac = false }: { d: Drzewo; id: stri
                   <li key={z.osoba.id} className="relative">
                     {/* znak „+” łączący osobę z małżonkiem (na szerokim ekranie) */}
                     <span aria-hidden="true" className="absolute -left-16 top-1/2 hidden h-[2.5px] w-16 -translate-y-1/2 items-center justify-center bg-[var(--linia)] lg:flex">
-                      <span data-linia={z === zwiazki[0] ? "plus" : undefined} className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-base font-bold leading-none text-akcent">+</span>
+                      <span data-linia={z === zwiazki[0] ? "plus" : undefined} className="flex size-6 items-center justify-center rounded-full border-2 border-akcent bg-lita text-akcent">
+                        <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </span>
                     </span>
                     {karta(z.osoba, zwiazki.length > 1 ? `związek ${z.kolejnosc}` : z.osoba.plec === "K" ? "żona" : z.osoba.plec === "M" ? "mąż" : "małżonek", false, "💍")}
                   </li>

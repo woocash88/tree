@@ -204,6 +204,25 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await potwierdzEmail(mailNowa);
   await nowa.p.getByRole('button', { name: 'Utwórz drzewo' }).waitFor({ timeout: 20000 });
   ok('rejestracja przez „Stwórz drzewo”: po potwierdzeniu e-maila formularz nowego drzewa jest otwarty', true);
+  await nowa.p.getByRole('heading', { name: 'Masz już drzewo w pliku? Zaimportuj je' }).waitFor();
+  await nowa.p.getByRole('button', { name: 'Wybierz plik do importu…' }).or(nowa.p.getByText('Wybierz plik do importu…')).first().waitFor();
+  ok('formularz nowego drzewa ma wyraźną sekcję importu z plikiem (przycisk i opis)', (await nowa.p.getByText(/Wczytaj kopię/).count()) === 1);
+  await nowa.p.locator('form[aria-label="Nowe drzewo"]').screenshot({ path: require('os').tmpdir() + '/przodkowie-nowe-drzewo-import.png' });
+
+  // ── nagłówek drzewa, stopka i wyrównanie plusa ──
+  await ala.p.goto(lista('jan-test-1850'));
+  await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link', { name: 'Rodzina Test' }).waitFor();
+  const linkiNaglowka = await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link').allInnerTexts();
+  ok('nagłówek drzewa: „Przegląd drzew”, nazwa otwartego drzewa i „Osoby” (bez „Drzewa” i „Drzewo”)', linkiNaglowka.join('|') === 'Przegląd drzew|Rodzina Test|Osoby', linkiNaglowka.join('|'));
+  ok('stopka: tylko link „Polityka prywatności”', (await ala.p.locator('footer').innerText()).trim() === 'Polityka prywatności');
+  await ala.p.goto(osoba('jan-test-1850'));
+  await ala.p.getByRole('button', { name: 'Dodaj rodzeństwo' }).waitFor();
+  const przesuniecie = await ala.p.evaluate(() => {
+    const kolko = document.querySelector('main button span[aria-hidden]');
+    const rk = kolko.getBoundingClientRect(), rs = kolko.querySelector('svg').getBoundingClientRect();
+    return Math.hypot(rk.x + rk.width / 2 - (rs.x + rs.width / 2), rk.y + rk.height / 2 - (rs.y + rs.height / 2));
+  });
+  ok('plus w kółku przycisku „Dodaj…” leży dokładnie pośrodku', przesuniecie < 0.6, String(przesuniecie));
 
   // ── zrzuty pozostałych stron w nowym stylu (do przeglądu wizualnego) ──
   const zrzut = async (p, nazwa, adres, opcje = {}) => { await p.goto(adres); await p.waitForTimeout(1500); await p.screenshot({ path: require('os').tmpdir() + `/przodkowie-styl-${nazwa}.png`, ...opcje }); };

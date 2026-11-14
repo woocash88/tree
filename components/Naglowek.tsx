@@ -14,10 +14,10 @@ export type KontekstDrzewa = { slug: string; nazwa: string; galezie: GalazSkrot[
 export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
   const sciezka = usePathname() ?? "/";
   const linki = [
-    { href: sciezkaIndeksuDrzew(), etykieta: "Drzewa", aktywny: sciezka === "/drzewa" || sciezka === "/drzewa/" },
+    { href: sciezkaIndeksuDrzew(), etykieta: "Przegląd drzew", aktywny: sciezka === "/drzewa" || sciezka === "/drzewa/" },
     ...(drzewo
       ? [
-          { href: sciezkaDrzewa(drzewo.slug), etykieta: "Drzewo", aktywny: /^\/drzewa\/[^/]+\/?$/.test(sciezka) },
+          { href: sciezkaDrzewa(drzewo.slug), etykieta: drzewo.nazwa, tytul: `Otwórz stronę drzewa: ${drzewo.nazwa}`, aktywny: /^\/drzewa\/[^/]+\/?$/.test(sciezka) },
           { href: sciezkaIndeksuOsob(drzewo.slug), etykieta: "Osoby", aktywny: sciezka.includes("/osoby") },
         ]
       : []),
@@ -36,7 +36,7 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
         </Link>
         <nav aria-label="Główna nawigacja" className="flex items-center gap-1 text-sm">
           {linki.map((l) => (
-            <Link key={l.href} href={l.href} aria-current={l.aktywny ? "page" : undefined} className={`rounded-full px-3.5 py-2 ${l.aktywny ? "bg-[var(--tag)] font-semibold text-akcent" : "font-medium text-tekst-2 hover:bg-najazd hover:text-tekst"}`}>
+            <Link key={l.href} href={l.href} title={"tytul" in l ? l.tytul : undefined} aria-current={l.aktywny ? "page" : undefined} className={`max-w-[11rem] truncate rounded-full px-3.5 py-2 ${l.aktywny ? "bg-[var(--tag)] font-semibold text-akcent" : "font-medium text-tekst-2 hover:bg-najazd hover:text-tekst"}`}>
               {l.etykieta}
             </Link>
           ))}

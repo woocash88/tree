@@ -143,38 +143,53 @@ function NoweDrzewo({ uid, nazwaWlasciciela, mozeTworzyc }: { uid: string; nazwa
           </select>
         </div>
       </div>
-      <div>
-        <label className="block text-sm text-tekst-2" htmlFor={`${id}-i`}>
-          Wypełnij z pliku (opcjonalnie): kopia .json z serwisu albo GEDCOM .ged
-        </label>
-        <input
-          id={`${id}-i`}
-          type="file"
-          accept=".json,.ged,.gedcom,application/json"
-          className="mt-1 block text-sm"
-          onChange={async (e) => {
-            const plik = e.target.files?.[0];
-            setZPliku(null);
-            setBlad("");
-            if (!plik) return;
-            try {
-              const wynik = await wczytajPlikDrzewa(plik);
-              setZPliku({ plik: plik.name, wynik });
-              setNazwa((n) => n || wynik.ustawienia.nazwa || "");
-              setOpis((o) => o || wynik.ustawienia.opis || "");
-              setRegion((r) => r || wynik.ustawienia.region || "");
-            } catch (err) {
-              setBlad(komunikatBledu(err));
-              e.target.value = "";
-            }
-          }}
-        />
-        {zPliku && (
-          <p className="mt-1 text-sm" role="status">
-            {zPliku.plik}: {zPliku.wynik.dane.osoby.length} osób, {zPliku.wynik.dane.malzenstwa.length} małżeństw zostanie zaimportowanych do nowego drzewa.
-            {zPliku.wynik.ostrzezenia.length > 0 && <span className="block text-tekst-2">Uwagi: {zPliku.wynik.ostrzezenia.join(" ")}</span>}
-          </p>
-        )}
+      <div className="rounded-2xl border-2 border-dashed border-akcent bg-najazd p-4">
+        <div className="flex items-start gap-3">
+          <span aria-hidden="true" className="flex size-11 flex-none items-center justify-center rounded-2xl bg-akcent text-akcent-tekst">
+            <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 16V4M7 9l5-5 5 5M5 20h14" />
+            </svg>
+          </span>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-base font-bold">Masz już drzewo w pliku? Zaimportuj je</h4>
+            <p className="mt-1 text-sm text-tekst-2">Wczytaj kopię <strong>.json</strong> z tego serwisu albo plik <strong>GEDCOM (.ged)</strong> z innego portalu genealogicznego. Wypełnimy nazwę, opis i region, a po utworzeniu drzewa dodamy wszystkie osoby z pliku.</p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <input
+                id={`${id}-i`}
+                type="file"
+                accept=".json,.ged,.gedcom,application/json"
+                aria-label="Wypełnij z pliku: kopia .json z serwisu albo GEDCOM .ged"
+                className="peer sr-only"
+                onChange={async (e) => {
+                  const plik = e.target.files?.[0];
+                  setZPliku(null);
+                  setBlad("");
+                  if (!plik) return;
+                  try {
+                    const wynik = await wczytajPlikDrzewa(plik);
+                    setZPliku({ plik: plik.name, wynik });
+                    setNazwa((n) => n || wynik.ustawienia.nazwa || "");
+                    setOpis((o) => o || wynik.ustawienia.opis || "");
+                    setRegion((r) => r || wynik.ustawienia.region || "");
+                  } catch (err) {
+                    setBlad(komunikatBledu(err));
+                    e.target.value = "";
+                  }
+                }}
+              />
+              <label htmlFor={`${id}-i`} aria-hidden="true" className="przycisk przycisk-glowny !min-h-11 cursor-pointer !px-5 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-akcent">
+                {zPliku ? "Wybierz inny plik…" : "Wybierz plik do importu…"}
+              </label>
+              <span className="min-w-0 truncate text-sm text-tekst-2">{zPliku ? zPliku.plik : "Nie wybrano pliku (import jest opcjonalny)"}</span>
+            </div>
+            {zPliku && (
+              <p className="mt-3 rounded-xl bg-lita px-3 py-2 text-sm" role="status">
+                <strong>Gotowe do importu:</strong> {zPliku.wynik.dane.osoby.length} osób, {zPliku.wynik.dane.malzenstwa.length} małżeństw zostanie zaimportowanych do nowego drzewa.
+                {zPliku.wynik.ostrzezenia.length > 0 && <span className="mt-1 block text-tekst-2">Uwagi: {zPliku.wynik.ostrzezenia.join(" ")}</span>}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
       <p className="text-xs text-tekst-2">Te ustawienia możesz później zmienić. Ty i kolaboranci zawsze widzicie pełne dane. Widoczność i prywatność z pliku nie są przejmowane – obowiązują ustawienia powyżej.</p>
       {blad && (

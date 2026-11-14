@@ -91,7 +91,15 @@ export default function PolitykaPrywatnosci() {
           {KLUCZ_APP_CHECK && (
             <Sekcja tytul="Ochrona przed nadużyciami (reCAPTCHA)">
               <p>
-                Aby chronić bazę danych przed automatycznymi nadużyciami, serwis korzysta z Firebase App Check z usługą Google reCAPTCHA. W tym celu przeglądarka każdego odwiedzającego pobiera skrypt Google i przesyła do Google informacje o urządzeniu i sposobie korzystania ze strony (m.in. adres IP) według polityki prywatności Google. Dane te służą wyłącznie do odróżnienia człowieka od bota.
+                Aby chronić bazę danych przed automatycznymi nadużyciami, serwis korzysta z Firebase App Check z usługą Google reCAPTCHA. W tym celu przeglądarka każdego odwiedzającego pobiera skrypt Google i przesyła do Google informacje o urządzeniu i sposobie korzystania ze strony (m.in. adres IP) według polityki prywatności Google. Dane te służą wyłącznie do odróżnienia człowieka od bota. Ta strona jest chroniona przez reCAPTCHA (w rogu ekranu widać jej plakietkę); obowiązują{" "}
+                <a className="link" href="https://policies.google.com/privacy" rel="noreferrer">
+                  Polityka prywatności
+                </a>{" "}
+                i{" "}
+                <a className="link" href="https://policies.google.com/terms" rel="noreferrer">
+                  Warunki korzystania
+                </a>{" "}
+                Google.
               </p>
             </Sekcja>
           )}

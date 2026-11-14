@@ -23,7 +23,7 @@ export default async function StronaIndeksu({ params }: Props) {
   return (
     <>
       <WidokIndeksuOsob d={d} />
-      <Stopka drzewo={d.meta} />
+      <Stopka />
     </>
   );
 }
