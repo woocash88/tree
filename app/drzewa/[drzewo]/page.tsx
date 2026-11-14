@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Stopka } from "@/components/Stopka";
+import { PowlokaMiekka } from "@/components/glowna/PowlokaMiekka";
 import { WidokStronyDrzewa } from "@/components/widoki/WidokStronyDrzewa";
 import { pobierzDrzewo } from "@/lib/dane";
 import { ileOsob, ilePokolen } from "@/lib/format";
@@ -20,9 +20,8 @@ export default async function StronaDrzewa({ params }: Props) {
   const d = await pobierzDrzewo(drzewo);
   if (!d) notFound();
   return (
-    <>
+    <PowlokaMiekka>
       <WidokStronyDrzewa d={d} />
-      <Stopka drzewo={d.meta} />
-    </>
+    </PowlokaMiekka>
   );
 }

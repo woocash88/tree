@@ -28,7 +28,7 @@ Kopie źródłowe w repozytorium:
 
 | adres | zawartość |
 |---|---|
-| `/` | strona główna według wzoru „glass”: nagłówek-pigułka, wyszukiwarka drzew (po nazwisku, nazwie, regionie), karty „Wyszukiwanie”, „Stwórz własne drzewo” i „O portalu” |
+| `/` | strona główna w stylu miękkim (wzór C): nagłówek-pigułka, wyszukiwarka drzew (po nazwisku, nazwie, regionie), karty „Wyszukiwanie”, „Stwórz własne drzewo” i „O portalu” |
 | `/drzewa/` | indeks drzew: karty (nazwa, opis, lata, osoby, pokolenia, region, aktualizacja), wyszukiwanie po nazwie/nazwisku/regionie, sortowanie (alfabetycznie, największe, ostatnio zaktualizowane) |
 | `/drzewa/<drzewo>/` | strona drzewa: statystyki, kafelki gałęzi, wyszukiwarka osób, źródło i opiekun |
 | `/drzewa/<drzewo>/galaz/<galaz>/` | **lista gałęzi** (widok główny): zwijana lista z wcięciami, panel osoby; `cale` = „Całe drzewo” |
@@ -302,8 +302,8 @@ Karta „Stwórz własne drzewo” ma przycisk „Zacznij tu” (rejestracja) al
 **Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna nie pobiera
 żadnych drzew: lista publicznych drzew (limit 100) ładuje się dopiero, gdy ktoś kliknie w wyszukiwarkę albo wejdzie do katalogu, a wynik jest
 wspólny dla całej strony i pamiętany 10 minut w pamięci i `sessionStorage`. Zmiana drzewa (utworzenie, ustawienia, usunięcie) unieważnia
-pamięć. Strona przeglądu drzew to alfabetyczna lista (z nagłówkami liter od 12 drzew) wszystkich pobranych publicznych drzew – do 100; kliknięcie
-wiersza otwiera ekran drzewa. Przy większej liczbie dalsza skala wymagałaby stronicowania.
+pamięć. Strona przeglądu drzew to lista wszystkich pobranych publicznych drzew – do 100 – uporządkowana alfabetycznie (z nagłówkami liter od
+12 drzew) albo według liczby osób (przełącznik „Alfabetycznie” / „Najwięcej osób”, adres `?sort=osoby`); kliknięcie wiersza otwiera ekran drzewa. Przy większej liczbie dalsza skala wymagałaby stronicowania.
 
 **Numer drzewa („ID drzewa”).** Każde drzewo ma krótki numer: losowy, 5-cyfrowy (np. 48213); gdy wylosowane numery okazują się zajęte
 (pula się zapełnia), numer dostaje o cyfrę więcej (6, 7… do 9 cyfr). Numer widać z przyciskiem „Kopiuj” obok nazwy drzewa, na
@@ -533,7 +533,7 @@ Własną domenę dodaje się w Firebase: *Hosting → Dodaj domenę niestandardo
 app/                    strony i układy (/, /drzewa, /drzewa/[drzewo]/…, /d, /profil, /logowanie, /rejestracja, /admin), sitemap.ts, robots.ts
 components/             Naglowek, Wyszukiwarka, KatalogDrzew, ListaGalezi, PanelOsoby, PlotnoDrzewa, IndeksOsob, …
 components/konta/       AuthProvider, MenuKonta, formularze logowania/rejestracji, PanelProfilu
-components/glowna/      nagłówek i przyciski „Stwórz drzewo” / „Zacznij tu” strony głównej (style: klasy .glowna w app/globals.css)
+components/glowna/      oprawa stron w stylu miękkim (PowlokaMiekka, NaglowekGlowna), przyciski „Stwórz drzewo” / „Zacznij tu” (style: klasy .glowna w app/globals.css)
 components/db/          WidokDrzewaDb (strona /d/), UstawieniaDrzewa, kontekst i hooki drzew z bazy
 components/widoki/      widoki wspólne dla drzew z repozytorium i z bazy (osoba, strona drzewa, indeks osób)
 lib/baza/               Firebase: firebase.ts (inicjalizacja), konta.ts, api.ts (Firestore), logika.ts (czyste zmiany drzewa), typy.ts
@@ -570,3 +570,10 @@ Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest
 - **Import GEDCOM / JSON** do drzewa użytkownika oraz eksport drzewa.
 - **Przeniesienie drzew z repozytorium do bazy**, żeby administrator edytował je tak jak drzewa użytkowników.
 - **Moderacja**: zgłaszanie naruszeń i ukrywanie drzew publicznych do akceptacji.
+
+## Styl miękki (wzór C)
+
+Strona główna, przegląd drzew (`/drzewa/`) i strona główna drzewa (`/d/?id=…` bez widoku, `/drzewa/<drzewo>/`) mają osobny, „miękki” styl:
+kremowe tło z dużymi plamami, pełne białe powierzchnie z zielonym cieniem, zielony akcent `#2f6f4f`, krój Plus Jakarta Sans i nagłówek-pigułka
+(`components/glowna/`). Wariant ciemny jest własny (zieleń na ciemnym tle). Pozostałe widoki (lista gałęzi, diagram, osoba, profil, panel
+administratora) zachowały dotychczasowy styl; zmienne kolorów strony miękkiej to `--g-*` w klasie `.glowna` w `app/globals.css`.

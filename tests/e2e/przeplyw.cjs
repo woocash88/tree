@@ -217,7 +217,8 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   ok('zmiana imienia trafiła do nazwy kolaboranta w drzewie', JSON.stringify((await dokument(`drzewa/${idDrzewa}`)).fields.kolaboranciInfo).includes('Jakub Kowalski'));
   await szef.p.locator('tr', { hasText: mail('kuba') }).getByRole('button', { name: 'Usuń użytkownika' }).click();
   await szef.p.getByText(/Usunięto użytkownika/).waitFor({ timeout: 15000 });
-  ok('administrator usunął użytkownika (Kuba)', (await szef.p.getByText(mail('kuba'), { exact: false }).count()) <= 1);
+  await szef.p.locator('tr', { hasText: mail('kuba') }).waitFor({ state: 'detached', timeout: 15000 });
+  ok('administrator usunął użytkownika (Kuba), wiersz znika z tabeli', true);
   await kuba.p.goto(B + '/profil/');
   await kuba.p.getByRole('heading', { name: 'Konto usunięte' }).waitFor({ timeout: 15000 });
   ok('usunięty użytkownik widzi „Konto usunięte” i nie ma dostępu', true);

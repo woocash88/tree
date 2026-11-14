@@ -36,8 +36,15 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await ala.p.goto(`${B}/d/?id=${id}`);
   await ala.p.getByRole('heading', { name: 'Rodzina Test', level: 1 }).waitFor();
   await ala.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-strona-drzewa.png', fullPage: true });
+  await ala.p.setViewportSize({ width: 390, height: 844 });
+  await ala.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-strona-drzewa-telefon.png', fullPage: true });
+  ok('telefon: strona drzewa bez poziomego przewijania', await ala.p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  await ala.p.setViewportSize({ width: 1280, height: 900 });
+  await ala.p.emulateMedia({ colorScheme: 'dark' });
+  await ala.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-strona-drzewa-ciemna.png', fullPage: true });
+  await ala.p.emulateMedia({ colorScheme: null });
   ok('„ID drzewa: <numer>” widoczne obok nazwy na stronie drzewa', (await ala.p.locator('main code', { hasText: numer }).count()) === 1 && (await ala.p.getByText('ID drzewa:').count()) >= 1);
-  ok('numer drzewa w pasku roli (właściciel)', (await ala.p.locator('div.bg-najazd code', { hasText: numer }).count()) === 1);
+  ok('numer drzewa w pasku roli (właściciel) i przy nazwie', (await ala.p.locator('code', { hasText: numer }).count()) === 2);
   await ala.p.goto(B + '/profil/');
   await ala.p.getByRole('heading', { name: 'Rodzina Test' }).waitFor();
   await ala.p.locator('section[aria-label="Adres e-mail i logowanie"]').screenshot({ path: require('os').tmpdir() + '/przodkowie-profil-email.png' });

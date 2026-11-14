@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter/wght.css";
-@import "@fontsource-variable/space-grotesk/wght.css";
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 /*
  * Motyw „glass”. Wszystkie kolory to zmienne CSS przełączane między trybem jasnym i ciemnym:
@@ -431,80 +431,102 @@ h1, h2, h3 {
 :root[data-theme="ciemny"] .dark-odwroc { filter: invert(1); }
 
 
-/* ───────────────────────── strona główna (wzór „glass”) ─────────────────────────
- * Własna paleta strony głównej: szkło, turkusowy akcent i kolorowe plamy w tle. Jasny i ciemny wariant
- * przełączają się tak samo jak reszta serwisu (prefers-color-scheme albo data-theme na <html>). */
+/* ───────────────────────── strony w stylu „miękkim” (wzór C) ─────────────────────────
+ * Strona główna, przegląd drzew i strona drzewa: kremowe tło, pełne białe powierzchnie z miękkim zielonym cieniem,
+ * zielony akcent i krój Plus Jakarta Sans. Jasny i ciemny wariant przełączają się tak jak w reszcie serwisu
+ * (prefers-color-scheme albo data-theme na <html>). Nazwy klas g-* zostały po poprzednim wzorze. */
 .glowna {
-  --g-tlo: #e9effc;
-  --g-tekst: #0f172a;
-  --g-tekst2: #475569;
-  --g-tekst3: #526179;
-  --g-akcent: #0f766e;
-  --g-akcent-tekst: #0f766e;
-  --g-szklo: rgba(255, 255, 255, 0.58);
-  --g-szklo-lita: #f4f7ff;
-  --g-ramka: rgba(255, 255, 255, 0.85);
-  --g-cien: 0 8px 32px rgba(31, 41, 90, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  --g-chip: rgba(15, 23, 42, 0.06);
-  --g-kreska: rgba(15, 23, 42, 0.12);
-  --g-orb-1: rgba(45, 212, 191, 0.38);
-  --g-orb-2: rgba(167, 139, 250, 0.45);
-  --g-orb-3: rgba(96, 165, 250, 0.38);
+  --g-tlo: #f2f4ee;
+  --g-tekst: #1f2a24;
+  --g-tekst2: #4b5a50;
+  --g-tekst3: #5d6b62;
+  --g-akcent: #2f6f4f;
+  --g-akcent-tekst: #2f6f4f;
+  --g-szklo: #ffffff;
+  --g-szklo-lita: #ffffff;
+  --g-ramka: transparent;
+  --g-cien: 0 14px 40px rgba(47, 111, 79, 0.1), 0 2px 6px rgba(31, 42, 36, 0.04);
+  --g-cien-duzy: 0 16px 44px rgba(47, 111, 79, 0.14), 0 2px 8px rgba(31, 42, 36, 0.05);
+  --g-chip: #e6efe8;
+  --g-chip-ramka: rgba(47, 111, 79, 0.14);
+  --g-tag: #e1ece3;
+  --g-panel: #f4f7f2;
+  --g-wybrany: #e1ece3;
+  --g-kreska: rgba(47, 111, 79, 0.16);
+  --g-orb-1: rgba(47, 111, 79, 0.1);
+  --g-orb-2: rgba(244, 164, 120, 0.2);
+  --g-orb-3: rgba(47, 111, 79, 0.07);
   position: relative;
   overflow: hidden;
   flex: 1 1 auto;
   background: var(--g-tlo);
   color: var(--g-tekst);
+  font-family: "Plus Jakarta Sans Variable", "Inter Variable", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="jasny"]) .glowna {
-    --g-tlo: #0a0f1f;
-    --g-tekst: #e8eef9;
-    --g-tekst2: #b4c0d6;
-    --g-tekst3: #9fb0c9;
-    --g-akcent-tekst: #2dd4bf;
-    --g-szklo: rgba(22, 31, 62, 0.58);
-    --g-szklo-lita: #141c3a;
-    --g-ramka: rgba(255, 255, 255, 0.13);
-    --g-cien: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    --g-chip: rgba(255, 255, 255, 0.08);
-    --g-kreska: rgba(255, 255, 255, 0.14);
-    --g-orb-1: rgba(45, 212, 191, 0.22);
-    --g-orb-2: rgba(139, 92, 246, 0.3);
-    --g-orb-3: rgba(59, 130, 246, 0.22);
+    --g-tlo: #101712;
+    --g-tekst: #e8efe9;
+    --g-tekst2: #b6c4ba;
+    --g-tekst3: #9aaba0;
+    --g-akcent-tekst: #7cc7a0;
+    --g-szklo: #1a241e;
+    --g-szklo-lita: #1a241e;
+    --g-ramka: rgba(255, 255, 255, 0.06);
+    --g-cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --g-cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    --g-chip: #243229;
+    --g-chip-ramka: rgba(124, 199, 160, 0.2);
+    --g-tag: #223a2d;
+    --g-panel: #151e18;
+    --g-wybrany: #223a2d;
+    --g-kreska: rgba(255, 255, 255, 0.12);
+    --g-orb-1: rgba(47, 111, 79, 0.2);
+    --g-orb-2: rgba(244, 164, 120, 0.07);
+    --g-orb-3: rgba(47, 111, 79, 0.14);
     color-scheme: dark;
   }
 }
 :root[data-theme="ciemny"] .glowna {
-  --g-tlo: #0a0f1f;
-  --g-tekst: #e8eef9;
-  --g-tekst2: #b4c0d6;
-  --g-tekst3: #9fb0c9;
-  --g-akcent-tekst: #2dd4bf;
-  --g-szklo: rgba(22, 31, 62, 0.58);
-  --g-szklo-lita: #141c3a;
-  --g-ramka: rgba(255, 255, 255, 0.13);
-  --g-cien: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --g-chip: rgba(255, 255, 255, 0.08);
-  --g-kreska: rgba(255, 255, 255, 0.14);
-  --g-orb-1: rgba(45, 212, 191, 0.22);
-  --g-orb-2: rgba(139, 92, 246, 0.3);
-  --g-orb-3: rgba(59, 130, 246, 0.22);
+  --g-tlo: #101712;
+  --g-tekst: #e8efe9;
+  --g-tekst2: #b6c4ba;
+  --g-tekst3: #9aaba0;
+  --g-akcent-tekst: #7cc7a0;
+  --g-szklo: #1a241e;
+  --g-szklo-lita: #1a241e;
+  --g-ramka: rgba(255, 255, 255, 0.06);
+  --g-cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --g-cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --g-chip: #243229;
+  --g-chip-ramka: rgba(124, 199, 160, 0.2);
+  --g-tag: #223a2d;
+  --g-panel: #151e18;
+  --g-wybrany: #223a2d;
+  --g-kreska: rgba(255, 255, 255, 0.12);
+  --g-orb-1: rgba(47, 111, 79, 0.2);
+  --g-orb-2: rgba(244, 164, 120, 0.07);
+  --g-orb-3: rgba(47, 111, 79, 0.14);
   color-scheme: dark;
 }
 .glowna a { color: inherit; text-decoration: none; }
 .glowna :focus-visible { outline: 2px solid var(--g-akcent-tekst); outline-offset: 2px; }
-.glowna .g-display { font-family: "Space Grotesk Variable", "Inter Variable", system-ui, sans-serif; }
+.glowna .g-display { font-family: "Plus Jakarta Sans Variable", "Inter Variable", system-ui, sans-serif; }
 .glowna .g-szklo {
   background: var(--g-szklo);
   border: 1px solid var(--g-ramka);
   box-shadow: var(--g-cien);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  backdrop-filter: blur(24px) saturate(160%);
 }
+.glowna .g-duzy { box-shadow: var(--g-cien-duzy); }
+/* Pole w pigułce: pierścień fokusu na całej pigułce zamiast prostokąta wokół samego pola. */
+.glowna .g-pigulka:focus-within { outline: 2px solid var(--g-akcent-tekst); outline-offset: 2px; }
+.glowna .g-pigulka input:focus-visible { outline: none; }
 .glowna .g-lita { background: var(--g-szklo-lita) !important; }
-.glowna .g-chip { background: var(--g-chip); border: 1px solid var(--g-ramka); }
+.glowna .g-chip { background: var(--g-chip); border: 1px solid var(--g-chip-ramka); }
+.glowna .g-tag { background: var(--g-tag); }
+.glowna .g-panel { background: var(--g-panel); }
+.glowna .g-wybrany { background: var(--g-wybrany); }
 .glowna .g-t2 { color: var(--g-tekst2); }
 .glowna .g-t3 { color: var(--g-tekst3); }
 .glowna .g-akcent { color: var(--g-akcent-tekst); }
@@ -516,13 +538,33 @@ h1, h2, h3 {
   border: 0;
   transition: filter 0.15s;
 }
-.glowna .g-przycisk:hover { filter: brightness(1.1); }
+.glowna .g-przycisk:hover { filter: brightness(1.12); }
 .glowna .g-link:hover { background: var(--g-chip); color: var(--g-tekst); }
+.glowna .g-wiersz:hover, .glowna .g-wiersz:focus-visible { background: var(--g-chip); }
 .glowna .g-orb { position: absolute; border-radius: 50%; pointer-events: none; }
 .glowna input::placeholder { color: var(--g-tekst3); opacity: 1; }
-@media (prefers-reduced-transparency: reduce) {
-  .glowna .g-szklo { background: var(--g-szklo-lita); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Wyszukiwarka osób w drzewie (komponent Wyszukiwarka) w stylu miękkim: biała pigułka z cieniem.
+ * Reguły są w warstwie components, bo klasy Tailwinda z „!” (warstwa utilities) przy !important wygrywają z regułami spoza warstw. */
+@layer components {
+  .glowna input[data-szukaj="duza"] {
+    background: var(--g-szklo) !important;
+    color: var(--g-tekst) !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    box-shadow: var(--g-cien-duzy) !important;
+    min-height: 64px !important;
+    padding-left: 3.25rem !important;
+    font-size: 17px !important;
+  }
+  .glowna [role="listbox"] { background: var(--g-szklo-lita) !important; border-radius: 24px !important; }
 }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glowna .g-szklo { background: var(--g-szklo-lita); }
-}
+.glowna input[data-szukaj="duza"] + kbd { border-color: var(--g-chip-ramka); background: var(--g-chip); color: var(--g-tekst3); }
+.glowna input[data-szukaj="duza"]:focus-visible { outline: 2px solid var(--g-akcent-tekst); outline-offset: 2px; }
+.glowna input[data-szukaj="duza"], .glowna input[data-szukaj="duza"]::placeholder { text-overflow: ellipsis; }
+/* Przyciski „kapsułki” z reszty serwisu (np. przełącznik motywu) w barwach miękkiego stylu. */
+.glowna .przycisk { background: var(--g-chip); border-color: var(--g-chip-ramka); color: var(--g-tekst); }
+.glowna .przycisk:hover:not(:disabled) { background: var(--g-tag); }
+.glowna .id-drzewa { background: var(--g-chip); border-color: var(--g-chip-ramka); color: var(--g-tekst3); }
+.glowna .id-drzewa code { color: var(--g-tekst); }
+.glowna .id-drzewa button { color: var(--g-akcent-tekst); }
+.glowna .id-drzewa button:hover { background: var(--g-szklo); }

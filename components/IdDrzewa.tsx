@@ -7,7 +7,7 @@ export function IdDrzewa({ numer, className = "" }: { numer?: string; className?
   const [skopiowano, setSkopiowano] = useState(false);
   if (!numer) return null;
   return (
-    <span className={`inline-flex max-w-full items-center gap-1.5 rounded-full border border-kreska bg-najazd py-0.5 pl-2.5 pr-1 align-middle text-xs font-semibold text-tekst-2 ${className}`} title="Numer drzewa – podaj go osobie, którą zapraszasz do współpracy">
+    <span className={`id-drzewa inline-flex max-w-full items-center gap-1.5 rounded-full border border-kreska bg-najazd py-0.5 pl-2.5 pr-1 align-middle text-xs font-semibold text-tekst-2 ${className}`} title="Numer drzewa – podaj go osobie, którą zapraszasz do współpracy">
       <span>ID drzewa:</span>
       <code className="select-all font-mono text-sm text-tekst">{numer}</code>
       <button

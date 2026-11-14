@@ -40,7 +40,7 @@ export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumowa
   return (
     <div role="search" className="mx-auto w-full max-w-[700px] text-left">
       <form
-        className="g-szklo flex items-center gap-2.5 rounded-[26px] py-2.5 pl-5 pr-2.5"
+        className="g-szklo g-duzy g-pigulka flex items-center gap-2.5 rounded-full py-2.5 pl-6 pr-2.5"
         onSubmit={(e) => {
           e.preventDefault();
           router.push(`${sciezkaIndeksuDrzew()}${zapytanie ? `?q=${encodeURIComponent(zapytanie)}` : ""}`);
@@ -65,15 +65,15 @@ export function SzukajDrzew({ drzewa: drzewaZRepozytorium }: { drzewa: Podsumowa
           className="h-14 min-w-0 flex-1 border-0 bg-transparent text-base outline-0 sm:text-lg"
           style={{ color: "var(--g-tekst)" }}
         />
-        <kbd aria-hidden="true" className="g-chip g-t3 hidden flex-none rounded-lg px-2 py-0.5 text-[13px] sm:block">
+        <kbd aria-hidden="true" className="g-chip g-t3 hidden flex-none rounded-[10px] px-2.5 py-0.5 text-[13px] sm:block">
           /
         </kbd>
-        <button type="submit" className="g-przycisk h-14 flex-none rounded-[18px] px-5 text-base sm:px-7">
+        <button type="submit" className="g-przycisk h-14 flex-none rounded-full px-5 text-base sm:px-7">
           Szukaj
         </button>
       </form>
       {zapytanie && (
-        <ul aria-label="Znalezione drzewa" className="g-szklo g-lita mt-2 divide-y overflow-hidden rounded-[22px]" style={{ borderColor: "var(--g-kreska)" }}>
+        <ul aria-label="Znalezione drzewa" className="g-szklo g-lita mt-2 divide-y overflow-hidden rounded-[28px]" style={{ borderColor: "var(--g-kreska)" }}>
           {wynik.length === 0 && <li className="g-t2 px-4 py-3">Nie znaleziono nazwiska ani drzewa „{zapytanie}” wśród publicznych drzew.</li>}
           {ileZNazwiskiem > 0 && <li className="px-4 py-2 text-sm font-semibold">Tak, takie nazwisko już jest – w {ileZNazwiskiem === 1 ? "1 drzewie" : `${ileZNazwiskiem} drzewach`}.</li>}
           {wynik.map((d) => (

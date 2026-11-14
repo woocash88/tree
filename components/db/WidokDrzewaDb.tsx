@@ -8,6 +8,7 @@ import { ListaGalezi } from "@/components/ListaGalezi";
 import { Naglowek } from "@/components/Naglowek";
 import { PlotnoDrzewa } from "@/components/PlotnoDrzewa";
 import { IdDrzewa } from "@/components/IdDrzewa";
+import { PowlokaMiekka } from "@/components/glowna/PowlokaMiekka";
 import { Stopka } from "@/components/Stopka";
 import { useKonto } from "@/components/konta/AuthProvider";
 import { WidokIndeksuOsob } from "@/components/widoki/WidokIndeksuOsob";
@@ -273,26 +274,53 @@ export function WidokDrzewaDb() {
   }
 
   const pelnoekranowy = w === "galaz" || w === "lista" || w === "diagram";
+  const stronaDrzewa = !!drzewo && w !== "ustawienia" && !pelnoekranowy && w !== "osoba" && w !== "osoby";
+
+  // Pasek z rolą użytkownika w drzewie; na stronie drzewa (styl miękki) jako biała pigułka, w pozostałych widokach jak dotąd.
+  const pasekRoli = (miekki: boolean) =>
+    rola && (
+      <div className={miekki ? "mx-auto mt-3 w-full max-w-[1160px] px-4 sm:px-8" : "border-b border-kreska bg-najazd px-4 py-1.5 text-sm"}>
+        <div className={miekki ? "g-szklo flex flex-wrap items-center gap-x-4 gap-y-1 rounded-3xl px-5 py-2.5 text-sm" : "mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-1"}>
+          <span>
+            <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
+          </span>
+          <IdDrzewa numer={meta.numer} />
+          <span className={miekki ? "g-t3" : "text-tekst-2"} role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
+          <span className="ml-auto flex gap-3">
+            <Link href={sciezkaDrzewa(slug)} className={miekki ? "g-akcent font-semibold underline-offset-2 hover:underline" : "link"}>Strona drzewa</Link>
+            {(dostep === "wlasciciel" || dostep === "admin") && (
+              <Link href={sciezkaUstawienDrzewa(slug)} className={miekki ? "g-akcent font-semibold underline-offset-2 hover:underline" : "link"}>Ustawienia i kolaboranci</Link>
+            )}
+          </span>
+        </div>
+      </div>
+    );
+
+  if (stronaDrzewa) {
+    return (
+      <KontekstDb.Provider value={{ drzewoId: id, api, indeks }}>
+        <PowlokaMiekka
+          pasek={
+            <>
+              {pasekRoli(true)}
+              {blad && (
+                <p role="alert" className="mx-auto mt-3 w-full max-w-[1160px] px-4 text-sm font-semibold text-blad sm:px-8">
+                  {blad}
+                </p>
+              )}
+            </>
+          }
+        >
+          {tresc}
+        </PowlokaMiekka>
+      </KontekstDb.Provider>
+    );
+  }
+
   return (
     <KontekstDb.Provider value={{ drzewoId: id, api, indeks }}>
       <Naglowek drzewo={{ slug, nazwa: meta.nazwa, galezie }} />
-      {rola && (
-        <div className="border-b border-kreska bg-najazd px-4 py-1.5 text-sm">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-1">
-            <span>
-              <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
-            </span>
-            <IdDrzewa numer={meta.numer} />
-            <span className="text-tekst-2" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
-            <span className="ml-auto flex gap-3">
-              <Link href={sciezkaDrzewa(slug)} className="link">Strona drzewa</Link>
-              {(dostep === "wlasciciel" || dostep === "admin") && (
-                <Link href={sciezkaUstawienDrzewa(slug)} className="link">Ustawienia i kolaboranci</Link>
-              )}
-            </span>
-          </div>
-        </div>
-      )}
+      {pasekRoli(false)}
       <div id="tresc" className="flex flex-1 flex-col">
         {blad && w !== "ustawienia" && !pelnoekranowy && (
           <p role="alert" className="mx-auto mt-3 w-full max-w-7xl px-4 text-sm font-semibold text-blad">{blad}</p>
