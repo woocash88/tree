@@ -100,4 +100,16 @@ async function dodajOsobePanelem(p, przycisk, pola, wyslij, id, oczekiwane) {
 }
 
 
-module.exports = { wpiszDate, wypelnij, czekajNaOsoby, B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem };
+/** Zakłada konto z potwierdzonym adresem e-mail (jak użytkownik klikający link z wiadomości) i zwraca kartę przeglądarki. */
+async function zalozKonto(br, imie, nazwisko, email) {
+  const k = await nowaKarta(br);
+  await rejestruj(k.p, imie, nazwisko, email);
+  await k.p.goto(B + '/profil/');
+  await k.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor();
+  await potwierdzEmail(email);
+  await k.p.getByRole('button', { name: /Kliknąłem w link/ }).click();
+  await k.p.getByRole('heading', { name: 'Potwierdź adres e-mail' }).waitFor({ state: 'detached' });
+  return k;
+}
+
+module.exports = { zalozKonto, wpiszDate, wypelnij, czekajNaOsoby, B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem };

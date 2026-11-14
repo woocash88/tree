@@ -362,3 +362,93 @@ describe("nazwiska drzewa (wyszukiwanie)", () => {
     await assertFails(updateDoc(doc(as("ala"), "drzewa/pub"), { nazwiska: "nie lista" }));
   });
 });
+
+describe("biała lista: przeglądanie prywatnego drzewa", () => {
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "drzewa/prv"), meta({ widocznosc: "prywatne", kolaboranci: ["kuba"], kolaboranciInfo: { kuba: { nazwa: "Kuba K" } }, widzowie: ["wid", "wid2"], widzowieInfo: { wid: { nazwa: "Widz" }, wid2: { nazwa: "Widz Drugi" } } }));
+    });
+  });
+
+  it("osoba z białej listy czyta drzewo i kopię publiczną, ale nie pełne dane; obcy nic", async () => {
+    await assertSucceeds(getDoc(doc(as("wid"), "drzewa/prv")));
+    await assertSucceeds(getDoc(doc(as("wid"), "drzewa/prv/dane/publiczne")));
+    await assertFails(getDoc(doc(as("wid"), "drzewa/prv/dane/pelne")));
+    await assertFails(getDoc(doc(as("obcy"), "drzewa/prv")));
+    await assertFails(getDoc(doc(as("obcy"), "drzewa/prv/dane/publiczne")));
+    await assertFails(getDoc(doc(gosc(), "drzewa/prv")));
+  });
+
+  it("lista „udostępnione mi” (array-contains) działa dla zalogowanego, ale nie dla cudzego uid", async () => {
+    await assertSucceeds(getDocs(query(collection(as("wid"), "drzewa"), where("widzowie", "array-contains", "wid"))));
+    await assertFails(getDocs(query(collection(as("obcy"), "drzewa"), where("widzowie", "array-contains", "wid"))));
+  });
+
+  it("osoba z białej listy niczego nie edytuje", async () => {
+    await assertFails(setDoc(doc(as("wid"), "drzewa/prv/dane/pelne"), dane(3)));
+    await assertFails(setDoc(doc(as("wid"), "drzewa/prv/dane/publiczne"), dane(3)));
+    await assertFails(updateDoc(doc(as("wid"), "drzewa/prv"), { nazwa: "Przejęte" }));
+    await assertFails(updateDoc(doc(as("wid"), "drzewa/prv"), { statystyki: { osob: 9, pokolen: 1, galezi: 1 } }));
+    await assertFails(deleteDoc(doc(as("wid"), "drzewa/prv")));
+  });
+
+  it("właściciel i administrator dodają i odbierają dostęp; kolaborant, widz i obcy nie", async () => {
+    const dodaj = { widzowie: arrayUnion("nowy"), "widzowieInfo.nowy": { nazwa: "Nowy" } };
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/prv"), dodaj));
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/prv"), { widzowie: arrayRemove("nowy"), "widzowieInfo.nowy": deleteField() }));
+    await assertSucceeds(updateDoc(doc(as("szef"), "drzewa/prv"), dodaj));
+    const innyNowy = { widzowie: arrayUnion("inny"), "widzowieInfo.inny": { nazwa: "Inny" } };
+    await assertFails(updateDoc(doc(as("kuba"), "drzewa/prv"), innyNowy));
+    await assertFails(updateDoc(doc(as("wid"), "drzewa/prv"), innyNowy));
+    await assertFails(updateDoc(doc(as("obcy"), "drzewa/prv"), { widzowie: arrayUnion("obcy"), "widzowieInfo.obcy": { nazwa: "Obcy" } }));
+    await assertFails(updateDoc(doc(as("ala", "ala@example.org", false), "drzewa/prv"), innyNowy));
+  });
+
+  it("osoba z białej listy może zrezygnować – tylko sama, bez zmiany innych pól", async () => {
+    await assertSucceeds(updateDoc(doc(as("wid"), "drzewa/prv"), { widzowie: arrayRemove("wid"), "widzowieInfo.wid": deleteField() }));
+    await assertFails(updateDoc(doc(as("wid2"), "drzewa/prv"), { widzowie: arrayRemove("wid"), "widzowieInfo.wid": deleteField() }));
+    await assertFails(updateDoc(doc(as("wid2"), "drzewa/prv"), { widzowie: arrayRemove("wid2"), "widzowieInfo.wid2": deleteField(), nazwa: "Inna" }));
+    await assertFails(updateDoc(doc(as("obcy"), "drzewa/prv"), { widzowie: arrayRemove("wid2"), "widzowieInfo.wid2": deleteField() }));
+  });
+
+  it("lista nie może mieć więcej niż 50 osób ani zły typ", async () => {
+    await assertSucceeds(updateDoc(doc(as("ala"), "drzewa/prv"), { widzowie: Array.from({ length: 50 }, (_, i) => `u${i}`) }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/prv"), { widzowie: Array.from({ length: 51 }, (_, i) => `u${i}`) }));
+    await assertFails(updateDoc(doc(as("ala"), "drzewa/prv"), { widzowie: "wid" }));
+  });
+});
+
+describe("wiadomości z formularza kontaktowego", () => {
+  const wiadomosc = (extra: Record<string, unknown> = {}) => ({ imie: "Jan", email: "jan@example.org", temat: "pytanie", tresc: "Dzień dobry, mam pytanie o serwis.", utworzono: "2026-11-14T10:00:00Z", ...extra });
+
+  it("wysłać może każdy, także niezalogowany; czytać i usuwać tylko administrator", async () => {
+    await assertSucceeds(setDoc(doc(gosc(), "wiadomosci/a1"), wiadomosc()));
+    await assertSucceeds(setDoc(doc(as("ala"), "wiadomosci/a2"), wiadomosc({ uid: "ala" })));
+    await assertFails(getDoc(doc(gosc(), "wiadomosci/a1")));
+    await assertFails(getDoc(doc(as("ala"), "wiadomosci/a1")));
+    await assertFails(getDocs(collection(as("ala"), "wiadomosci")));
+    await assertSucceeds(getDoc(doc(as("szef"), "wiadomosci/a1")));
+    await assertSucceeds(getDocs(collection(as("szef"), "wiadomosci")));
+    await assertFails(deleteDoc(doc(as("ala"), "wiadomosci/a1")));
+    await assertSucceeds(deleteDoc(doc(as("szef"), "wiadomosci/a1")));
+  });
+  it("wiadomości nie da się zmienić ani podszyć się pod innego użytkownika", async () => {
+    await assertSucceeds(setDoc(doc(gosc(), "wiadomosci/b1"), wiadomosc()));
+    await assertFails(updateDoc(doc(as("szef"), "wiadomosci/b1"), { tresc: "zmieniona wiadomość o treści" }));
+    await assertFails(setDoc(doc(as("ala"), "wiadomosci/b2"), wiadomosc({ uid: "kuba" })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/b3"), wiadomosc({ uid: "ala" })));
+  });
+  it("walidacja pól: puste, za długie, zły temat, zły e-mail, obce pola", async () => {
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c1"), wiadomosc({ imie: "" })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c2"), wiadomosc({ tresc: "" })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c3"), wiadomosc({ tresc: "x".repeat(4001) })));
+    await assertSucceeds(setDoc(doc(gosc(), "wiadomosci/c4"), wiadomosc({ tresc: "x".repeat(4000) })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c5"), wiadomosc({ temat: "spam" })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c6"), wiadomosc({ email: "bez-malpy" })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/c7"), wiadomosc({ admin: true })));
+  });
+  it("zablokowany użytkownik nie wysyła wiadomości", async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => setDoc(doc(ctx.firestore(), "blokady/zly"), { od: "2026" }));
+    await assertFails(setDoc(doc(as("zly"), "wiadomosci/d1"), wiadomosc({ uid: "zly" })));
+  });
+});

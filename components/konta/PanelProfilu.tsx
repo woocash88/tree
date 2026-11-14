@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
-import { listaMoich, listaProsbDrzewa, opuscDrzewo, utworzDrzewo, zapiszDane, type WpisDrzewa } from "@/lib/baza/api";
+import { listaMoich, listaProsbDrzewa, opuscDrzewo, usunWidza, utworzDrzewo, zapiszDane, type WpisDrzewa } from "@/lib/baza/api";
 import { wczytajPlikDrzewa } from "@/lib/baza/plik";
 import type { WynikImportu } from "@/lib/baza/wymiana";
 import { czyKontoUsuwane, komunikatBledu, usunWlasneKonto, wyloguj, wyslijWeryfikacje, zakonczUsuwanieKonta, zapiszProfil } from "@/lib/baza/konta";
@@ -18,7 +18,7 @@ import { DolaczDoDrzewa } from "./DolaczDoDrzewa";
 
 const NAZWY_POLITYK: Record<PolitykaDat, string> = { ukryj: "tylko imię i nazwisko", "tylko-rok": "imię, nazwisko i rok urodzenia", pokaz: "wszystkie dane" };
 
-function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrzewa; rola: "wlasciciel" | "kolaborant"; prosby?: number; naOpusc?: () => void }) {
+function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrzewa; rola: "wlasciciel" | "kolaborant" | "widz"; prosby?: number; naOpusc?: () => void }) {
   const { meta } = wpis;
   const slug = slugDb(wpis.id);
   return (
@@ -33,7 +33,7 @@ function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrze
         <p className="mt-1 flex flex-wrap gap-x-3 text-sm text-tekst-2">
           <span>{meta.widocznosc === "publiczne" ? "Publiczne" : "Prywatne"}</span>
           <span>{ileOsob(meta.statystyki.osob)}</span>
-          {rola === "kolaborant" && <span>Właściciel: {meta.wlascicielNazwa}</span>}
+          {rola !== "wlasciciel" && <span>Właściciel: {meta.wlascicielNazwa}</span>}
           {meta.kolaboranci.length > 0 && <span>Kolaborantów: {meta.kolaboranci.length}</span>}
           {prosby > 0 && <span className="font-semibold text-akcent">Prośby o dołączenie: {prosby}</span>}
         </p>
@@ -47,9 +47,9 @@ function KartaMojegoDrzewa({ wpis, rola, prosby = 0, naOpusc }: { wpis: WpisDrze
             {prosby > 0 ? "Ustawienia i prośby" : "Ustawienia"}
           </Link>
         )}
-        {rola === "kolaborant" && naOpusc && (
+        {(rola === "kolaborant" || rola === "widz") && naOpusc && (
           <button type="button" className="przycisk" onClick={naOpusc}>
-            Opuść drzewo
+            {rola === "widz" ? "Zrezygnuj z dostępu" : "Opuść drzewo"}
           </button>
         )}
       </div>
@@ -294,7 +294,7 @@ function UsuwanieKonta({ haslo: czyHaslo, wlasne }: { haslo: boolean; wlasne: Wp
 export function PanelProfilu() {
   const konto = useKonto();
   const router = useRouter();
-  const [drzewa, setDrzewa] = useState<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[] } | null>(null);
+  const [drzewa, setDrzewa] = useState<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[]; udostepnione: WpisDrzewa[] } | null>(null);
   const [prosbyIle, setProsbyIle] = useState<Record<string, number>>({});
   const [bladListy, setBladListy] = useState("");
   const [imie, setImie] = useState("");
@@ -448,6 +448,31 @@ export function PanelProfilu() {
                   if (!window.confirm(`Opuścić drzewo „${d.meta.nazwa}”? Stracisz możliwość jego edycji.`)) return;
                   try {
                     await opuscDrzewo(d.id, konto.uid!);
+                    await wczytaj();
+                  } catch (e) {
+                    setBladListy(komunikatBledu(e));
+                  }
+                }}
+              />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {drzewa && drzewa.udostepnione.length > 0 && (
+        <section aria-label="Drzewa udostępnione mi do przeglądania" className="grid gap-3">
+          <h2 className="text-2xl">Udostępnione mi do przeglądania</h2>
+          <p className="-mt-1 text-sm text-tekst-2">Właściciele tych prywatnych drzew dali Ci dostęp do przeglądania. Widzisz je jak odwiedzający (dane osób żyjących według ustawień właściciela) i nie możesz ich edytować.</p>
+          <ul className="grid gap-3">
+            {drzewa.udostepnione.map((d) => (
+              <KartaMojegoDrzewa
+                key={d.id}
+                wpis={d}
+                rola="widz"
+                naOpusc={async () => {
+                  if (!window.confirm(`Zrezygnować z dostępu do drzewa „${d.meta.nazwa}”? Właściciel będzie musiał udostępnić Ci je ponownie.`)) return;
+                  try {
+                    await usunWidza(d.id, konto.uid!);
                     await wczytaj();
                   } catch (e) {
                     setBladListy(komunikatBledu(e));

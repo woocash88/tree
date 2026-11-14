@@ -29,7 +29,8 @@ export function AdresEmail() {
     setTrwa(false);
   };
 
-  const sposoby = [s.haslo && "hasłem", s.google && "kontem Google"].filter(Boolean).join(" i ") || "—";
+  const sposoby = [s.haslo && "hasłem", s.google && "kontem Google", s.facebook && "kontem Facebook"].filter(Boolean).join(", ") || "—";
+  const zewnetrzne = [s.google && "Google", s.facebook && "Facebook"].filter(Boolean).join(" lub ");
   const OPIS = "text-sm text-tekst-2";
   const NAGLOWEK = "text-base font-semibold";
 
@@ -46,7 +47,7 @@ export function AdresEmail() {
           <dt className="text-tekst-2">Logowanie</dt>
           <dd>{sposoby}</dd>
         </dl>
-        <p className={`${OPIS} mt-2`}>Logowanie przez Google tym samym adresem e-mail prowadzi do tego samego konta i tych samych drzew.</p>
+        <p className={`${OPIS} mt-2`}>Logowanie przez Google lub Facebook tym samym adresem e-mail prowadzi do tego samego konta i tych samych drzew.</p>
       </div>
 
       {s.haslo ? (
@@ -87,7 +88,7 @@ export function AdresEmail() {
         <div className="space-y-5">
           <div className="space-y-1">
             <h3 className={NAGLOWEK}>Zmiana adresu e-mail</h3>
-            <p className={OPIS}>Adres tego konta pochodzi z Twojego konta Google i nie można go tu zmienić. Aby używać innego adresu, załóż nowe konto z tym adresem i przekaż mu własność swoich drzew (w ustawieniach drzewa, po dodaniu nowego konta jako kolaboranta).</p>
+            <p className={OPIS}>Adres tego konta pochodzi z Twojego konta {s.google ? "Google" : "na Facebooku"} i nie można go tu zmienić. Aby używać innego adresu, załóż nowe konto z tym adresem i przekaż mu własność swoich drzew (w ustawieniach drzewa, po dodaniu nowego konta jako kolaboranta).</p>
           </div>
           <form
             className="space-y-2"
@@ -98,12 +99,12 @@ export function AdresEmail() {
                 await dodajLogowanieHaslem(noweHaslo);
                 setNoweHaslo("");
                 await konto.odswiez();
-                return "Dodano logowanie hasłem. Możesz teraz logować się adresem e-mail i tym hasłem albo przez Google.";
+                return `Dodano logowanie hasłem. Możesz teraz logować się adresem e-mail i tym hasłem albo przez ${zewnetrzne || "dotychczasowy sposób"}.`;
               });
             }}
           >
             <h3 className={NAGLOWEK}>Dodaj logowanie hasłem</h3>
-            <p className={OPIS}>Dzięki temu zalogujesz się adresem e-mail i hasłem albo przez Google.</p>
+            <p className={OPIS}>Dzięki temu zalogujesz się adresem e-mail i hasłem albo przez {zewnetrzne || "dotychczasowy sposób"}.</p>
             <label className="block text-sm text-tekst-2" htmlFor={`${id}-p`}>
               Nowe hasło (min. 8 znaków)
             </label>

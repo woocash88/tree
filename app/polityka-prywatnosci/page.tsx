@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Naglowek } from "@/components/Naglowek";
 import { Stopka } from "@/components/Stopka";
 import serwis from "@/data/serwis.json";
-import { KLUCZ_APP_CHECK } from "@/lib/baza/firebase";
+import { FACEBOOK_WLACZONY, KLUCZ_APP_CHECK } from "@/lib/baza/firebase";
+import { KLUCZ_KONTAKTU } from "@/lib/baza/kontakt";
 import { sciezkaIndeksuDrzew } from "@/lib/sciezki";
 
 export const metadata: Metadata = {
@@ -14,9 +15,9 @@ export const metadata: Metadata = {
 /** Data ostatniej zmiany treści tej strony – zmień ją razem z treścią. */
 const OBOWIAZUJE_OD = "12 listopada 2026";
 
-function Sekcja({ tytul, children }: { tytul: string; children: React.ReactNode }) {
+function Sekcja({ tytul, id, children }: { tytul: string; id?: string; children: React.ReactNode }) {
   return (
-    <section className="mt-8">
+    <section className="mt-8" id={id}>
       <h2 className="text-2xl">{tytul}</h2>
       <div className="mt-3 space-y-3 leading-relaxed text-tekst">{children}</div>
     </section>
@@ -87,6 +88,25 @@ export default function PolitykaPrywatnosci() {
             </p>
             <p>W zakresie, w jakim wpisy dotyczą osób żyjących, podstawą przetwarzania jest prawnie uzasadniony interes (art. 6 ust. 1 lit. f RODO) właściciela drzewa polegający na dokumentowaniu historii rodziny, a w przypadku konta – umowa o świadczenie usługi (art. 6 ust. 1 lit. b RODO).</p>
           </Sekcja>
+
+          <Sekcja tytul="Formularz kontaktowy" id="kontakt">
+            <p>
+              Jeśli napiszesz do nas przez formularz kontaktowy, przetwarzamy podane w nim imię (lub nazwę), adres e-mail, temat i treść wiadomości – wyłącznie po to, żeby Ci odpowiedzieć (prawnie uzasadniony interes administratora, art. 6 ust. 1 lit. f RODO, oraz Twoja zgoda zaznaczona w formularzu). Wiadomość jest zapisywana w bazie serwisu, do której dostęp ma tylko administrator, i usuwana, gdy sprawa zostanie załatwiona.
+              {KLUCZ_KONTAKTU && " Dodatkowo trafia do administratora e-mailem za pośrednictwem usługi Web3Forms (Web3Forms, jako podmiot przetwarzający, przekazuje wiadomość na skrzynkę administratora)."}
+            </p>
+            <p>W każdej chwili możesz poprosić o wgląd, sprostowanie lub usunięcie swojej wiadomości, pisząc ponownie przez formularz.</p>
+          </Sekcja>
+
+          {FACEBOOK_WLACZONY && (
+            <Sekcja tytul="Logowanie przez Facebook" id="facebook">
+              <p>
+                Możesz zalogować się kontem Facebook. W oknie logowania Facebook (Meta Platforms) pyta o zgodę na udostępnienie serwisowi imienia i nazwiska oraz adresu e-mail – tylko te dane do nas trafiają, nie pobieramy zdjęcia, listy znajomych ani innych informacji z Facebooka i nie publikujemy niczego na Twoim koncie. Facebook przetwarza dane logowania jako odrębny administrator według własnej polityki prywatności.
+              </p>
+              <p id="usuwanie-danych">
+                <strong>Usuwanie danych.</strong> Aby usunąć konto i wszystkie powiązane z nim dane w serwisie, zaloguj się i w profilu wybierz „Usuń moje konto” (drzewa, które chcesz zachować, możesz wcześniej przekazać innemu użytkownikowi). Możesz też w ustawieniach Facebooka (Ustawienia i prywatność → Aplikacje i witryny) usunąć aplikację „Przodkowie”; dane w serwisie usuwa się wtedy opisanym wyżej sposobem. Z prośbą o usunięcie danych możesz się też skontaktować z administratorem.
+              </p>
+            </Sekcja>
+          )}
 
           {KLUCZ_APP_CHECK && (
             <Sekcja tytul="Ochrona przed nadużyciami (reCAPTCHA)">

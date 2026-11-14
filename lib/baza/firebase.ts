@@ -23,6 +23,12 @@ const TYP_APP_CHECK = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_TYP === "v3" ? "
 /** Tryb testów lokalnych na emulatorach Firebase (npm run test:e2e). */
 const EMULATOR = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR === "1";
 
+/**
+ * Logowanie przez Facebooka (opcjonalne): przycisk pojawia się dopiero po ustawieniu zmiennej FIREBASE_FACEBOOK=1 w GitHubie,
+ * czyli po skonfigurowaniu aplikacji Meta i włączeniu dostawcy Facebook w konsoli Firebase (README). W testach na emulatorach jest zawsze.
+ */
+export const FACEBOOK_WLACZONY: boolean = EMULATOR || process.env.NEXT_PUBLIC_FIREBASE_FACEBOOK === "1";
+
 export const firebaseSkonfigurowany: boolean = EMULATOR || !!(KONFIG.apiKey && KONFIG.projectId && KONFIG.appId);
 
 export type Firebase = { auth: Auth; db: Firestore };
@@ -47,9 +53,12 @@ export function pobierzFirebase(): Promise<Firebase> {
       connectFirestoreEmulator(db, "127.0.0.1", 8080);
       // Tylko wersja testowa (NEXT_PUBLIC_FIREBASE_EMULATOR=1): logowanie sztucznym poświadczeniem Google,
       // bo okno logowania Google pobiera skrypty z internetu, niedostępnego w testach. W produkcji ten kod nie istnieje.
-      const { GoogleAuthProvider, signInWithCredential } = await import("firebase/auth");
+      const { GoogleAuthProvider, FacebookAuthProvider, signInWithCredential } = await import("firebase/auth");
       (window as unknown as Record<string, unknown>).__testGoogle = (email: string, name: string) =>
         signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ sub: `g-${email}`, email, email_verified: true, name })));
+      // To samo dla Facebooka (okno logowania Meta też wymaga internetu); `email` pusty = Facebook nie udostępnił adresu.
+      (window as unknown as Record<string, unknown>).__testFacebook = (email: string, name: string) =>
+        signInWithCredential(auth, FacebookAuthProvider.credential(JSON.stringify({ sub: `f-${email || name}`, ...(email ? { email } : {}), name })));
     }
     return { auth, db };
   })();

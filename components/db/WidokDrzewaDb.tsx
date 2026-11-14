@@ -19,7 +19,7 @@ import { daneWidoku, indeksSzukaniaDrzewa, przygotujDrzewo, statystykaWidoku } f
 import { przypiszNumer, uzupelnijNazwiska, wczytajDrzewo, wyslijProsbe, zapiszDane, type WynikWczytania } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import * as L from "@/lib/baza/logika";
-import { type DaneDb } from "@/lib/baza/typy";
+import { mozeEdytowacDane, type DaneDb } from "@/lib/baza/typy";
 import { metaDlaWidokow } from "@/lib/baza/widok";
 import { firebaseSkonfigurowany } from "@/lib/baza/firebase";
 import { PUSTE_EDYCJE } from "@/lib/edycje";
@@ -119,7 +119,7 @@ export function WidokDrzewaDb() {
 
   const meta = typeof wczytane === "object" ? wczytane.meta : null;
   const dostep = typeof wczytane === "object" ? wczytane.dostep : "gosc";
-  const mozeEdytowac = dostep !== "gosc";
+  const mozeEdytowac = mozeEdytowacDane(dostep);
 
   // Zmiana danych: najpierw natychmiast w widoku, potem w transakcji na serwerze (kolejka zachowuje kolejność zmian).
   const mutuj = useCallback(
@@ -229,7 +229,7 @@ export function WidokDrzewaDb() {
 
   const slug = slugDb(id);
   const galezie = (drzewo?.galezieLista ?? dane?.galezie ?? []).map((g) => ({ id: g.id, nazwa: g.nazwa, kolor: g.kolor }));
-  const rola = dostep === "wlasciciel" ? "Właściciel" : dostep === "kolaborant" ? "Kolaborant" : dostep === "admin" ? "Administrator" : null;
+  const rola = dostep === "wlasciciel" ? "Właściciel" : dostep === "kolaborant" ? "Kolaborant" : dostep === "admin" ? "Administrator" : dostep === "widz" ? "Dostęp do przeglądania" : null;
 
   let tresc: React.ReactNode;
   if (w === "ustawienia") {
@@ -285,7 +285,7 @@ export function WidokDrzewaDb() {
             <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
           </span>
           <IdDrzewa numer={meta.numer} />
-          <span className="text-tekst-3" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
+          {mozeEdytowac && <span className="text-tekst-3" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>}
           <span className="ml-auto flex gap-3">
             <Link href={sciezkaDrzewa(slug)} className="font-semibold text-akcent underline-offset-2 hover:underline">Strona drzewa</Link>
             {(dostep === "wlasciciel" || dostep === "admin") && (

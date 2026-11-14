@@ -26,6 +26,7 @@ const KOMUNIKATY: Record<string, string> = {
   "auth/too-many-requests": "Zbyt wiele prób. Spróbuj ponownie za kilka minut.",
   "auth/popup-closed-by-user": "Okno logowania Google zostało zamknięte.",
   "auth/cancelled-popup-request": "Okno logowania Google zostało zamknięte.",
+  "auth/user-cancelled": "Logowanie przez Facebook zostało anulowane.",
   "auth/popup-blocked": "Przeglądarka zablokowała okno logowania Google. Zezwól na wyskakujące okna dla tej strony.",
   "auth/network-request-failed": "Brak połączenia z internetem albo z serwerem.",
   "auth/requires-recent-login": "Ze względów bezpieczeństwa zaloguj się ponownie i spróbuj jeszcze raz.",
@@ -80,6 +81,22 @@ export async function zalogujGoogle(): Promise<void> {
   const { auth } = await pobierzFirebase();
   const A = await import("firebase/auth");
   await A.signInWithPopup(auth, new A.GoogleAuthProvider());
+}
+
+/**
+ * Logowanie przez Facebooka. Prosimy tylko o nazwę i adres e-mail. Serwis opiera się na adresie e-mail (zaproszenia do drzew,
+ * powiadomienia), więc konto bez adresu – gdy użytkownik nie udostępnił go w oknie Facebooka – jest odrzucane z wyjaśnieniem.
+ */
+export async function zalogujFacebook(): Promise<void> {
+  const { auth } = await pobierzFirebase();
+  const A = await import("firebase/auth");
+  const dostawca = new A.FacebookAuthProvider();
+  dostawca.addScope("email");
+  const { user } = await A.signInWithPopup(auth, dostawca);
+  if (!user.email) {
+    await A.signOut(auth);
+    throw new Error("Facebook nie udostępnił adresu e-mail, a serwis go potrzebuje. W oknie Facebooka zezwól na udostępnienie adresu e-mail albo zaloguj się inaczej (hasłem lub przez Google).");
+  }
 }
 
 export async function wyloguj(): Promise<void> {
@@ -186,11 +203,11 @@ export async function usunWlasneKonto(haslo?: string): Promise<void> {
 
 // ───────────────────────────── adres e-mail i sposoby logowania ─────────────────────────────
 
-export type SposobyLogowania = { haslo: boolean; google: boolean; emailGoogle: string | null };
+export type SposobyLogowania = { haslo: boolean; google: boolean; facebook: boolean; emailGoogle: string | null };
 
 export function sposobyLogowania(user: User): SposobyLogowania {
   const g = user.providerData.find((p) => p.providerId === "google.com");
-  return { haslo: user.providerData.some((p) => p.providerId === "password"), google: !!g, emailGoogle: g?.email ?? null };
+  return { haslo: user.providerData.some((p) => p.providerId === "password"), google: !!g, facebook: user.providerData.some((p) => p.providerId === "facebook.com"), emailGoogle: g?.email ?? null };
 }
 
 /**

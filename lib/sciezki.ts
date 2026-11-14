@@ -20,6 +20,7 @@ const adresDb = (slug: string, p: Parametry = {}) => `/d/${zapytanie({ id: idZeS
 
 export const sciezkaIndeksuDrzew = () => "/drzewa/";
 export const sciezkaPolitykiPrywatnosci = () => "/polityka-prywatnosci/";
+export const sciezkaKontaktu = () => "/kontakt/";
 /** Panel administratora; z kotwicą do wskazanego drzewa. */
 export const sciezkaAdmina = (slug?: string) => (slug ? `/admin/?s=repozytorium#${slug}` : "/admin/");
 export const sciezkaDrzewa = (slug: string) => (czyDb(slug) ? adresDb(slug) : `/drzewa/${slug}/`);

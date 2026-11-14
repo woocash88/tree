@@ -119,11 +119,11 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await ala.p.getByRole('button', { name: 'Zapisz ustawienia' }).click();
   await ala.p.getByText('Zapisano ustawienia.').waitFor();
   ok('drzewo ustawione jako publiczne', true);
-  await ala.p.getByLabel(/Adres e-mail użytkownika/).fill(mail('nieistniejacy'));
+  await ala.p.getByLabel(/Adres e-mail użytkownika \(max 20\)/).fill(mail('nieistniejacy'));
   await ala.p.getByRole('button', { name: 'Dodaj kolaboranta' }).click();
   await ala.p.getByText(/Nie ma zarejestrowanego użytkownika/).waitFor();
   ok('nieznany adres e-mail: czytelny błąd', true);
-  await ala.p.getByLabel(/Adres e-mail użytkownika/).fill(mail('kuba').toUpperCase());
+  await ala.p.getByLabel(/Adres e-mail użytkownika \(max 20\)/).fill(mail('kuba').toUpperCase());
   await ala.p.getByRole('button', { name: 'Dodaj kolaboranta' }).click();
   await ala.p.getByText('Dodano kolaboranta.').waitFor({ timeout: 8000 }).catch(async () => {
     console.log('KOMUNIKATY NA STRONIE:', await ala.p.locator('[role=alert], [role=status]').allInnerTexts());

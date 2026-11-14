@@ -236,6 +236,11 @@ linii, pokolenia 1–2 to „Wspólny pień”; `zyjaca` = urodzenie po 1925 r. 
   link do prywatnego drzewa i klika „Poproś o dostęp”; **prośbę zatwierdza albo odrzuca właściciel** (ustawienia drzewa,
   w profilu widać liczbę oczekujących próśb). Kolaborant widzi drzewo w profilu w sekcji „Współpracuję przy” i może
   je tam opuścić. Prośba zawiera tylko imię i nazwisko autora i znika po zatwierdzeniu lub odrzuceniu.
+- **Biała lista (dostęp do przeglądania)**: właściciel może w ustawieniach drzewa wpisać adres e-mail zarejestrowanego użytkownika
+  (z potwierdzonym adresem, jak przy kolaborantach), co daje mu dostęp do **prywatnego** drzewa **tylko do przeglądania** – widzi je jak
+  odwiedzający (kopia `dane/publiczne`, osoby żyjące według ustawień drzewa), nie widzi pełnych danych i niczego nie edytuje. Pełny dostęp
+  daje dopiero dodanie go jako kolaboranta. Do 50 osób; dostęp można w każdej chwili odebrać, a użytkownik może z niego zrezygnować w profilu
+  (sekcja „Udostępnione mi do przeglądania”). W bazie: pola `widzowie` i `widzowieInfo` w dokumencie drzewa, wymuszone regułami.
 - **Przekazanie własności**: właściciel może przekazać drzewo jednemu ze swoich kolaborantów (ustawienia drzewa →
   „Przekaż własność”); dotychczasowy właściciel zostaje kolaborantem. Dzięki temu może usunąć konto, a drzewo zostaje.
   W sekcji „Usuń konto” w profilu widać, które drzewa zostaną usunięte, z linkami do przekazania.
@@ -276,6 +281,41 @@ Konto można prowadzić hasłem, przez Google albo oboma sposobami naraz – wci
    Od tej chwili po zalogowaniu widzisz „Panel administratora” w menu konta. Klient nie może zapisać tej kolekcji,
    więc nikt nie nada sobie roli sam.
 6. Wdróż (scal zmiany do `main` albo *Run workflow*) i sprawdź: rejestracja, tworzenie drzewa, zaproszenie kolaboranta.
+
+### Formularz kontaktowy (`/kontakt/`)
+
+Link „Kontakt” jest w stopce każdej strony. Wiadomość (imię, e-mail do odpowiedzi, temat, treść do 4000 znaków, zgoda) trafia dwoma kanałami:
+
+1. **Baza (zawsze)**: kolekcja `wiadomosci`; reguły pozwalają ją zapisać każdemu (także niezalogowanemu), a odczytać i usunąć tylko administratorowi.
+   Wiadomości czytasz w **Panelu administratora → Wiadomości** (wyszukiwanie, odpowiedź przez link `mailto:`, usuwanie).
+2. **E-mail (opcjonalnie)**: usługa Web3Forms przekazuje wiadomość na Twoją skrzynkę. Adres jest przypisany do klucza po stronie usługi, więc **nie występuje
+   w kodzie strony**. Konfiguracja: na <https://web3forms.com> utwórz klucz dostępu (*Create your Access Key*), podając adres, na który mają przychodzić
+   wiadomości (voocash.s@gmail.com); klucz przyjdzie na ten adres (potwierdź go, jeśli usługa o to poprosi). W GitHubie (*Settings → Secrets and variables →
+   Actions → Variables*) dodaj `KONTAKT_KLUCZ` = klucz i uruchom wdrożenie. Klucz jest z założenia publiczny (widać go w kodzie strony), dlatego chroni formularz
+   limit po stronie usługi; po stronie serwisu działają dodatkowo ukryte pole-pułapka na boty i 30-sekundowa przerwa między wiadomościami z jednej
+   przeglądarki. Bez klucza wiadomości trafiają tylko do bazy. Polityka prywatności opisuje formularz, a po ustawieniu klucza także przekazanie
+   wiadomości usłudze Web3Forms.
+
+### Logowanie przez Facebook (opcjonalnie)
+
+Przyciski „Zaloguj się / Zarejestruj się przez Facebook” pojawiają się dopiero po włączeniu zmiennej `FIREBASE_FACEBOOK` (wartość `1`), żeby
+nikt nie klikał w nieskonfigurowany przycisk. Kroki:
+
+1. Na <https://developers.facebook.com/apps> utwórz aplikację (typ *Consumer* / „Uwierzytelnianie i tworzenie kont”) i dodaj produkt
+   **Facebook Login**. W *Ustawienia → Podstawowe* zapisz **identyfikator aplikacji** i **klucz tajny aplikacji**; jako *Adres URL polityki prywatności*
+   oraz *Instrukcje usuwania danych* wpisz `https://familytree-bab4e.web.app/polityka-prywatnosci/` (sekcja „Logowanie przez Facebook”
+   opisuje usuwanie danych; po ustawieniu zmiennej pojawia się też w polityce).
+2. W konsoli Firebase: *Authentication → Metoda logowania → Dodaj nowego dostawcę → Facebook*: wklej identyfikator i klucz tajny, włącz i skopiuj
+   z okienka **adres przekierowania OAuth** (`https://familytree-bab4e.firebaseapp.com/__/auth/handler`).
+3. W aplikacji Meta: *Facebook Login → Ustawienia → Prawidłowe identyfikatory URI przekierowania OAuth* → wklej ten adres. Przełącz aplikację
+   w tryb **Live** (przy trybie deweloperskim logują się tylko jej administratorzy i testerzy). Dostęp do `email` i `public_profile` nie wymaga
+   weryfikacji aplikacji.
+4. W GitHubie (*Settings → Secrets and variables → Actions → Variables*) dodaj `FIREBASE_FACEBOOK` = `1` i uruchom wdrożenie.
+
+Uwagi: Facebook często oznacza adres jako niepotwierdzony – takie konto dostaje wtedy zwykłe wezwanie „Potwierdź adres e-mail” (link wysyłamy sami),
+bo reguły bazy wymagają potwierdzonego adresu. Jeśli użytkownik nie udostępni adresu e-mail w oknie Facebooka, logowanie jest odrzucane z wyjaśnieniem
+(serwis opiera się na adresie e-mail). Gdy ten sam adres ma już konto z hasłem lub Google, Firebase zgłasza konflikt – użytkownik loguje się wtedy
+dotychczasowym sposobem. W testach okno Facebooka zastępuje emulator Auth (`window.__testFacebook`, tylko w buildzie testowym).
 
 ### Ochrona przed nadużyciami (App Check, opcjonalnie)
 

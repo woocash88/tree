@@ -31,7 +31,6 @@ export default async function StronaGlowna() {
           <div className="mt-10">
             <SzukajDrzew drzewa={drzewa} />
           </div>
-          <p className="g-t3 mt-3.5 text-sm">Polskie znaki są opcjonalne: „lukasz” znajdzie „Łukasza”.</p>
           <p className="mt-4 sm:hidden">
             <Link href={sciezkaIndeksuDrzew()} className="g-link g-akcent inline-flex min-h-11 items-center rounded-full px-4 text-[15px] font-semibold">
               Przeglądaj publiczne drzewa →

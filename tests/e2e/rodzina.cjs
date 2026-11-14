@@ -214,7 +214,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link', { name: 'Rodzina Test' }).waitFor();
   const linkiNaglowka = await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link').allInnerTexts();
   ok('nagłówek drzewa: „Przegląd drzew”, nazwa otwartego drzewa i „Osoby” (bez „Drzewa” i „Drzewo”)', linkiNaglowka.join('|') === 'Przegląd drzew|Rodzina Test|Osoby', linkiNaglowka.join('|'));
-  ok('stopka: tylko link „Polityka prywatności”', (await ala.p.locator('footer').innerText()).trim() === 'Polityka prywatności');
+  ok('stopka: tylko linki „Polityka prywatności” i „Kontakt”', (await ala.p.locator('footer').innerText()).replace(/\s+/g, '') === 'Politykaprywatności·Kontakt');
   await ala.p.goto(osoba('jan-test-1850'));
   await ala.p.getByRole('button', { name: 'Dodaj rodzeństwo' }).waitFor();
   const przesuniecie = await ala.p.evaluate(() => {

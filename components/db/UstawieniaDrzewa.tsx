@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
-import { dodajKolaboranta, listaProsbDrzewa, przekazWlasnosc, usunDrzewo, usunKolaboranta, usunProsbe, zapiszUstawienia, zatwierdzProsbe } from "@/lib/baza/api";
+import { dodajKolaboranta, dodajWidza, listaProsbDrzewa, przekazWlasnosc, usunDrzewo, usunKolaboranta, usunWidza, usunProsbe, zapiszUstawienia, zatwierdzProsbe } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import type { DaneDb, Dostep, MetaDb, Prosba, Widocznosc } from "@/lib/baza/typy";
 import { IdDrzewa } from "@/components/IdDrzewa";
 import { WymianaDanych } from "./WymianaDanych";
-import { MAKS_KOLABORANTOW } from "@/lib/baza/typy";
+import { MAKS_KOLABORANTOW, MAKS_WIDZOW } from "@/lib/baza/typy";
 import { POLITYKI_DAT, type PolitykaDat } from "@/lib/schemat-drzewa";
 import { ADRES_SERWISU, sciezkaDrzewa } from "@/lib/sciezki";
 
@@ -29,6 +29,7 @@ export function UstawieniaDrzewa({ drzewoId, meta, dane, dostep, naZmiane }: { d
   const [komunikat, setKomunikat] = useState<{ typ: "ok" | "blad"; tekst: string } | null>(null);
   const [trwa, setTrwa] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailWidza, setEmailWidza] = useState("");
   const [potwierdzenie, setPotwierdzenie] = useState("");
   const [prosby, setProsby] = useState<Prosba[]>([]);
   const [nowyWlasciciel, setNowyWlasciciel] = useState("");
@@ -55,10 +56,11 @@ export function UstawieniaDrzewa({ drzewoId, meta, dane, dostep, naZmiane }: { d
             {komunikat.tekst}
           </p>
         )}
-        <p className="text-tekst-2">Ustawienia drzewa może zmieniać tylko jego właściciel. Jako kolaborant możesz edytować osoby w drzewie.</p>
+        <p className="text-tekst-2">Ustawienia drzewa może zmieniać tylko jego właściciel. {dostep === "widz" ? "Masz dostęp do przeglądania tego drzewa – nie możesz go edytować." : "Jako kolaborant możesz edytować osoby w drzewie."}</p>
       </div>
     );
   }
+  const widzowie = (meta.widzowie ?? []).map((uid) => ({ uid, nazwa: meta.widzowieInfo?.[uid]?.nazwa ?? uid }));
   const kolaboranci = meta.kolaboranci.map((uid) => ({ uid, nazwa: meta.kolaboranciInfo[uid]?.nazwa ?? uid }));
 
   const wykonaj = async (dzialanie: () => Promise<void>, sukces: string) => {
@@ -204,6 +206,56 @@ export function UstawieniaDrzewa({ drzewoId, meta, dane, dostep, naZmiane }: { d
           </div>
           <button type="submit" className="przycisk przycisk-glowny !min-h-10" disabled={trwa || !email.trim()}>
             Dodaj kolaboranta
+          </button>
+        </form>
+      </section>
+
+      <section className="szklo space-y-3 p-6" aria-label="Dostęp do przeglądania">
+        <h2 className="text-2xl">Dostęp do przeglądania (biała lista)</h2>
+        <p className="text-sm text-tekst-2">
+          {meta.widocznosc === "prywatne" ? "Drzewo jest prywatne, więc widzą je tylko właściciel i kolaboranci." : "Drzewo jest teraz publiczne i widzą je wszyscy, ale ta lista zadziała od razu po przełączeniu go na prywatne."}{" "}
+          Wpisz adres e-mail zarejestrowanego użytkownika, a dostanie dostęp do przeglądania. Taka osoba widzi drzewo jak odwiedzający (osoby żyjące według ustawień powyżej), ale nie może go edytować; pełny dostęp daje dopiero dodanie jej jako kolaboranta. Dostęp odbierzesz w każdej chwili.
+        </p>
+        {widzowie.length > 0 ? (
+          <ul className="divide-y divide-kreska">
+            {widzowie.map((w) => (
+              <li key={w.uid} className="flex items-center gap-3 py-2">
+                <span className="min-w-0 flex-1 truncate">{w.nazwa}</span>
+                <button
+                  type="button"
+                  className="przycisk !min-h-8"
+                  disabled={trwa}
+                  onClick={() => {
+                    if (window.confirm(`Odebrać ${w.nazwa} dostęp do przeglądania tego drzewa?`)) void wykonaj(() => usunWidza(drzewoId, w.uid), "Odebrano dostęp do przeglądania.");
+                  }}
+                >
+                  Odbierz dostęp
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm italic text-tekst-2">Nikt nie ma jeszcze dostępu z białej listy.</p>
+        )}
+        <form
+          className="flex flex-wrap items-end gap-2"
+          aria-label="Dodaj osobę do białej listy"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void wykonaj(async () => {
+              await dodajWidza(drzewoId, emailWidza, meta.wlascicielId, meta.kolaboranci, widzowie.length);
+              setEmailWidza("");
+            }, "Dodano dostęp do przeglądania.");
+          }}
+        >
+          <div className="min-w-0 flex-1">
+            <label className="block text-sm text-tekst-2" htmlFor={`${id}-w`}>
+              Adres e-mail użytkownika (max {MAKS_WIDZOW})
+            </label>
+            <input id={`${id}-w`} type="email" className="pole mt-1 w-full" value={emailWidza} onChange={(e) => setEmailWidza(e.target.value)} required />
+          </div>
+          <button type="submit" className="przycisk przycisk-glowny !min-h-10" disabled={trwa || !emailWidza.trim()}>
+            Daj dostęp do przeglądania
           </button>
         </form>
       </section>

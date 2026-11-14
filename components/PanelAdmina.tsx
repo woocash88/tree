@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { IdDrzewa } from "@/components/IdDrzewa";
 import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
-import { listaUzytkownikow, listaWszystkich, usunDaneUzytkownika, usunDrzewo, zmienDaneUzytkownika, type WpisDrzewa, type WpisUzytkownika } from "@/lib/baza/api";
+import { listaUzytkownikow, listaWiadomosci, listaWszystkich, TEMATY_WIADOMOSCI, usunDaneUzytkownika, usunWiadomosc, usunDrzewo, zmienDaneUzytkownika, type WpisDrzewa, type WpisUzytkownika, type WpisWiadomosci } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import { ileOsob, ilePokolen } from "@/lib/format";
 import { POLITYKI_DAT, type DrzewoMeta, type PolitykaDat } from "@/lib/schemat-drzewa";
@@ -535,7 +535,70 @@ function SekcjaRepozytorium({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
   );
 }
 
-type Sekcja = "uzytkownicy" | "drzewa" | "repozytorium";
+function SekcjaWiadomosci() {
+  const [lista, setLista] = useState<WpisWiadomosci[] | null>(null);
+  const [blad, setBlad] = useState("");
+  const [trwa, setTrwa] = useState<string | null>(null);
+  const strony = useStrony(lista, (w, f) => `${w.imie} ${w.email} ${w.tresc}`.toLowerCase().includes(f));
+  const wczytaj = useCallback(async () => {
+    try {
+      setLista(await listaWiadomosci());
+    } catch (e) {
+      setBlad(komunikatBledu(e));
+    }
+  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- wczytanie listy po wejściu do podstrony
+    void wczytaj();
+  }, [wczytaj]);
+
+  return (
+    <section aria-label="Wiadomości" className="mt-6">
+      <h2 className="text-2xl">Wiadomości ({lista?.length ?? "…"})</h2>
+      <p className="mt-1 text-sm text-tekst-2">Wiadomości z formularza kontaktowego (kopia zapisana w bazie; jeśli skonfigurowano Web3Forms, każda trafia też e-mailem). Odpowiadasz zwykłym e-mailem na podany adres.</p>
+      <input type="search" className="pole mt-3 w-full max-w-sm" placeholder="Szukaj w wiadomościach" value={strony.fraza} onChange={(e) => strony.ustawFraze(e.target.value)} aria-label="Szukaj wiadomości" />
+      {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
+      <ul className="mt-3 grid gap-3">
+        {strony.wiersze.map((w) => (
+          <li key={w.id} className="szklo !rounded-3xl p-5">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <strong>{w.imie}</strong>
+              <a className="link text-sm" href={`mailto:${w.email}?subject=${encodeURIComponent("Re: " + (TEMATY_WIADOMOSCI.find((t) => t.id === w.temat)?.nazwa ?? "Przodkowie"))}`}>{w.email}</a>
+              <span className="rounded-full bg-[var(--tag)] px-2.5 py-0.5 text-xs font-semibold">{TEMATY_WIADOMOSCI.find((t) => t.id === w.temat)?.nazwa ?? w.temat}</span>
+              <span className="ml-auto text-sm tabular-nums text-tekst-3">{w.utworzono.slice(0, 16).replace("T", " ")}{w.uid ? " · zalogowany" : ""}</span>
+            </div>
+            <p className="mt-3 whitespace-pre-wrap break-words text-[15px] leading-relaxed">{w.tresc}</p>
+            <p className="mt-3">
+              <button
+                type="button"
+                className="przycisk !min-h-8"
+                disabled={trwa === w.id}
+                onClick={async () => {
+                  if (!window.confirm(`Usunąć wiadomość od ${w.imie}?`)) return;
+                  setTrwa(w.id);
+                  try {
+                    await usunWiadomosc(w.id);
+                    await wczytaj();
+                  } catch (e) {
+                    setBlad(komunikatBledu(e));
+                  }
+                  setTrwa(null);
+                }}
+              >
+                Usuń wiadomość
+              </button>
+            </p>
+          </li>
+        ))}
+      </ul>
+      {lista && lista.length === 0 && <p className="mt-3 text-sm italic text-tekst-2">Brak wiadomości.</p>}
+      {lista && lista.length > 0 && strony.znalezione === 0 && <p className="mt-3 text-sm italic text-tekst-2">Brak wiadomości pasujących do wyszukiwania.</p>}
+      <Stronicowanie s={strony} />
+    </section>
+  );
+}
+
+type Sekcja = "uzytkownicy" | "drzewa" | "wiadomosci" | "repozytorium";
 
 /** Panel administratora serwisu, podzielony na podstrony: użytkownicy, drzewa użytkowników, drzewa z repozytorium. Dostępny tylko dla administratora. */
 export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
@@ -565,6 +628,7 @@ export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
   const sekcje: { id: Sekcja; nazwa: string; opis: string }[] = [
     { id: "uzytkownicy", nazwa: "Użytkownicy", opis: "Lista kont, wyszukiwanie, usuwanie użytkowników." },
     { id: "drzewa", nazwa: "Drzewa", opis: "Drzewa użytkowników: ID, właściciel, edycja, ustawienia, usuwanie." },
+    { id: "wiadomosci", nazwa: "Wiadomości", opis: "Wiadomości z formularza kontaktowego." },
     ...(drzewa.length > 0 ? [{ id: "repozytorium" as const, nazwa: "Drzewa z repozytorium", opis: "Archiwalne drzewa wbudowane w kod serwisu." }] : []),
   ];
   const aktywna = sekcje.find((x) => x.id === wybrana)?.id ?? null;
@@ -593,6 +657,7 @@ export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
 
       {aktywna === "uzytkownicy" && <SekcjaUzytkownikow />}
       {aktywna === "drzewa" && <SekcjaDrzewUzytkownikow />}
+      {aktywna === "wiadomosci" && <SekcjaWiadomosci />}
       {aktywna === "repozytorium" && <SekcjaRepozytorium drzewa={drzewa} />}
     </div>
   );

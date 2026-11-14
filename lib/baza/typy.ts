@@ -17,6 +17,9 @@ export type MetaDb = {
   /** uid kolaborantów (mogą edytować osoby, nie ustawienia drzewa). */
   kolaboranci: string[];
   kolaboranciInfo: Record<string, { nazwa: string }>;
+  /** uid użytkowników, którym właściciel udostępnił (prywatne) drzewo do przeglądania – widzą je jak odwiedzający, nie edytują. */
+  widzowie?: string[];
+  widzowieInfo?: Record<string, { nazwa: string }>;
   zakresLat: { od: number; do: number } | null;
   statystyki: StatystykiDb;
   utworzono: string;
@@ -32,11 +35,13 @@ export type DaneDb = { galezie: Galaz[]; osoby: Osoba[]; malzenstwa: Malzenstwo[
 
 export type Profil = { imie: string; nazwisko: string; email: string; utworzono: string };
 
-export type Dostep = "wlasciciel" | "kolaborant" | "admin" | "gosc";
+/** „widz” – osoba z białej listy właściciela (prywatne drzewo do przeglądania, bez edycji i bez pełnych danych). */
+export type Dostep = "wlasciciel" | "kolaborant" | "admin" | "widz" | "gosc";
 
 /** Twardy limit osób w jednym drzewie (dokument Firestore ma najwyżej 1 MiB). */
 export const MAKS_OSOB = 2000;
 export const MAKS_KOLABORANTOW = 20;
+export const MAKS_WIDZOW = 50;
 /** Limity dodawania bliskich z widoku osoby: rodzeństwo osoby, jej małżonkowie i jej dzieci. */
 export const MAKS_RODZENSTWA = 15;
 export const MAKS_MALZONKOW = 4;
@@ -44,7 +49,7 @@ export const MAKS_DZIECI = 15;
 /** Ile nazwisk zapisujemy w opisie drzewa na potrzeby wyszukiwania. */
 export const MAKS_NAZWISK_W_META = 300;
 
-export const mozeEdytowacDane = (d: Dostep) => d !== "gosc";
+export const mozeEdytowacDane = (d: Dostep) => d === "wlasciciel" || d === "kolaborant" || d === "admin";
 export const mozeZarzadzac = (d: Dostep) => d === "wlasciciel" || d === "admin";
 
 /** Prośba użytkownika o dołączenie do cudzego drzewa jako kolaborant: prosby/{idDrzewa}_{uid}. */

@@ -7,6 +7,7 @@ import { komunikatBledu, zarejestruj } from "@/lib/baza/konta";
 import { sciezkaPolitykiPrywatnosci } from "@/lib/sciezki";
 import { useKonto } from "./AuthProvider";
 import { celPoLogowaniu, PARAM_PO, useChceStworzycDrzewo, WARTOSC_PO_NOWE } from "./cel";
+import { PrzyciskFacebook } from "./PrzyciskFacebook";
 import { PrzyciskGoogle } from "./PrzyciskGoogle";
 
 export function FormularzRejestracji() {
@@ -73,8 +74,9 @@ export function FormularzRejestracji() {
         </p>
       )}
       <p className="mt-2 text-sm text-tekst-2">Konto pozwala tworzyć własne drzewa genealogiczne i zapraszać do nich współpracowników.</p>
-      <div className="mt-5">
+      <div className="mt-5 space-y-2">
         <PrzyciskGoogle etykieta="Zarejestruj się przez Google" naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
+        <PrzyciskFacebook etykieta="Zarejestruj się przez Facebook" naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
       </div>
       <p className="my-4 flex items-center gap-3 text-xs uppercase tracking-wider text-tekst-2">
         <span className="h-px flex-1 bg-kreska" />

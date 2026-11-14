@@ -4,7 +4,7 @@ import { pobierzFirebase } from "./firebase";
 import { uniewaznijKatalog } from "./katalog";
 import { daneDlaGosci, doFirestore, nazwiskaDanych, pusteDane, sprawdzDane, statystykiDanych, zakresLatDanych } from "./logika";
 import type { Dostep, DaneDb, MetaDb, Profil, Prosba, Widocznosc } from "./typy";
-import { MAKS_KOLABORANTOW } from "./typy";
+import { MAKS_KOLABORANTOW, MAKS_WIDZOW, mozeEdytowacDane } from "./typy";
 import type { PolitykaDat } from "../schemat-drzewa";
 
 async function fs() {
@@ -25,7 +25,8 @@ export type WynikWczytania =
 export function ustalDostep(meta: MetaDb, uid: string | null, czyAdmin: boolean): Dostep {
   if (uid && meta.wlascicielId === uid) return "wlasciciel";
   if (uid && meta.kolaboranci.includes(uid)) return "kolaborant";
-  return czyAdmin ? "admin" : "gosc";
+  if (czyAdmin) return "admin";
+  return uid && meta.widzowie?.includes(uid) ? "widz" : "gosc";
 }
 
 /** Wczytuje drzewo: pełne dane dla zarządzających, okrojone (po polityce dat) dla pozostałych. */
@@ -41,7 +42,7 @@ export async function wczytajDrzewo(id: string, uid: string | null, czyAdmin: bo
   if (!metaSnap.exists()) return { stan: "brak" };
   const meta = metaSnap.data() as MetaDb;
   const dostep = ustalDostep(meta, uid, czyAdmin);
-  const daneSnap = await F.getDoc(F.doc(db, "drzewa", id, "dane", dostep === "gosc" ? "publiczne" : "pelne"));
+  const daneSnap = await F.getDoc(F.doc(db, "drzewa", id, "dane", mozeEdytowacDane(dostep) ? "pelne" : "publiczne"));
   return { stan: "ok", id, meta, dostep, dane: daneSnap.exists() ? (daneSnap.data() as DaneDb) : pusteDane() };
 }
 
@@ -189,6 +190,33 @@ export async function dodajKolaboranta(id: string, email: string, wlascicielId: 
   return { uid, nazwa };
 }
 
+/**
+ * Biała lista: właściciel udostępnia prywatne drzewo do przeglądania użytkownikowi o podanym adresie e-mail
+ * (musi mieć konto z potwierdzonym adresem). Taka osoba widzi drzewo jak odwiedzający, ale go nie edytuje.
+ */
+export async function dodajWidza(id: string, email: string, wlascicielId: string, kolaboranci: string[], juz: number): Promise<{ uid: string; nazwa: string }> {
+  const { db, F } = await fs();
+  if (juz >= MAKS_WIDZOW) throw new Error(`Drzewo można udostępnić najwyżej ${MAKS_WIDZOW} osobom.`);
+  let snap;
+  try {
+    snap = await F.getDoc(F.doc(db, "adresy", adresId(email)));
+  } catch {
+    throw new Error("Nie można sprawdzić adresu. Upewnij się, że Twój adres e-mail jest potwierdzony.");
+  }
+  if (!snap.exists()) throw new Error("Nie ma zarejestrowanego użytkownika z potwierdzonym adresem e-mail, który wpisałeś. Poproś tę osobę o rejestrację w serwisie i potwierdzenie adresu.");
+  const { uid, nazwa } = snap.data() as { uid: string; nazwa: string };
+  if (uid === wlascicielId) throw new Error("To Ty jesteś właścicielem tego drzewa.");
+  if (kolaboranci.includes(uid)) throw new Error("Ta osoba jest już kolaborantem tego drzewa – ma pełny dostęp.");
+  await F.updateDoc(F.doc(db, "drzewa", id), { widzowie: F.arrayUnion(uid), [`widzowieInfo.${uid}`]: { nazwa }, zaktualizowano: dzis() });
+  return { uid, nazwa };
+}
+
+/** Odbiera dostęp do przeglądania (właściciel) albo rezygnacja z niego (sam użytkownik). */
+export async function usunWidza(id: string, uid: string): Promise<void> {
+  const { db, F } = await fs();
+  await F.updateDoc(F.doc(db, "drzewa", id), { widzowie: F.arrayRemove(uid), [`widzowieInfo.${uid}`]: F.deleteField() });
+}
+
 export async function usunKolaboranta(id: string, uid: string): Promise<void> {
   const { db, F } = await fs();
   await F.updateDoc(F.doc(db, "drzewa", id), { kolaboranci: F.arrayRemove(uid), [`kolaboranciInfo.${uid}`]: F.deleteField() });
@@ -287,14 +315,45 @@ export async function listaPublicznych(limit = 100): Promise<WpisDrzewa[]> {
   return naWpisy(await F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widocznosc", "==", "publiczne"), F.limit(limit))));
 }
 
-export async function listaMoich(uid: string): Promise<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[] }> {
+export async function listaMoich(uid: string): Promise<{ wlasne: WpisDrzewa[]; wspolne: WpisDrzewa[]; udostepnione: WpisDrzewa[] }> {
   const { db, F } = await fs();
-  const [w, k] = await Promise.all([
+  const [w, k, u] = await Promise.all([
     F.getDocs(F.query(F.collection(db, "drzewa"), F.where("wlascicielId", "==", uid))),
     F.getDocs(F.query(F.collection(db, "drzewa"), F.where("kolaboranci", "array-contains", uid))),
+    F.getDocs(F.query(F.collection(db, "drzewa"), F.where("widzowie", "array-contains", uid))),
   ]);
   const porzadek = (a: WpisDrzewa, b: WpisDrzewa) => a.meta.nazwa.localeCompare(b.meta.nazwa, "pl");
-  return { wlasne: naWpisy(w).sort(porzadek), wspolne: naWpisy(k).sort(porzadek) };
+  return { wlasne: naWpisy(w).sort(porzadek), wspolne: naWpisy(k).sort(porzadek), udostepnione: naWpisy(u).sort(porzadek) };
+}
+
+// ───────────────────────────── wiadomości z formularza kontaktowego ─────────────────────────────
+
+export const TEMATY_WIADOMOSCI = [
+  { id: "pytanie", nazwa: "Pytanie o serwis" },
+  { id: "blad", nazwa: "Zgłoszenie błędu" },
+  { id: "propozycja", nazwa: "Propozycja zmiany" },
+  { id: "dane", nazwa: "Moje dane / usunięcie danych" },
+  { id: "inne", nazwa: "Inne" },
+] as const;
+export type TematWiadomosci = (typeof TEMATY_WIADOMOSCI)[number]["id"];
+export type Wiadomosc = { imie: string; email: string; temat: TematWiadomosci; tresc: string; utworzono: string; uid?: string };
+export type WpisWiadomosci = Wiadomosc & { id: string };
+
+export async function zapiszWiadomosc(w: Wiadomosc): Promise<void> {
+  const { db, F } = await fs();
+  await F.addDoc(F.collection(db, "wiadomosci"), w);
+}
+
+/** Wiadomości z formularza (tylko administrator), od najnowszych. */
+export async function listaWiadomosci(): Promise<WpisWiadomosci[]> {
+  const { db, F } = await fs();
+  const snap = await F.getDocs(F.collection(db, "wiadomosci"));
+  return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Wiadomosc) })).sort((a, b) => b.utworzono.localeCompare(a.utworzono));
+}
+
+export async function usunWiadomosc(id: string): Promise<void> {
+  const { db, F } = await fs();
+  await F.deleteDoc(F.doc(db, "wiadomosci", id));
 }
 
 // ───────────────────────────── administrator ─────────────────────────────
@@ -323,9 +382,10 @@ export async function zmienDaneUzytkownika(uid: string, imie: string, nazwisko: 
   const { db, F } = await fs();
   await F.updateDoc(F.doc(db, "uzytkownicy", uid), { imie: i, nazwisko: n });
   const nazwa = `${i} ${n}`;
-  const { wlasne, wspolne } = await listaMoich(uid);
+  const { wlasne, wspolne, udostepnione } = await listaMoich(uid);
   for (const d of wlasne) await F.updateDoc(F.doc(db, "drzewa", d.id), { wlascicielNazwa: nazwa });
   for (const d of wspolne) await F.updateDoc(F.doc(db, "drzewa", d.id), { [`kolaboranciInfo.${uid}`]: { nazwa } });
+  for (const d of udostepnione) await F.updateDoc(F.doc(db, "drzewa", d.id), { [`widzowieInfo.${uid}`]: { nazwa } });
 }
 
 /**
@@ -334,9 +394,10 @@ export async function zmienDaneUzytkownika(uid: string, imie: string, nazwisko: 
  */
 export async function usunDaneUzytkownika(uid: string, email: string, { zablokuj }: { zablokuj: boolean }): Promise<{ drzew: number }> {
   const { db, F } = await fs();
-  const { wlasne, wspolne } = await listaMoich(uid);
+  const { wlasne, wspolne, udostepnione } = await listaMoich(uid);
   for (const d of wlasne) await usunDrzewo(d.id);
   for (const d of wspolne) await usunKolaboranta(d.id, uid);
+  for (const d of udostepnione) await usunWidza(d.id, uid);
   for (const p of await listaMoichProsb(uid)) await F.deleteDoc(F.doc(db, "prosby", p.id));
   if (email) await F.deleteDoc(F.doc(db, "adresy", adresId(email)));
   await F.deleteDoc(F.doc(db, "uzytkownicy", uid));

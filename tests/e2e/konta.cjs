@@ -5,6 +5,22 @@ const { B, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKart
   await wyczysc();
   const t = Date.now();
 
+  // ── Facebook (okno Facebooka nie działa w testach – używamy testowego poświadczenia) ──
+  const fb = await nowaKarta(br);
+  await fb.p.goto(B + '/logowanie/');
+  await fb.p.getByRole('button', { name: 'Zaloguj się przez Facebook' }).waitFor();
+  await fb.p.goto(B + '/rejestracja/');
+  await fb.p.getByRole('button', { name: 'Zarejestruj się przez Facebook' }).waitFor();
+  ok('przyciski logowania i rejestracji przez Facebook są na stronach (gdy włączone)', true);
+  await fb.p.waitForFunction(() => typeof window.__testFacebook === 'function');
+  const mailFb = `fb-${Date.now()}@example.org`;
+  await fb.p.evaluate((e) => window.__testFacebook(e, 'Filip Facebookowy'), mailFb);
+  await fb.p.goto(B + '/profil/');
+  await fb.p.getByRole('heading', { name: 'Twój profil' }).waitFor();
+  ok('konto Facebook: profil zakładany z imienia i nazwiska', (await fb.p.getByLabel('Imię', { exact: true }).inputValue()) === 'Filip' && (await fb.p.getByLabel('Nazwisko', { exact: true }).inputValue()) === 'Facebookowy');
+  ok('profil pokazuje sposób logowania „kontem Facebook”', (await fb.p.getByText('kontem Facebook', { exact: true }).count()) === 1);
+  ok('konto z Facebooka: adres pochodzi z Facebooka, brak formularza zmiany adresu', (await fb.p.getByRole('button', { name: 'Wyślij link na nowy adres' }).count()) === 0 && (await fb.p.getByText(/pochodzi z Twojego konta na Facebooku/).count()) === 1);
+
   // ── Google (okno emulatora) ──
   const g = await nowaKarta(br);
   await g.p.goto(B + '/rejestracja/');
