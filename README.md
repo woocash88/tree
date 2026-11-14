@@ -397,8 +397,11 @@ małżeństwem, zostaną połączeni w małżeństwo. W pustym drzewie pierwszą
 natychmiast, a zapis idzie w tle w transakcji (równoczesne edycje kolaborantów się nie nadpisują). Poniższy opis dotyczy
 **drzew z repozytorium**, które edytuje tylko administrator serwisu i które działają **lokalnie w przeglądarce**: w panelu osoby
 (lista i diagram) przyciski „✏️ Edytuj dane” (imię, nazwisko, nazwisko rodowe, daty urodzenia i śmierci
-z miejscem, notatka) i „👶 Dodaj dziecko” (z wyborem drugiego rodzica spośród małżonków). Daty wpisuje się jako
-`1891`, `4.03.1891`, `ok. 1891` albo `?` (data nieznana), opcjonalnie z miejscem po przecinku.
+z miejscem, notatka) i „👶 Dodaj dziecko” (z wyborem drugiego rodzica spośród małżonków). Daty wpisuje się w osobnych polach
+(dzień, miesiąc z listy, rok; przełączniki „około” i, przy śmierci, „zmarł(a), data nieznana”; miejsce), a formularz składa z nich zapis
+w rodzaju `1891`, `4.03.1891`, `ok. 1891` albo `?` i sprawdza go tym samym parserem (`lib/pole-daty.ts`, `lib/edycje.ts`); błędy
+(dzień bez miesiąca, nieistniejąca data) są pokazywane od razu przy polu. Pole jest takie samo przy edycji, dodawaniu dziecka,
+małżonka, rodzica i pierwszej osoby.
 Bez roli administratora lokalne zmiany nie są nakładane na widok.
 
 - Zmiany zapisują się w `localStorage` (klucz `edycje:<slug>`) i są nakładane na dane z repozytorium na liście

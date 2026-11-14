@@ -1,6 +1,6 @@
 // Dodawanie bliskich ze strony osoby (przyciski „+”), limity, ID drzewa obok nazwy, pogrubiona linia na diagramie.
 const { chromium } = require('playwright');
-const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, rejestruj, czekajNaOsoby } = require('./helpery.cjs');
+const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKarta, rejestruj, czekajNaOsoby, wpiszDate, wypelnij } = require('./helpery.cjs');
 
 (async () => {
   const br = await chromium.launch();
@@ -23,8 +23,8 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await ala.p.getByText('To drzewo jest jeszcze puste').waitFor();
   await ala.p.getByLabel('Imię').first().fill('Jan');
   await ala.p.getByLabel('Nazwisko').first().fill('Test');
-  await ala.p.getByLabel('Urodzenie').first().fill('1850');
-  await ala.p.getByLabel('Śmierć (puste = brak informacji)').first().fill('1920');
+  await wpiszDate(ala.p, 'urodzenia', '1850');
+  await wpiszDate(ala.p, 'śmierci', '1920');
   await ala.p.getByRole('button', { name: 'Dodaj osobę' }).click();
   await czekajNaOsoby(id, 1);
 
@@ -59,7 +59,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   const dodaj = async (przycisk, pola, wyslij, oczekiwane) => {
     await ala.p.locator('main').getByRole('button', { name: przycisk, exact: true }).click();
     const d = ala.p.getByRole('dialog');
-    for (const [etykieta, wartosc] of Object.entries(pola)) await d.getByLabel(etykieta).first().fill(wartosc);
+    for (const [etykieta, wartosc] of Object.entries(pola)) await wypelnij(d, etykieta, wartosc);
     await d.getByRole('button', { name: wyslij, exact: true }).click();
     await czekajNaOsoby(id, oczekiwane);
   };
@@ -117,7 +117,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   // lista rodziców: tylko poprzednie pokolenie i nie młodsi (Dziecko1 ma ojca Jana z 1850 r.)
   await ala.p.goto(osoba('dziecko1-test'));
   await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
-  const opcjeOjca = () => ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  const opcjeOjca = () => ala.p.getByRole('dialog').locator('fieldset', { hasText: 'Rodzice' }).locator('select').nth(0).locator('option').allInnerTexts();
   const ograniczone = await opcjeOjca();
   ok('lista ojców: tylko poprzednie pokolenie (jest Jan, nie ma Stefana ani rodzeństwa dziecka)', ograniczone.some((t) => t.includes('Jan Test')) && !ograniczone.some((t) => /Stefan|Dziecko2/.test(t)), ograniczone.join(' | '));
   await ala.p.getByRole('dialog').getByLabel(/Pokaż wszystkie osoby, także z innych pokoleń/).check();
@@ -131,22 +131,28 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
   const okno = ala.p.getByRole('dialog');
   await okno.getByLabel('Imię', { exact: true }).fill('Marcin');
-  ok('domyślnie Zona1 (to samo pokolenie co Marek) nie jest proponowana jako matka', !(await okno.locator('fieldset select').nth(1).locator('option').allInnerTexts()).some((t) => t.includes('Zona1')));
+  ok('domyślnie Zona1 (to samo pokolenie co Marek) nie jest proponowana jako matka', !(await okno.locator('fieldset', { hasText: 'Rodzice' }).locator('select').nth(1).locator('option').allInnerTexts()).some((t) => t.includes('Zona1')));
   await okno.getByLabel(/Pokaż wszystkie osoby, także z innych pokoleń/).check();
-  await okno.locator('fieldset select').nth(1).selectOption({ label: 'Zona1 NN' });
+  await okno.locator('fieldset', { hasText: 'Rodzice' }).locator('select').nth(1).selectOption({ label: 'Zona1 NN' });
+  await okno.getByLabel('Dzień urodzenia').fill('4');
+  await okno.getByText('Podaj rok.').waitFor();
+  ok('pole daty: dzień bez roku daje czytelny błąd przy polu', true);
+  await okno.getByLabel('Dzień urodzenia').fill('');
+  await wpiszDate(okno, 'urodzenia', 'ok. 1860, Kobylin');
+  await wpiszDate(okno, 'śmierci', '?');
   await okno.screenshot({ path: require('os').tmpdir() + '/przodkowie-edycja-okno.png' });
   await okno.getByRole('button', { name: 'Zapisz', exact: true }).click();
   await ala.p.getByRole('heading', { name: 'Marcin Test', level: 1 }).waitFor();
-  for (let i = 0; i < 40; i++) { const f = (await dokument(`drzewa/${id}/dane/pelne`)).fields.osoby.arrayValue.values.map((v) => v.mapValue.fields).find((x) => x.imie.stringValue === 'Marcin'); if (f) { ok('edycja ze strony osoby: zmienione imię i matka zapisane w bazie', f.matkaId.stringValue.startsWith('zona1') && f.ojciecId.stringValue.startsWith('stefan'), JSON.stringify(f.matkaId)); break; } if (i === 39) ok('edycja ze strony osoby: zapis w bazie', false); await new Promise((r) => setTimeout(r, 250)); }
+  for (let i = 0; i < 40; i++) { const f = (await dokument(`drzewa/${id}/dane/pelne`)).fields.osoby.arrayValue.values.map((v) => v.mapValue.fields).find((x) => x.imie.stringValue === 'Marcin'); if (f) { ok('edycja ze strony osoby: zmienione imię i matka zapisane w bazie', f.matkaId.stringValue.startsWith('zona1') && f.ojciecId.stringValue.startsWith('stefan'), JSON.stringify(f.matkaId)); const ur = f.urodzenie.mapValue.fields; ok('pola daty: „około 1860” z miejscem i śmierć o nieznanej dacie zapisane w bazie', ur.dokladnosc.stringValue === 'okolo' && ur.wartosc.stringValue === '1860' && ur.miejsce.stringValue === 'Kobylin' && f.smierc.mapValue.fields.dokladnosc.stringValue === 'nieznana', JSON.stringify(f.urodzenie)); break; } if (i === 39) ok('edycja ze strony osoby: zapis w bazie', false); await new Promise((r) => setTimeout(r, 250)); }
   await ala.p.getByRole('heading', { name: 'Rodzice', level: 2 }).waitFor();
   ok('po zmianie rodzica strona osoby pokazuje nowego rodzica', (await ala.p.getByText('Zona1 NN').count()) > 0);
   await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
-  const potomek = await ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  const potomek = await ala.p.getByRole('dialog').locator('fieldset', { hasText: 'Rodzice' }).locator('select').nth(0).locator('option').allInnerTexts();
   ok('lista rodziców nie zawiera samej osoby', !potomek.some((t) => t.includes('Marcin')));
   await ala.p.keyboard.press('Escape');
   await ala.p.goto(osoba('stefan-test-1820'));
   await ala.p.getByRole('button', { name: '✏️ Edytuj dane' }).click();
-  const ojcowieStefana = await ala.p.getByRole('dialog').locator('fieldset select').nth(0).locator('option').allInnerTexts();
+  const ojcowieStefana = await ala.p.getByRole('dialog').locator('fieldset', { hasText: 'Rodzice' }).locator('select').nth(0).locator('option').allInnerTexts();
   ok('lista rodziców nie zawiera potomków edytowanej osoby (Jan, Marcin)', !ojcowieStefana.some((t) => /Jan Test|Marcin/.test(t)));
   await ala.p.keyboard.press('Escape');
 

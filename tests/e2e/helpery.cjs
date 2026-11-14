@@ -65,12 +65,39 @@ async function zaloguj(p, email, haslo = 'haslo12345') {
   await p.getByRole('button', { name: 'Zaloguj się', exact: true }).click();
   await p.waitForURL('**/profil/');
 }
+/**
+ * Wpisuje datę w polach dzień / miesiąc / rok formularza osoby. `tekst`: „1950”, „4.03.1950”, „ok. 1850”, „?” (data nieznana,
+ * tylko dla śmierci) i opcjonalnie miejsce po przecinku („4.03.1950, Kobylin”). `rodzaj`: „urodzenia” albo „śmierci”.
+ */
+async function wpiszDate(korzen, rodzaj, tekst) {
+  const i = tekst.indexOf(',');
+  const miejsce = i < 0 ? '' : tekst.slice(i + 1).trim();
+  const data = (i < 0 ? tekst : tekst.slice(0, i)).trim();
+  if (data === '?') {
+    await korzen.getByLabel('Zmarł(a), data śmierci nieznana').check();
+  } else {
+    const okolo = /^ok\.?\s*/i.test(data);
+    const gola = data.replace(/^ok\.?\s*/i, '');
+    const m = /^(?:(\d{1,2})\.(\d{1,2})\.)?(\d{4})$/.exec(gola);
+    if (!m) throw new Error('nieznany format daty w teście: ' + tekst);
+    if (m[1]) { await korzen.getByLabel(`Dzień ${rodzaj}`).fill(m[1]); await korzen.getByLabel(`Miesiąc ${rodzaj}`).selectOption(String(Number(m[2]))); }
+    await korzen.getByLabel(`Rok ${rodzaj}`).fill(m[3]);
+    if (okolo) await korzen.getByLabel(rodzaj === 'urodzenia' ? 'Urodzenie przybliżona (około)' : 'Śmierć przybliżona (około)').check();
+  }
+  if (miejsce) await korzen.getByLabel(`Miejsce ${rodzaj}`).fill(miejsce);
+}
+/** Wypełnia pole formularza osoby po etykiecie; daty (Urodzenie, Śmierć…) idą przez pola dnia, miesiąca i roku. */
+async function wypelnij(korzen, etykieta, wartosc) {
+  if (etykieta === 'Urodzenie') return wpiszDate(korzen, 'urodzenia', wartosc);
+  if (etykieta.startsWith('Śmierć')) return wpiszDate(korzen, 'śmierci', wartosc);
+  await korzen.getByLabel(etykieta).first().fill(wartosc);
+}
 async function dodajOsobePanelem(p, przycisk, pola, wyslij, id, oczekiwane) {
   await p.getByRole('button', { name: przycisk }).click();
-  for (const [etykieta, wartosc] of Object.entries(pola)) await p.getByLabel(etykieta).first().fill(wartosc);
+  for (const [etykieta, wartosc] of Object.entries(pola)) await wypelnij(p, etykieta, wartosc);
   await p.getByRole('button', { name: wyslij, exact: true }).click();
   await czekajNaOsoby(id, oczekiwane);
 }
 
 
-module.exports = { czekajNaOsoby, B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem };
+module.exports = { wpiszDate, wypelnij, czekajNaOsoby, B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem };

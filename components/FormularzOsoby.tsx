@@ -6,6 +6,7 @@ import { domyslnieZyjaca } from "@/lib/zyjace";
 import { pelneImie } from "@/lib/format";
 import type { OsobaPanelu } from "@/lib/panel";
 import { mozliwiRodzice } from "@/lib/rodzice";
+import { PoleDaty } from "./PoleDaty";
 import type { ApiEdycji } from "./useEdycje";
 
 const POLE = "pole mt-1 block w-full";
@@ -19,8 +20,6 @@ function Pole({ etykieta, podpowiedz, children }: { etykieta: string; podpowiedz
     </label>
   );
 }
-
-const PODPOWIEDZ_DATY = "np. 1891, 4.03.1891, ok. 1891 albo ? (nieznana); miejsce po przecinku";
 
 /** Osoba, którą można wybrać na rodzica w formularzu edycji (wystarczą dane do rozpoznania i do wykluczenia potomków). */
 export type KandydatRodzica = Pick<OsobaPanelu, "id" | "imie" | "nazwisko" | "plec" | "lata" | "ojciecId" | "matkaId" | "pokolenie" | "rokUr" | "rokSm">;
@@ -124,12 +123,8 @@ export function FormularzEdycji({ osoba, api, naGotowe, osoby }: { osoba: OsobaP
       <Pole etykieta="Nazwisko rodowe (z domu)">
         <input className={POLE} value={rodowe} onChange={(e) => setRodowe(e.target.value)} autoComplete="off" />
       </Pole>
-      <Pole etykieta="Urodzenie" podpowiedz={PODPOWIEDZ_DATY}>
-        <input className={POLE} value={ur} onChange={(e) => setUr(e.target.value)} autoComplete="off" />
-      </Pole>
-      <Pole etykieta="Śmierć (puste = brak informacji)">
-        <input className={POLE} value={zm} onChange={(e) => setZm(e.target.value)} autoComplete="off" />
-      </Pole>
+      <PoleDaty etykieta="Urodzenie" rodzaj="urodzenia" poczatkowa={ur} naZmiane={setUr} />
+      <PoleDaty etykieta="Śmierć" rodzaj="śmierci" poczatkowa={zm} naZmiane={setZm} smierc />
       <Pole etykieta="Płeć">
         <select className={POLE} value={plec} onChange={(e) => setPlec(e.target.value as typeof plec)}>
           <option value="nieznana">nie podano</option>
@@ -291,9 +286,7 @@ export function FormularzDziecka({ osoba, malzonkowie, wszystkieId, api, naDodan
           </select>
         </Pole>
       </div>
-      <Pole etykieta="Urodzenie" podpowiedz={PODPOWIEDZ_DATY}>
-        <input className={POLE} value={ur} onChange={(e) => setUr(e.target.value)} autoComplete="off" />
-      </Pole>
+      <PoleDaty etykieta="Urodzenie" rodzaj="urodzenia" poczatkowa={ur} naZmiane={setUr} />
       {blad && (
         <p role="alert" className="text-sm font-medium text-blad">
           {blad}
@@ -416,12 +409,8 @@ export function FormularzNowejOsoby({ tytul, przycisk, domyslneNazwisko = "", do
           </select>
         </Pole>
       )}
-      <Pole etykieta="Urodzenie" podpowiedz={PODPOWIEDZ_DATY}>
-        <input className={POLE} value={ur} onChange={(e) => setUr(e.target.value)} autoComplete="off" />
-      </Pole>
-      <Pole etykieta="Śmierć (puste = brak informacji)">
-        <input className={POLE} value={zm} onChange={(e) => setZm(e.target.value)} autoComplete="off" />
-      </Pole>
+      <PoleDaty etykieta="Urodzenie" rodzaj="urodzenia" poczatkowa={ur} naZmiane={setUr} />
+      <PoleDaty etykieta="Śmierć" rodzaj="śmierci" poczatkowa={zm} naZmiane={setZm} smierc />
       {!zm.trim() && (
         <label className="flex items-start gap-2 text-sm">
           <input type="checkbox" className="mt-0.5 size-4" checked={zyjaca ?? zyjacaDomyslnie} onChange={(e) => setZyjaca(e.target.checked)} />

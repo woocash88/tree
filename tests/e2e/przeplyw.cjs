@@ -1,5 +1,5 @@
 const { chromium } = require('playwright');
-const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem, czekajNaOsoby } = require('./helpery.cjs');
+const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadajAdmina, dokument, nowaKarta, rejestruj, zaloguj, dodajOsobePanelem, czekajNaOsoby, wpiszDate } = require('./helpery.cjs');
 (async () => {
   const br = await chromium.launch();
   await wyczysc();
@@ -68,7 +68,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await ala.p.getByText('To drzewo jest jeszcze puste').waitFor();
   await ala.p.getByLabel('Imię').first().fill('Jan');
   await ala.p.getByLabel('Nazwisko').first().fill('Nowak');
-  await ala.p.getByLabel('Urodzenie').first().fill('4.03.1950');
+  await wpiszDate(ala.p, 'urodzenia', '4.03.1950, Kobylin');
   await ala.p.getByRole('button', { name: 'Dodaj osobę' }).click();
   await czekajNaOsoby(idDrzewa, 1);
   await ala.p.getByRole('heading', { name: 'Statystyki' }).or(ala.p.getByLabel('Statystyki')).first().waitFor();
