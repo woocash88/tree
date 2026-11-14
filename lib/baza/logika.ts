@@ -10,7 +10,7 @@ import type { PolitykaDat } from "../schemat-drzewa";
 import { walidujRodzine } from "../walidacja";
 import { MAKS_DZIECI, MAKS_MALZONKOW, MAKS_NAZWISK_W_META, MAKS_OSOB, MAKS_RODZENSTWA, type DaneDb, type MetaDb, type StatystykiDb } from "./typy";
 
-export const DOMYSLNA_GALAZ: Galaz = { id: "glowna", nazwa: "Główna gałąź", kolor: "#3540d1", opis: "" };
+export const DOMYSLNA_GALAZ: Galaz = { id: "glowna", nazwa: "Główna gałąź", kolor: "#2f6f4f", opis: "" };
 
 export const pusteDane = (): DaneDb => ({ galezie: [{ ...DOMYSLNA_GALAZ }], osoby: [], malzenstwa: [] });
 

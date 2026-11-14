@@ -276,20 +276,20 @@ export function WidokDrzewaDb() {
   const pelnoekranowy = w === "galaz" || w === "lista" || w === "diagram";
   const stronaDrzewa = !!drzewo && w !== "ustawienia" && !pelnoekranowy && w !== "osoba" && w !== "osoby";
 
-  // Pasek z rolą użytkownika w drzewie; na stronie drzewa (styl miękki) jako biała pigułka, w pozostałych widokach jak dotąd.
-  const pasekRoli = (miekki: boolean) =>
+  // Pasek z rolą użytkownika w drzewie (biała zaokrąglona powierzchnia); szerokość dopasowana do widoku.
+  const pasekRoli = (szerokosc: string) =>
     rola && (
-      <div className={miekki ? "mx-auto mt-3 w-full max-w-[1160px] px-4 sm:px-8" : "border-b border-kreska bg-najazd px-4 py-1.5 text-sm"}>
-        <div className={miekki ? "g-szklo flex flex-wrap items-center gap-x-4 gap-y-1 rounded-3xl px-5 py-2.5 text-sm" : "mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-1"}>
+      <div className={`mx-auto mt-3 w-full px-4 ${szerokosc}`}>
+        <div className="szklo flex flex-wrap items-center gap-x-4 gap-y-1 !rounded-3xl px-5 py-2.5 text-sm">
           <span>
             <strong>{rola}</strong> · {meta.widocznosc === "publiczne" ? "drzewo publiczne" : "drzewo prywatne"} · osoby żyjące: {{ ukryj: "tylko imię i nazwisko", "tylko-rok": "z rokiem urodzenia", pokaz: "pełne dane" }[meta.politykaDatZyjacych]}
           </span>
           <IdDrzewa numer={meta.numer} />
-          <span className={miekki ? "g-t3" : "text-tekst-2"} role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
+          <span className="text-tekst-3" role="status">{zapisujeLicznik > 0 ? "Zapisywanie…" : blad ? "" : "Zapisano"}</span>
           <span className="ml-auto flex gap-3">
-            <Link href={sciezkaDrzewa(slug)} className={miekki ? "g-akcent font-semibold underline-offset-2 hover:underline" : "link"}>Strona drzewa</Link>
+            <Link href={sciezkaDrzewa(slug)} className="font-semibold text-akcent underline-offset-2 hover:underline">Strona drzewa</Link>
             {(dostep === "wlasciciel" || dostep === "admin") && (
-              <Link href={sciezkaUstawienDrzewa(slug)} className={miekki ? "g-akcent font-semibold underline-offset-2 hover:underline" : "link"}>Ustawienia i kolaboranci</Link>
+              <Link href={sciezkaUstawienDrzewa(slug)} className="font-semibold text-akcent underline-offset-2 hover:underline">Ustawienia i kolaboranci</Link>
             )}
           </span>
         </div>
@@ -302,7 +302,7 @@ export function WidokDrzewaDb() {
         <PowlokaMiekka
           pasek={
             <>
-              {pasekRoli(true)}
+              {pasekRoli("max-w-[1160px] sm:px-8")}
               {blad && (
                 <p role="alert" className="mx-auto mt-3 w-full max-w-[1160px] px-4 text-sm font-semibold text-blad sm:px-8">
                   {blad}
@@ -320,7 +320,7 @@ export function WidokDrzewaDb() {
   return (
     <KontekstDb.Provider value={{ drzewoId: id, api, indeks }}>
       <Naglowek drzewo={{ slug, nazwa: meta.nazwa, galezie }} />
-      {pasekRoli(false)}
+      {pasekRoli("max-w-7xl")}
       <div id="tresc" className="flex flex-1 flex-col">
         {blad && w !== "ustawienia" && !pelnoekranowy && (
           <p role="alert" className="mx-auto mt-3 w-full max-w-7xl px-4 text-sm font-semibold text-blad">{blad}</p>

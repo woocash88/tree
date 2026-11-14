@@ -23,12 +23,12 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
       : []),
   ];
   return (
-    <header className="szklo relative top-0 z-40 !rounded-none !border-x-0 !border-t-0 sm:sticky">
-      <a href="#tresc" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-lita focus:px-3 focus:py-2">
+    <header className="relative z-40 px-4 pt-3 sm:sticky sm:top-0">
+      <a href="#tresc" className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-lita focus:px-3 focus:py-2">
         Przejdź do treści
       </a>
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2 sm:flex-nowrap">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-tekst" aria-label="Przodkowie – strona główna">
+      <div className="szklo mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 !rounded-[32px] py-2 pl-5 pr-2.5 sm:flex-nowrap sm:!rounded-full">
+        <Link href="/" className="flex min-h-10 items-center gap-2 text-lg font-bold tracking-[-0.02em] text-tekst" aria-label="Przodkowie – strona główna">
           {/* Logo jest czarne na przezroczystym tle; w ciemnym motywie odwracamy kolory. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${BASE_PATH}/przodkowie_logo.png`} alt="" width={32} height={32} className="size-8 dark-odwroc" />
@@ -36,7 +36,7 @@ export function Naglowek({ drzewo }: { drzewo?: KontekstDrzewa }) {
         </Link>
         <nav aria-label="Główna nawigacja" className="flex items-center gap-1 text-sm">
           {linki.map((l) => (
-            <Link key={l.href} href={l.href} aria-current={l.aktywny ? "page" : undefined} className={`rounded-full px-3 py-1.5 font-medium ${l.aktywny ? "bg-zaznaczenie text-tekst" : "text-tekst-2 hover:bg-najazd hover:text-tekst"}`}>
+            <Link key={l.href} href={l.href} aria-current={l.aktywny ? "page" : undefined} className={`rounded-full px-3.5 py-2 ${l.aktywny ? "bg-[var(--tag)] font-semibold text-akcent" : "font-medium text-tekst-2 hover:bg-najazd hover:text-tekst"}`}>
               {l.etykieta}
             </Link>
           ))}

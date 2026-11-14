@@ -16,7 +16,7 @@ export default async function StronaGlowna() {
   return (
     <PowlokaMiekka>
       <main id="tresc" className="flex-1">
-        <section className="mx-auto max-w-[1160px] px-4 pb-[clamp(48px,7vw,96px)] pt-[clamp(56px,10vw,128px)] text-center sm:px-8">
+        <section className="mx-auto max-w-[1160px] px-4 pb-[clamp(48px,7vw,96px)] pt-[clamp(24px,4vw,48px)] text-center sm:px-8">
           <div className="g-tag g-akcent inline-flex items-center gap-2 rounded-full px-4 py-[7px] text-[13px] font-semibold tracking-[0.01em]">
             <span aria-hidden="true" className="size-2 rounded-full" style={{ background: "var(--g-akcent)" }} />
             Drzewa genealogiczne rodzin
@@ -59,7 +59,7 @@ export default async function StronaGlowna() {
 
             <article className={KARTA} aria-label="Stwórz własne drzewo">
               <div aria-hidden="true" className={`${IKONA} g-przycisk`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--akcent-tekst)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 5v14M5 12h14" />
                 </svg>
               </div>

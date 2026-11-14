@@ -455,18 +455,17 @@ Wybór: `@xyflow/react` (płótno, minimapa, dotyk, wirtualizacja) + `d3-flextre
 
 ## Styl i dostępność
 
-Styl „glass morphism”, jasny i ciemny motyw (domyślnie według `prefers-color-scheme`, przełącznik w nagłówku
-zapamiętywany w `localStorage` w `try/catch`). Wszystkie kolory to zmienne CSS w `app/globals.css`.
+Styl „miękki” (wzór C) w całym serwisie, jasny i ciemny motyw (domyślnie według `prefers-color-scheme`, przełącznik w nagłówku
+zapamiętywany w `localStorage` w `try/catch`): kremowe tło z trzema miękkimi kołami, pełne białe (w ciemnym: ciemnozielone) powierzchnie
+z delikatnym cieniem, zielony akcent, krój Plus Jakarta Sans, nagłówek w kształcie pigułki. Wszystkie kolory to zmienne CSS w `app/globals.css`
+(klasa `.glowna` na stronie głównej, przeglądzie drzew i stronie drzewa tylko je aliasuje).
 
-- Rozmycie tła (`backdrop-filter`) tylko na kilku dużych powierzchniach: nagłówek, panel boczny, karty
-  indeksów i okno widoku osoby. Wiersze listy i karty na płótnie mają zwykłe półprzezroczyste tło.
-- Tekst nigdy nie leży bezpośrednio na gradiencie: zawsze na powierzchni (szkło, panel, pole).
-  `npm run kontrast` liczy kontrast w najgorszym punkcie tła w obu motywach: tekst podstawowy ≥ 11:1,
-  pomocniczy ≥ 6:1, linki i przyciski ≥ 5,6:1 (WCAG AA wymaga 4,5:1).
-- Zapasowe style: bez `backdrop-filter`, przy `prefers-reduced-transparency` i `prefers-contrast: more`
-  powierzchnie są jednolite i nieprzezroczyste, a plamy tła znikają.
+- Powierzchnie są pełne, bez przezroczystości i rozmycia, więc tekst zawsze leży na jednolitym tle. `npm run kontrast` liczy kontrast
+  tekstu (podstawowego, pomocniczego, przytłumionego), akcentu i błędu na każdej powierzchni i na kołach tła w obu motywach oraz tekstu
+  przycisków: wszystko ≥ 4,5:1 (WCAG AA).
+- Przy `prefers-contrast: more` obramowania i tekst pomocniczy są mocniejsze, a koła tła znikają.
 - Animacje (hover, rozwijanie, panel) wyłącza `prefers-reduced-motion`.
-- Fonty (Inter) pochodzą z pakietu `@fontsource-variable/inter` i są serwowane z tej samej domeny;
+- Fonty (Inter, Plus Jakarta Sans) pochodzą z pakietów `@fontsource-variable/*` i są serwowane z tej samej domeny;
   strona nie wykonuje żadnych żądań do zewnętrznych serwerów, nie ma ciasteczek ani skryptów śledzących.
   Jedyny skrypt inline ustawia zapamiętany motyw przed pierwszym wyrenderowaniem strony.
 
@@ -570,10 +569,3 @@ Okno logowania Google pobiera skrypty z internetu, więc w testach używane jest
 - **Import GEDCOM / JSON** do drzewa użytkownika oraz eksport drzewa.
 - **Przeniesienie drzew z repozytorium do bazy**, żeby administrator edytował je tak jak drzewa użytkowników.
 - **Moderacja**: zgłaszanie naruszeń i ukrywanie drzew publicznych do akceptacji.
-
-## Styl miękki (wzór C)
-
-Strona główna, przegląd drzew (`/drzewa/`) i strona główna drzewa (`/d/?id=…` bez widoku, `/drzewa/<drzewo>/`) mają osobny, „miękki” styl:
-kremowe tło z dużymi plamami, pełne białe powierzchnie z zielonym cieniem, zielony akcent `#2f6f4f`, krój Plus Jakarta Sans i nagłówek-pigułka
-(`components/glowna/`). Wariant ciemny jest własny (zieleń na ciemnym tle). Pozostałe widoki (lista gałęzi, diagram, osoba, profil, panel
-administratora) zachowały dotychczasowy styl; zmienne kolorów strony miękkiej to `--g-*` w klasie `.glowna` w `app/globals.css`.

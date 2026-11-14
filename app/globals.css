@@ -3,89 +3,105 @@
 @import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 /*
- * Motyw „glass”. Wszystkie kolory to zmienne CSS przełączane między trybem jasnym i ciemnym:
+ * Motyw „miękki” (wzór C) w całym serwisie. Wszystkie kolory to zmienne CSS przełączane między trybem jasnym i ciemnym:
  *   – domyślnie według prefers-color-scheme,
  *   – ręcznie przez atrybut data-theme="jasny" | "ciemny" na <html> (przełącznik w nagłówku).
- * Kontrast tekstu sprawdzony skryptem (patrz README, „Styl i dostępność”): tekst podstawowy ≥ 12:1,
- * tekst pomocniczy ≥ 6:1 na każdej powierzchni, także w najjaśniejszym punkcie tła.
+ * Powierzchnie są pełne (bez przezroczystości i rozmycia), tło to kremowa barwa z miękkimi kołami. Kontrast sprawdza
+ * skrypt `npm run kontrast` (patrz README, „Styl i dostępność”).
  */
 :root {
   color-scheme: light;
-  --tlo: #e9edfb;
-  --plama-1: rgba(99, 102, 241, 0.34);
-  --plama-2: rgba(45, 212, 191, 0.3);
-  --plama-3: rgba(167, 139, 250, 0.34);
-  --plama-4: rgba(56, 189, 248, 0.24);
-  --tekst: #0f1429;
-  --tekst-2: #434a69;
-  --kreska: rgba(36, 46, 110, 0.16);
-  --szklo: rgba(255, 255, 255, 0.62);
-  --szklo-ramka: rgba(255, 255, 255, 0.75);
-  --panel: rgba(255, 255, 255, 0.74);
-  --pole: rgba(255, 255, 255, 0.9);
-  --lita: #f6f7fe;
-  --najazd: rgba(54, 64, 212, 0.1);
-  --zaznaczenie: rgba(54, 64, 212, 0.16);
-  --akcent: #3540d1;
+  --tlo: #f2f4ee;
+  --plama-1: rgba(47, 111, 79, 0.1);
+  --plama-2: rgba(244, 164, 120, 0.2);
+  --plama-3: rgba(47, 111, 79, 0.07);
+  --tekst: #1f2a24;
+  --tekst-2: #4b5a50;
+  --tekst-3: #546359;
+  --kreska: rgba(47, 111, 79, 0.18);
+  --szklo: #ffffff;
+  --szklo-ramka: transparent;
+  --panel: #ffffff;
+  --pole: #ffffff;
+  --lita: #ffffff;
+  --najazd: rgba(47, 111, 79, 0.09);
+  --zaznaczenie: rgba(47, 111, 79, 0.16);
+  --akcent: #2f6f4f;
   --akcent-tekst: #ffffff;
   --blad: #b4234a;
-  --cien: 0 10px 34px -8px rgba(31, 38, 135, 0.22), 0 2px 6px rgba(31, 38, 135, 0.06);
+  --chip: #e6efe8;
+  --chip-ramka: rgba(47, 111, 79, 0.14);
+  --tag: #e1ece3;
+  --panel-wew: #f4f7f2;
+  --cien: 0 14px 40px rgba(47, 111, 79, 0.1), 0 2px 6px rgba(31, 42, 36, 0.04);
+  --cien-duzy: 0 16px 44px rgba(47, 111, 79, 0.14), 0 2px 8px rgba(31, 42, 36, 0.05);
   --linia: color-mix(in srgb, var(--akcent) 45%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="jasny"]) {
     color-scheme: dark;
-    --tlo: #0a0e1f;
-    --plama-1: rgba(99, 102, 241, 0.4);
-    --plama-2: rgba(20, 184, 166, 0.24);
-    --plama-3: rgba(139, 92, 246, 0.36);
-    --plama-4: rgba(14, 165, 233, 0.2);
-    --tekst: #eceffd;
-    --tekst-2: #aab1d0;
+    --tlo: #101712;
+    --plama-1: rgba(47, 111, 79, 0.2);
+    --plama-2: rgba(244, 164, 120, 0.07);
+    --plama-3: rgba(47, 111, 79, 0.14);
+    --tekst: #e8efe9;
+    --tekst-2: #b6c4ba;
+    --tekst-3: #a9b9ae;
     --kreska: rgba(255, 255, 255, 0.14);
-    --szklo: rgba(22, 28, 62, 0.62);
-    --szklo-ramka: rgba(255, 255, 255, 0.22);
-    --panel: rgba(18, 24, 54, 0.78);
-    --pole: rgba(12, 16, 40, 0.8);
-    --lita: #141a3a;
-    --najazd: rgba(143, 155, 255, 0.14);
-    --zaznaczenie: rgba(143, 155, 255, 0.24);
-    --akcent: #99a4ff;
-    --akcent-tekst: #0a0e22;
+    --szklo: #1a241e;
+    --szklo-ramka: rgba(255, 255, 255, 0.06);
+    --panel: #1a241e;
+    --pole: #151e18;
+    --lita: #1a241e;
+    --najazd: rgba(124, 199, 160, 0.12);
+    --zaznaczenie: rgba(124, 199, 160, 0.22);
+    --akcent: #7cc7a0;
+    --akcent-tekst: #0b1a12;
     --blad: #ff8fa8;
-    --cien: 0 12px 40px -8px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.25);
+    --chip: #243229;
+    --chip-ramka: rgba(124, 199, 160, 0.2);
+    --tag: #223a2d;
+    --panel-wew: #151e18;
+    --cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 }
 
 :root[data-theme="ciemny"] {
   color-scheme: dark;
-  --tlo: #0a0e1f;
-  --plama-1: rgba(99, 102, 241, 0.4);
-  --plama-2: rgba(20, 184, 166, 0.24);
-  --plama-3: rgba(139, 92, 246, 0.36);
-  --plama-4: rgba(14, 165, 233, 0.2);
-  --tekst: #eceffd;
-  --tekst-2: #aab1d0;
+  --tlo: #101712;
+  --plama-1: rgba(47, 111, 79, 0.2);
+  --plama-2: rgba(244, 164, 120, 0.07);
+  --plama-3: rgba(47, 111, 79, 0.14);
+  --tekst: #e8efe9;
+  --tekst-2: #b6c4ba;
+  --tekst-3: #a9b9ae;
   --kreska: rgba(255, 255, 255, 0.14);
-  --szklo: rgba(22, 28, 62, 0.62);
-  --szklo-ramka: rgba(255, 255, 255, 0.22);
-  --panel: rgba(18, 24, 54, 0.78);
-  --pole: rgba(12, 16, 40, 0.8);
-  --lita: #141a3a;
-  --najazd: rgba(143, 155, 255, 0.14);
-  --zaznaczenie: rgba(143, 155, 255, 0.24);
-  --akcent: #99a4ff;
-  --akcent-tekst: #0a0e22;
+  --szklo: #1a241e;
+  --szklo-ramka: rgba(255, 255, 255, 0.06);
+  --panel: #1a241e;
+  --pole: #151e18;
+  --lita: #1a241e;
+  --najazd: rgba(124, 199, 160, 0.12);
+  --zaznaczenie: rgba(124, 199, 160, 0.22);
+  --akcent: #7cc7a0;
+  --akcent-tekst: #0b1a12;
   --blad: #ff8fa8;
-  --cien: 0 12px 40px -8px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --chip: #243229;
+  --chip-ramka: rgba(124, 199, 160, 0.2);
+  --tag: #223a2d;
+  --panel-wew: #151e18;
+  --cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 @theme inline {
-  --font-sans: "Inter Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Inter Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
   --color-tlo: var(--tlo);
   --color-tekst: var(--tekst);
   --color-tekst-2: var(--tekst-2);
+  --color-tekst-3: var(--tekst-3);
   --color-kreska: var(--kreska);
   --color-panel: var(--panel);
   --color-pole: var(--pole);
@@ -110,10 +126,9 @@ body {
   min-height: 100dvh;
   font-size: 16px;
   line-height: 1.5;
-  font-feature-settings: "cv11", "ss03";
 }
 
-/* Tło „mesh”: kilka dużych, rozmytych plam koloru. Stałe, bez obrazów i bez filtrów blur (gradienty są miękkie same z siebie). */
+/* Tło: kremowa barwa i trzy miękkie koła (jak na stronie głównej). Stałe, bez obrazów i bez filtrów. */
 body::before {
   content: "";
   position: fixed;
@@ -121,15 +136,14 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(60vmax 50vmax at 8% 6%, var(--plama-1), transparent 62%),
-    radial-gradient(55vmax 45vmax at 94% 12%, var(--plama-2), transparent 60%),
-    radial-gradient(60vmax 55vmax at 78% 98%, var(--plama-3), transparent 62%),
-    radial-gradient(45vmax 40vmax at 4% 90%, var(--plama-4), transparent 60%);
+    radial-gradient(circle 320px at 160px 120px, var(--plama-1) 99%, transparent 100%),
+    radial-gradient(circle 350px at calc(100% - 130px) 490px, var(--plama-2) 99%, transparent 100%),
+    radial-gradient(circle 260px at 18% calc(100% - 90px), var(--plama-3) 99%, transparent 100%);
 }
 
 h1, h2, h3 {
-  letter-spacing: -0.02em;
-  font-weight: 650;
+  letter-spacing: -0.025em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
@@ -149,27 +163,25 @@ h1, h2, h3 {
 }
 
 @layer components {
-  /* Duża powierzchnia ze szkłem: tylko nagłówek, panel boczny, karty indeksów, okno widoku osoby. */
+  /* Duża, pełna powierzchnia z miękkim cieniem: nagłówek, panel boczny, karty, okna. */
   .szklo {
     background: var(--szklo);
     border: 1px solid var(--szklo-ramka);
-    border-radius: 20px;
+    border-radius: 28px;
     box-shadow: var(--cien);
-    -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    backdrop-filter: blur(18px) saturate(1.5);
   }
 
-  /* Półprzezroczyste tło BEZ rozmycia: wiersze listy, karty na płótnie, małe elementy. */
+  /* Mniejsza powierzchnia z cienką ramką: wiersze listy, karty na płótnie, małe elementy. */
   .panel {
     background: var(--panel);
     border: 1px solid var(--kreska);
-    border-radius: 14px;
+    border-radius: 18px;
   }
 
   .pole {
     background: var(--pole);
     border: 1px solid var(--kreska);
-    border-radius: 12px;
+    border-radius: 16px;
     color: var(--tekst);
     min-height: 2.5rem;
     padding: 0 0.75rem;
@@ -436,83 +448,34 @@ h1, h2, h3 {
  * zielony akcent i krój Plus Jakarta Sans. Jasny i ciemny wariant przełączają się tak jak w reszcie serwisu
  * (prefers-color-scheme albo data-theme na <html>). Nazwy klas g-* zostały po poprzednim wzorze. */
 .glowna {
-  --g-tlo: #f2f4ee;
-  --g-tekst: #1f2a24;
-  --g-tekst2: #4b5a50;
-  --g-tekst3: #5d6b62;
-  --g-akcent: #2f6f4f;
-  --g-akcent-tekst: #2f6f4f;
-  --g-szklo: #ffffff;
-  --g-szklo-lita: #ffffff;
-  --g-ramka: transparent;
-  --g-cien: 0 14px 40px rgba(47, 111, 79, 0.1), 0 2px 6px rgba(31, 42, 36, 0.04);
-  --g-cien-duzy: 0 16px 44px rgba(47, 111, 79, 0.14), 0 2px 8px rgba(31, 42, 36, 0.05);
-  --g-chip: #e6efe8;
-  --g-chip-ramka: rgba(47, 111, 79, 0.14);
-  --g-tag: #e1ece3;
-  --g-panel: #f4f7f2;
-  --g-wybrany: #e1ece3;
-  --g-kreska: rgba(47, 111, 79, 0.16);
-  --g-orb-1: rgba(47, 111, 79, 0.1);
-  --g-orb-2: rgba(244, 164, 120, 0.2);
-  --g-orb-3: rgba(47, 111, 79, 0.07);
+  --g-tlo: var(--tlo);
+  --g-tekst: var(--tekst);
+  --g-tekst2: var(--tekst-2);
+  --g-tekst3: var(--tekst-3);
+  --g-akcent: var(--akcent);
+  --g-akcent-tekst: var(--akcent);
+  --g-szklo: var(--szklo);
+  --g-szklo-lita: var(--lita);
+  --g-ramka: var(--szklo-ramka);
+  --g-cien: var(--cien);
+  --g-cien-duzy: var(--cien-duzy);
+  --g-chip: var(--chip);
+  --g-chip-ramka: var(--chip-ramka);
+  --g-tag: var(--tag);
+  --g-panel: var(--panel-wew);
+  --g-wybrany: var(--tag);
+  --g-kreska: var(--kreska);
+  --g-orb-1: var(--plama-1);
+  --g-orb-2: var(--plama-2);
+  --g-orb-3: var(--plama-3);
   position: relative;
   overflow: hidden;
   flex: 1 1 auto;
   background: var(--g-tlo);
   color: var(--g-tekst);
-  font-family: "Plus Jakarta Sans Variable", "Inter Variable", system-ui, sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="jasny"]) .glowna {
-    --g-tlo: #101712;
-    --g-tekst: #e8efe9;
-    --g-tekst2: #b6c4ba;
-    --g-tekst3: #9aaba0;
-    --g-akcent-tekst: #7cc7a0;
-    --g-szklo: #1a241e;
-    --g-szklo-lita: #1a241e;
-    --g-ramka: rgba(255, 255, 255, 0.06);
-    --g-cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
-    --g-cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-    --g-chip: #243229;
-    --g-chip-ramka: rgba(124, 199, 160, 0.2);
-    --g-tag: #223a2d;
-    --g-panel: #151e18;
-    --g-wybrany: #223a2d;
-    --g-kreska: rgba(255, 255, 255, 0.12);
-    --g-orb-1: rgba(47, 111, 79, 0.2);
-    --g-orb-2: rgba(244, 164, 120, 0.07);
-    --g-orb-3: rgba(47, 111, 79, 0.14);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="ciemny"] .glowna {
-  --g-tlo: #101712;
-  --g-tekst: #e8efe9;
-  --g-tekst2: #b6c4ba;
-  --g-tekst3: #9aaba0;
-  --g-akcent-tekst: #7cc7a0;
-  --g-szklo: #1a241e;
-  --g-szklo-lita: #1a241e;
-  --g-ramka: rgba(255, 255, 255, 0.06);
-  --g-cien: 0 14px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
-  --g-cien-duzy: 0 16px 44px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
-  --g-chip: #243229;
-  --g-chip-ramka: rgba(124, 199, 160, 0.2);
-  --g-tag: #223a2d;
-  --g-panel: #151e18;
-  --g-wybrany: #223a2d;
-  --g-kreska: rgba(255, 255, 255, 0.12);
-  --g-orb-1: rgba(47, 111, 79, 0.2);
-  --g-orb-2: rgba(244, 164, 120, 0.07);
-  --g-orb-3: rgba(47, 111, 79, 0.14);
-  color-scheme: dark;
 }
 .glowna a { color: inherit; text-decoration: none; }
 .glowna :focus-visible { outline: 2px solid var(--g-akcent-tekst); outline-offset: 2px; }
-.glowna .g-display { font-family: "Plus Jakarta Sans Variable", "Inter Variable", system-ui, sans-serif; }
 .glowna .g-szklo {
   background: var(--g-szklo);
   border: 1px solid var(--g-ramka);
@@ -532,7 +495,7 @@ h1, h2, h3 {
 .glowna .g-akcent { color: var(--g-akcent-tekst); }
 .glowna .g-przycisk {
   background: var(--g-akcent);
-  color: #fff;
+  color: var(--akcent-tekst);
   font-weight: 600;
   cursor: pointer;
   border: 0;

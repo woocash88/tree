@@ -55,6 +55,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
 
   // ── przyciski „+” na stronie osoby ──
   const osoba = (os) => `${B}/d/?id=${id}&w=osoba&os=${os}`;
+  const lista = (os) => `${B}/d/?id=${id}&w=galaz&g=cale&os=${os}`;
   const dodaj = async (przycisk, pola, wyslij, oczekiwane) => {
     await ala.p.locator('main').getByRole('button', { name: przycisk, exact: true }).click();
     const d = ala.p.getByRole('dialog');
@@ -197,6 +198,27 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, no
   await potwierdzEmail(mailNowa);
   await nowa.p.getByRole('button', { name: 'Utwórz drzewo' }).waitFor({ timeout: 20000 });
   ok('rejestracja przez „Stwórz drzewo”: po potwierdzeniu e-maila formularz nowego drzewa jest otwarty', true);
+
+  // ── zrzuty pozostałych stron w nowym stylu (do przeglądu wizualnego) ──
+  const zrzut = async (p, nazwa, adres, opcje = {}) => { await p.goto(adres); await p.waitForTimeout(1500); await p.screenshot({ path: require('os').tmpdir() + `/przodkowie-styl-${nazwa}.png`, ...opcje }); };
+  await zrzut(g.p, 'logowanie', B + '/logowanie/');
+  await zrzut(g.p, 'polityka', B + '/polityka-prywatnosci/', { fullPage: true });
+  await zrzut(ala.p, 'profil', B + '/profil/', { fullPage: true });
+  await zrzut(ala.p, 'lista', lista('jan-test-1850'));
+  await zrzut(ala.p, 'osoba', osoba('jan-test-1850'), { fullPage: true });
+  await zrzut(ala.p, 'osoby', `${B}/d/?id=${id}&w=osoby`);
+  await zrzut(ala.p, 'ustawienia', `${B}/d/?id=${id}&w=ustawienia`, { fullPage: true });
+  await zrzut(ala.p, 'diagram', `${B}/d/?id=${id}&w=diagram&g=cale&os=jan-test-1850`);
+  await ala.p.emulateMedia({ colorScheme: 'dark' });
+  await zrzut(ala.p, 'lista-ciemna', lista('jan-test-1850'));
+  await zrzut(ala.p, 'osoba-ciemna', osoba('jan-test-1850'));
+  await zrzut(ala.p, 'profil-ciemny', B + '/profil/');
+  await ala.p.emulateMedia({ colorScheme: null });
+  await ala.p.setViewportSize({ width: 390, height: 844 });
+  await zrzut(ala.p, 'lista-telefon', lista('jan-test-1850'));
+  await zrzut(ala.p, 'osoba-telefon', osoba('jan-test-1850'), { fullPage: true });
+  ok('telefon: strona osoby bez poziomego przewijania', await ala.p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  await ala.p.setViewportSize({ width: 1280, height: 900 });
 
   // ── diagram: wybrana linia pogrubiona dwukrotnie (2,5 → 5) ──
   await ala.p.goto(`${B}/d/?id=${id}&w=diagram&g=cale&os=jan-test-1850`);
