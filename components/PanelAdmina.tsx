@@ -5,13 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { IdDrzewa } from "@/components/IdDrzewa";
 import type { PodsumowanieDrzewa } from "@/lib/dane-czyste";
-import { listaUzytkownikow, listaWiadomosci, listaWszystkich, TEMATY_WIADOMOSCI, usunDaneUzytkownika, usunWiadomosc, usunDrzewo, zmienDaneUzytkownika, type WpisDrzewa, type WpisUzytkownika, type WpisWiadomosci } from "@/lib/baza/api";
+import { listaUzytkownikow, listaWiadomosci, listaWszystkich, oznaczWiadomosc, TEMATY_WIADOMOSCI, usunDaneUzytkownika, usunWiadomosc, usunDrzewo, zmienDaneUzytkownika, type WpisDrzewa, type WpisUzytkownika, type WpisWiadomosci } from "@/lib/baza/api";
 import { komunikatBledu } from "@/lib/baza/konta";
 import { ileOsob, ilePokolen } from "@/lib/format";
 import { POLITYKI_DAT, type DrzewoMeta, type PolitykaDat } from "@/lib/schemat-drzewa";
 import { sciezkaDrzewa, sciezkaGalezi, sciezkaUstawienDrzewa, slugDb } from "@/lib/sciezki";
 import { bledyMeta, zastosujZmianeMeta, type ZmianaDrzewa } from "@/lib/zmiany-drzew";
 import { useKonto } from "./konta/AuthProvider";
+import { useNieprzeczytane } from "./konta/useNieprzeczytane";
 import { useEdycje } from "./useEdycje";
 import { useZmianyDrzew } from "./useZmianyDrzew";
 
@@ -555,6 +556,25 @@ function SekcjaWiadomosci() {
   return (
     <section aria-label="Wiadomości" className="mt-6">
       <h2 className="text-2xl">Wiadomości ({lista?.length ?? "…"})</h2>
+      {lista && lista.some((w) => !w.przeczytana) && (
+        <p className="mt-2 flex flex-wrap items-center gap-3 text-sm">
+          <strong>Nowych: {lista.filter((w) => !w.przeczytana).length}</strong>
+          <button
+            type="button"
+            className="przycisk !min-h-8"
+            onClick={async () => {
+              try {
+                for (const w of lista.filter((x) => !x.przeczytana)) await oznaczWiadomosc(w.id, true);
+                await wczytaj();
+              } catch (e) {
+                setBlad(komunikatBledu(e));
+              }
+            }}
+          >
+            Oznacz wszystkie jako przeczytane
+          </button>
+        </p>
+      )}
       <p className="mt-1 text-sm text-tekst-2">Wiadomości z formularza kontaktowego (kopia zapisana w bazie; jeśli skonfigurowano Web3Forms, każda trafia też e-mailem). Odpowiadasz zwykłym e-mailem na podany adres.</p>
       <input type="search" className="pole mt-3 w-full max-w-sm" placeholder="Szukaj w wiadomościach" value={strony.fraza} onChange={(e) => strony.ustawFraze(e.target.value)} aria-label="Szukaj wiadomości" />
       {blad && <p role="alert" className="mt-2 text-sm font-semibold text-blad">{blad}</p>}
@@ -562,13 +582,30 @@ function SekcjaWiadomosci() {
         {strony.wiersze.map((w) => (
           <li key={w.id} className="szklo !rounded-3xl p-5">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              {!w.przeczytana && <span className="rounded-full bg-blad px-2.5 py-0.5 text-xs font-bold text-white">Nowa</span>}
               <strong>{w.imie}</strong>
               <a className="link text-sm" href={`mailto:${w.email}?subject=${encodeURIComponent("Re: " + (TEMATY_WIADOMOSCI.find((t) => t.id === w.temat)?.nazwa ?? "Przodkowie"))}`}>{w.email}</a>
               <span className="rounded-full bg-[var(--tag)] px-2.5 py-0.5 text-xs font-semibold">{TEMATY_WIADOMOSCI.find((t) => t.id === w.temat)?.nazwa ?? w.temat}</span>
               <span className="ml-auto text-sm tabular-nums text-tekst-3">{w.utworzono.slice(0, 16).replace("T", " ")}{w.uid ? " · zalogowany" : ""}</span>
             </div>
             <p className="mt-3 whitespace-pre-wrap break-words text-[15px] leading-relaxed">{w.tresc}</p>
-            <p className="mt-3">
+            <p className="mt-3 flex flex-wrap gap-2">
+              {!w.przeczytana && (
+                <button
+                  type="button"
+                  className="przycisk !min-h-8"
+                  onClick={async () => {
+                    try {
+                      await oznaczWiadomosc(w.id, true);
+                      await wczytaj();
+                    } catch (e) {
+                      setBlad(komunikatBledu(e));
+                    }
+                  }}
+                >
+                  Oznacz jako przeczytaną
+                </button>
+              )}
               <button
                 type="button"
                 className="przycisk !min-h-8"
@@ -604,6 +641,7 @@ type Sekcja = "uzytkownicy" | "drzewa" | "wiadomosci" | "repozytorium";
 export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
   const konto = useKonto();
   const wybrana = useSearchParams().get("s");
+  const nowe = useNieprzeczytane();
   if (konto.status === "wylaczone") return <p className="szklo p-6 text-tekst-2">Konta użytkowników nie są jeszcze włączone w tym serwisie.</p>;
   if (konto.status === "ladowanie") return <p className="py-16 text-center text-tekst-2" role="status">Wczytywanie…</p>;
   if (konto.status === "gosc") {
@@ -645,10 +683,11 @@ export function PanelAdmina({ drzewa }: { drzewa: PodsumowanieDrzewa[] }) {
           aktywna ? (
             <Link key={x.id} href={`/admin/?s=${x.id}`} className="przycisk" aria-current={x.id === aktywna ? "page" : undefined}>
               {x.nazwa}
+              {x.id === "wiadomosci" && nowe > 0 && <span className="ml-2 rounded-full bg-blad px-2 py-0.5 text-xs font-bold text-white" aria-label={`Nowych: ${nowe}`}>{nowe}</span>}
             </Link>
           ) : (
             <Link key={x.id} href={`/admin/?s=${x.id}`} className="szklo block p-5 transition-colors hover:bg-najazd">
-              <span className="block text-xl font-semibold">{x.nazwa}</span>
+              <span className="block text-xl font-semibold">{x.nazwa}{x.id === "wiadomosci" && nowe > 0 && <span className="ml-2 rounded-full bg-blad px-2 py-0.5 text-xs font-bold text-white" aria-label={`Nowych: ${nowe}`}>{nowe}</span>}</span>
               <span className="mt-1 block text-sm text-tekst-2">{x.opis}</span>
             </Link>
           ),

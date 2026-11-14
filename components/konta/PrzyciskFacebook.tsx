@@ -5,14 +5,14 @@ import { FACEBOOK_WLACZONY } from "@/lib/baza/firebase";
 import { komunikatBledu, zalogujFacebook } from "@/lib/baza/konta";
 
 /** Przycisk „… przez Facebook”. Widoczny tylko, gdy logowanie przez Facebooka jest włączone (FACEBOOK_WLACZONY). */
-export function PrzyciskFacebook({ etykieta, naSukces, naBlad }: { etykieta: string; naSukces: () => void; naBlad: (komunikat: string) => void }) {
+export function PrzyciskFacebook({ etykieta, naSukces, naBlad, wylaczony = false }: { etykieta: string; naSukces: () => void; naBlad: (komunikat: string) => void; wylaczony?: boolean }) {
   const [trwa, setTrwa] = useState(false);
   if (!FACEBOOK_WLACZONY) return null;
   return (
     <button
       type="button"
       className="przycisk !min-h-11 w-full !border-0 !bg-[#1877F2] !text-white hover:!bg-[#1468d8]"
-      disabled={trwa}
+      disabled={trwa || wylaczony}
       onClick={async () => {
         setTrwa(true);
         try {

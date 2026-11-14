@@ -74,9 +74,20 @@ export function FormularzRejestracji() {
         </p>
       )}
       <p className="mt-2 text-sm text-tekst-2">Konto pozwala tworzyć własne drzewa genealogiczne i zapraszać do nich współpracowników.</p>
-      <div className="mt-5 space-y-2">
-        <PrzyciskGoogle etykieta="Zarejestruj się przez Google" naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
-        <PrzyciskFacebook etykieta="Zarejestruj się przez Facebook" naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
+      <label className="mt-5 flex items-start gap-3 rounded-2xl border-2 border-akcent bg-najazd p-4 text-sm">
+        <input type="checkbox" className="mt-0.5 size-5 flex-none" checked={zgoda} onChange={(e) => setZgoda(e.target.checked)} />
+        <span>
+          <strong>Zgadzam się z polityką prywatności.</strong> Zapoznałem(-am) się z{" "}
+          <Link href={sciezkaPolitykiPrywatnosci()} className="link" target="_blank">
+            polityką prywatności
+          </Link>{" "}
+          serwisu i akceptuję zasady przetwarzania moich danych. Zgoda jest potrzebna do założenia konta każdym sposobem (e-mailem, przez Google lub Facebook).
+        </span>
+      </label>
+      <div className="mt-4 space-y-2">
+        <PrzyciskGoogle etykieta="Zarejestruj się przez Google" wylaczony={!zgoda} naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
+        <PrzyciskFacebook etykieta="Zarejestruj się przez Facebook" wylaczony={!zgoda} naSukces={() => router.replace(celPoLogowaniu())} naBlad={setBlad} />
+        {!zgoda && <p className="text-center text-xs text-tekst-3">Zaznacz zgodę powyżej, aby użyć Google lub Facebooka.</p>}
       </div>
       <p className="my-4 flex items-center gap-3 text-xs uppercase tracking-wider text-tekst-2">
         <span className="h-px flex-1 bg-kreska" />
@@ -116,16 +127,6 @@ export function FormularzRejestracji() {
           </label>
           <input id={`${id}-h2`} type="password" autoComplete="new-password" required className={`${pole} mt-1`} value={haslo2} onChange={(e) => setHaslo2(e.target.value)} />
         </div>
-        <label className="flex items-start gap-2 text-sm">
-          <input type="checkbox" className="mt-1 size-4" checked={zgoda} onChange={(e) => setZgoda(e.target.checked)} />
-          <span>
-            Zapoznałem(-am) się z{" "}
-            <Link href={sciezkaPolitykiPrywatnosci()} className="link" target="_blank">
-              polityką prywatności
-            </Link>
-            .
-          </span>
-        </label>
         {blad && (
           <p role="alert" className="text-sm font-semibold text-blad">
             {blad}

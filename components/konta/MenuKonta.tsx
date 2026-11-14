@@ -5,11 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { wyloguj } from "@/lib/baza/konta";
 import { sciezkaAdmina } from "@/lib/sciezki";
 import { useKonto } from "./AuthProvider";
+import { useNieprzeczytane } from "./useNieprzeczytane";
 
 /** Prawa strona nagłówka: logowanie i rejestracja albo menu zalogowanego użytkownika. */
 export function MenuKonta({ wariant = "domyslny" }: { wariant?: "domyslny" | "glowna" }) {
   const konto = useKonto();
   const [otwarte, setOtwarte] = useState(false);
+  const nowe = useNieprzeczytane();
   const korzen = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,9 +51,14 @@ export function MenuKonta({ wariant = "domyslny" }: { wariant?: "domyslny" | "gl
   const nazwa = konto.profil ? `${konto.profil.imie} ${konto.profil.nazwisko}` : (konto.email ?? "Konto");
   return (
     <div ref={korzen} className="relative">
-      <button type="button" className={wariant === "glowna" ? "g-chip flex min-h-11 max-w-48 items-center gap-2 rounded-full px-4 text-[15px] font-medium" : "przycisk !min-h-8 max-w-48"} aria-expanded={otwarte} aria-haspopup="menu" onClick={() => setOtwarte((o) => !o)}>
+      <button type="button" className={`relative ${wariant === "glowna" ? "g-chip flex min-h-11 max-w-48 items-center gap-2 rounded-full px-4 text-[15px] font-medium" : "przycisk !min-h-8 max-w-48"}`} aria-expanded={otwarte} aria-haspopup="menu" onClick={() => setOtwarte((o) => !o)}>
         <span aria-hidden="true">👤</span>
         <span className="truncate">{konto.profil?.imie ?? "Konto"}</span>
+        {nowe > 0 && (
+          <span role="status" aria-label={`Nowe wiadomości: ${nowe}`} className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-blad px-1 text-[11px] font-bold leading-none text-white ring-2 ring-[var(--lita)]">
+            {nowe > 9 ? "9+" : nowe}
+          </span>
+        )}
       </button>
       {otwarte && (
         <div role="menu" className="szklo !bg-lita absolute right-0 top-full z-50 mt-2 w-64 p-2 text-sm">
@@ -62,9 +69,17 @@ export function MenuKonta({ wariant = "domyslny" }: { wariant?: "domyslny" | "gl
             Mój profil i drzewa
           </Link>
           {konto.czyAdmin && (
-            <Link role="menuitem" href={sciezkaAdmina()} className="block rounded-lg px-3 py-2 hover:bg-najazd" onClick={() => setOtwarte(false)}>
-              Panel administratora
-            </Link>
+            <>
+              <Link role="menuitem" href={sciezkaAdmina()} className="block rounded-lg px-3 py-2 hover:bg-najazd" onClick={() => setOtwarte(false)}>
+                Panel administratora
+              </Link>
+              {nowe > 0 && (
+                <Link role="menuitem" href={`${sciezkaAdmina()}?s=wiadomosci`} className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold hover:bg-najazd" onClick={() => setOtwarte(false)}>
+                  Nowe wiadomości
+                  <span className="rounded-full bg-blad px-2 py-0.5 text-xs font-bold text-white">{nowe}</span>
+                </Link>
+              )}
+            </>
           )}
           <button
             type="button"

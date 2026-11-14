@@ -288,6 +288,8 @@ Link „Kontakt” jest w stopce każdej strony. Wiadomość (imię, e-mail do o
 
 1. **Baza (zawsze)**: kolekcja `wiadomosci`; reguły pozwalają ją zapisać każdemu (także niezalogowanemu), a odczytać i usunąć tylko administratorowi.
    Wiadomości czytasz w **Panelu administratora → Wiadomości** (wyszukiwanie, odpowiedź przez link `mailto:`, usuwanie).
+   Nowa wiadomość zapala czerwoną ikonę z liczbą przy przycisku konta administratora (i pozycję „Nowe wiadomości” w jego menu oraz znacznik „Nowa” w panelu); znika po
+   oznaczeniu wiadomości jako przeczytanej. Licznik to jedno tanie zapytanie zliczające, odświeżane przy wejściu, po powrocie do karty i co 3 minuty.
 2. **E-mail (opcjonalnie)**: usługa Web3Forms przekazuje wiadomość na Twoją skrzynkę. Adres jest przypisany do klucza po stronie usługi, więc **nie występuje
    w kodzie strony**. Konfiguracja: na <https://web3forms.com> utwórz klucz dostępu (*Create your Access Key*), podając adres, na który mają przychodzić
    wiadomości (voocash.s@gmail.com); klucz przyjdzie na ten adres (potwierdź go, jeśli usługa o to poprosi). W GitHubie (*Settings → Secrets and variables →

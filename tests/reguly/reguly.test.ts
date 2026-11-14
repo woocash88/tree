@@ -4,7 +4,7 @@
  * (uruchamia emulator, potem vitest; wymaga Javy). Nie wchodzą w skład `npm test`.
  */
 import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, getDoc, getDocs, collection, query, where, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField, writeBatch } from "firebase/firestore";
+import { doc, getCountFromServer, getDoc, getDocs, collection, query, where, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField, writeBatch } from "firebase/firestore";
 import fs from "node:fs";
 import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
 
@@ -437,6 +437,17 @@ describe("wiadomości z formularza kontaktowego", () => {
     await assertFails(updateDoc(doc(as("szef"), "wiadomosci/b1"), { tresc: "zmieniona wiadomość o treści" }));
     await assertFails(setDoc(doc(as("ala"), "wiadomosci/b2"), wiadomosc({ uid: "kuba" })));
     await assertFails(setDoc(doc(gosc(), "wiadomosci/b3"), wiadomosc({ uid: "ala" })));
+  });
+  it("nowa wiadomość jest nieprzeczytana; administrator może ją tylko oznaczyć jako przeczytaną", async () => {
+    await assertSucceeds(setDoc(doc(gosc(), "wiadomosci/n1"), wiadomosc({ przeczytana: false })));
+    await assertFails(setDoc(doc(gosc(), "wiadomosci/n2"), wiadomosc({ przeczytana: true })));
+    await assertFails(updateDoc(doc(as("ala"), "wiadomosci/n1"), { przeczytana: true }));
+    await assertFails(updateDoc(doc(gosc(), "wiadomosci/n1"), { przeczytana: true }));
+    await assertFails(updateDoc(doc(as("szef"), "wiadomosci/n1"), { przeczytana: true, tresc: "podmieniona treść wiadomości" }));
+    await assertFails(updateDoc(doc(as("szef"), "wiadomosci/n1"), { przeczytana: "tak" }));
+    await assertSucceeds(updateDoc(doc(as("szef"), "wiadomosci/n1"), { przeczytana: true }));
+    await assertSucceeds(getCountFromServer(query(collection(as("szef"), "wiadomosci"), where("przeczytana", "==", false))));
+    await assertFails(getCountFromServer(query(collection(as("ala"), "wiadomosci"), where("przeczytana", "==", false))));
   });
   it("walidacja pól: puste, za długie, zły temat, zły e-mail, obce pola", async () => {
     await assertFails(setDoc(doc(gosc(), "wiadomosci/c1"), wiadomosc({ imie: "" })));

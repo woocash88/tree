@@ -76,6 +76,10 @@ const wiadomosci = async () => {
   const szef = await zalozKonto(br, 'Szef', 'Serwisu', mail('szef'));
   await nadajAdmina(await uidPo(mail('szef')));
   await szef.p.goto(B + '/admin/');
+  await szef.p.getByRole('status', { name: 'Nowe wiadomości: 2' }).waitFor({ timeout: 15000 });
+  ok('administrator widzi ikonę powiadomienia z liczbą nowych wiadomości przy swoim koncie (2)', true);
+  await szef.p.screenshot({ path: require('os').tmpdir() + '/przodkowie-powiadomienie-wiadomosci.png' });
+  ok('zwykły użytkownik nie ma ikony powiadomienia', (await ala.p.getByRole('status', { name: /Nowe wiadomości/ }).count()) === 0);
   await szef.p.getByRole('navigation', { name: 'Sekcje panelu administratora' }).getByRole('link', { name: /Wiadomości/ }).click();
   await szef.p.getByRole('heading', { name: 'Wiadomości (2)' }).waitFor({ timeout: 15000 });
   await szef.p.getByText('Znalazłem błąd na stronie osoby').waitFor();
@@ -84,8 +88,15 @@ const wiadomosci = async () => {
   await szef.p.getByText('Proszę o informację').waitFor();
   ok('administrator wyszukuje wiadomości po treści', (await szef.p.getByText('Znalazłem błąd na stronie osoby').count()) === 0);
   await szef.p.getByLabel('Szukaj wiadomości').fill('');
+  ok('nieprzeczytane wiadomości są oznaczone „Nowa”', (await szef.p.getByText('Nowa', { exact: true }).count()) === 2);
+  await szef.p.locator('li', { hasText: 'Gość Testowy' }).getByRole('button', { name: 'Oznacz jako przeczytaną' }).click();
+  await szef.p.getByRole('status', { name: 'Nowe wiadomości: 1' }).waitFor({ timeout: 15000 });
+  ok('po przeczytaniu licznik przy koncie spada (2 → 1)', (await szef.p.getByText('Nowa', { exact: true }).count()) === 1);
   await szef.p.locator('li', { hasText: 'Gość Testowy' }).getByRole('button', { name: 'Usuń wiadomość' }).click();
   await szef.p.getByRole('heading', { name: 'Wiadomości (1)' }).waitFor({ timeout: 15000 });
+  await szef.p.getByRole('button', { name: 'Oznacz wszystkie jako przeczytane' }).click();
+  await szef.p.getByRole('status', { name: /Nowe wiadomości/ }).waitFor({ state: 'detached', timeout: 15000 });
+  ok('po oznaczeniu wszystkich jako przeczytane ikona powiadomienia znika', true);
   ok('administrator usuwa wiadomość', (await wiadomosci()).length === 1);
   await ala.p.goto(B + '/admin/?s=wiadomosci');
   await ala.p.getByRole('heading', { name: 'Brak dostępu' }).waitFor();

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { komunikatBledu, resetHasla, zalogujEmail } from "@/lib/baza/konta";
 import { useKonto } from "./AuthProvider";
+import { sciezkaPolitykiPrywatnosci } from "@/lib/sciezki";
 import { celPoLogowaniu, PARAM_PO, useChceStworzycDrzewo, WARTOSC_PO_NOWE } from "./cel";
 import { PrzyciskFacebook } from "./PrzyciskFacebook";
 import { PrzyciskGoogle } from "./PrzyciskGoogle";
@@ -61,6 +62,13 @@ export function FormularzLogowania() {
       <div className="mt-5 space-y-2">
         <PrzyciskGoogle etykieta="Zaloguj się przez Google" naSukces={() => {}} naBlad={setBlad} />
         <PrzyciskFacebook etykieta="Zaloguj się przez Facebook" naSukces={() => {}} naBlad={setBlad} />
+        <p className="text-center text-xs text-tekst-3">
+          Logując się po raz pierwszy przez Google lub Facebook, zakładasz konto i zgadzasz się z{" "}
+          <Link href={sciezkaPolitykiPrywatnosci()} className="link" target="_blank">
+            polityką prywatności
+          </Link>
+          .
+        </p>
       </div>
       <p className="my-4 flex items-center gap-3 text-xs uppercase tracking-wider text-tekst-2">
         <span className="h-px flex-1 bg-kreska" />

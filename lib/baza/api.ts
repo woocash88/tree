@@ -336,12 +336,27 @@ export const TEMATY_WIADOMOSCI = [
   { id: "inne", nazwa: "Inne" },
 ] as const;
 export type TematWiadomosci = (typeof TEMATY_WIADOMOSCI)[number]["id"];
-export type Wiadomosc = { imie: string; email: string; temat: TematWiadomosci; tresc: string; utworzono: string; uid?: string };
+export type Wiadomosc = { imie: string; email: string; temat: TematWiadomosci; tresc: string; utworzono: string; uid?: string; przeczytana?: boolean };
+/** Zdarzenie okna: lista wiadomości się zmieniła (przeczytanie, usunięcie) – ikona powiadomienia odświeża licznik. */
+export const ZDARZENIE_WIADOMOSCI = "wiadomosci-zmiana";
 export type WpisWiadomosci = Wiadomosc & { id: string };
 
 export async function zapiszWiadomosc(w: Wiadomosc): Promise<void> {
   const { db, F } = await fs();
-  await F.addDoc(F.collection(db, "wiadomosci"), w);
+  await F.addDoc(F.collection(db, "wiadomosci"), { ...w, przeczytana: false });
+}
+
+/** Liczba nowych (nieprzeczytanych) wiadomości – zapytanie zliczające, koszt to ułamek odczytu na każde 1000 wiadomości. */
+export async function liczbaNieprzeczytanych(): Promise<number> {
+  const { db, F } = await fs();
+  const snap = await F.getCountFromServer(F.query(F.collection(db, "wiadomosci"), F.where("przeczytana", "==", false)));
+  return snap.data().count;
+}
+
+export async function oznaczWiadomosc(id: string, przeczytana: boolean): Promise<void> {
+  const { db, F } = await fs();
+  await F.updateDoc(F.doc(db, "wiadomosci", id), { przeczytana });
+  window.dispatchEvent(new Event(ZDARZENIE_WIADOMOSCI));
 }
 
 /** Wiadomości z formularza (tylko administrator), od najnowszych. */
@@ -354,6 +369,7 @@ export async function listaWiadomosci(): Promise<WpisWiadomosci[]> {
 export async function usunWiadomosc(id: string): Promise<void> {
   const { db, F } = await fs();
   await F.deleteDoc(F.doc(db, "wiadomosci", id));
+  window.dispatchEvent(new Event(ZDARZENIE_WIADOMOSCI));
 }
 
 // ───────────────────────────── administrator ─────────────────────────────

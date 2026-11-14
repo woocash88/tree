@@ -12,6 +12,10 @@ const { B, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, dokument, nowaKart
   await fb.p.goto(B + '/rejestracja/');
   await fb.p.getByRole('button', { name: 'Zarejestruj się przez Facebook' }).waitFor();
   ok('przyciski logowania i rejestracji przez Facebook są na stronach (gdy włączone)', true);
+  // zgoda na politykę prywatności jest wymagana także przy rejestracji przez Google i Facebook
+  ok('rejestracja: przyciski Google i Facebook są wyłączone, dopóki nie zaznaczysz zgody na politykę prywatności', (await fb.p.getByRole('button', { name: 'Zarejestruj się przez Google' }).isDisabled()) && (await fb.p.getByRole('button', { name: 'Zarejestruj się przez Facebook' }).isDisabled()));
+  await fb.p.getByRole('checkbox', { name: /Zgadzam się z polityką prywatności/ }).check();
+  ok('po zaznaczeniu zgody przyciski społecznościowe są aktywne', (await fb.p.getByRole('button', { name: 'Zarejestruj się przez Google' }).isEnabled()) && (await fb.p.getByRole('button', { name: 'Zarejestruj się przez Facebook' }).isEnabled()));
   await fb.p.waitForFunction(() => typeof window.__testFacebook === 'function');
   const mailFb = `fb-${Date.now()}@example.org`;
   await fb.p.evaluate((e) => window.__testFacebook(e, 'Filip Facebookowy'), mailFb);

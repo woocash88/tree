@@ -48,9 +48,12 @@ service cloud.firestore {
     // Wysłać może każdy (także niezalogowany; zablokowany użytkownik nie), odczytać i usunąć – tylko administrator. Bez edycji.
     match /wiadomosci/{wid} {
       allow get, list, delete: if jestAdmin();
-      allow update: if false;
+      // Administrator może tylko oznaczyć wiadomość jako przeczytaną (pole przeczytana), niczego więcej nie zmienia.
+      allow update: if jestAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['przeczytana'])
+        && request.resource.data.przeczytana is bool;
       allow create: if !zablokowany()
-        && request.resource.data.keys().hasOnly(['imie', 'email', 'temat', 'tresc', 'utworzono', 'uid'])
+        && request.resource.data.keys().hasOnly(['imie', 'email', 'temat', 'tresc', 'utworzono', 'uid', 'przeczytana'])
+        && (!('przeczytana' in request.resource.data) || request.resource.data.przeczytana == false)
         && request.resource.data.keys().hasAll(['imie', 'email', 'temat', 'tresc', 'utworzono'])
         && niepusty(request.resource.data.imie, 100)
         && niepusty(request.resource.data.email, 200) && request.resource.data.email.matches('.+@.+')

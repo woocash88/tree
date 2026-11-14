@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { komunikatBledu, zalogujGoogle } from "@/lib/baza/konta";
 
-export function PrzyciskGoogle({ etykieta, naSukces, naBlad }: { etykieta: string; naSukces: () => void; naBlad: (komunikat: string) => void }) {
+export function PrzyciskGoogle({ etykieta, naSukces, naBlad, wylaczony = false }: { etykieta: string; naSukces: () => void; naBlad: (komunikat: string) => void; wylaczony?: boolean }) {
   const [trwa, setTrwa] = useState(false);
   return (
     <button
       type="button"
       className="przycisk !min-h-11 w-full"
-      disabled={trwa}
+      disabled={trwa || wylaczony}
       onClick={async () => {
         setTrwa(true);
         try {
