@@ -11,9 +11,9 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await g.p.goto(B + '/');
   await g.p.getByRole('heading', { name: 'Odnajdź swoich przodków.', level: 1 }).waitFor();
   ok('nagłówek strony to „Przodkowie”', (await g.p.title()).includes('Przodkowie') && !(await g.p.title()).includes('Nasi'));
-  const kartaStworz = g.p.getByRole('article', { name: 'Stwórz własne drzewo' });
+  const kartaStworz = g.p.getByRole('article', { name: 'Stwórz drzewo genealogiczne' });
   await kartaStworz.getByRole('link', { name: 'Zacznij tu' }).waitFor();
-  ok('gość: w karcie „Stwórz własne drzewo” jest przycisk „Zacznij tu” (nie „Załóż konto”)', (await g.p.getByText('Załóż konto', { exact: true }).count()) === 0);
+  ok('gość: w karcie „Stwórz drzewo genealogiczne” jest przycisk „Zacznij tu” (nie „Załóż konto”)', (await g.p.getByText('Załóż konto', { exact: true }).count()) === 0);
   const naglowek = g.p.getByRole('navigation', { name: 'Główna nawigacja' });
   await naglowek.getByRole('link', { name: 'Zaloguj się' }).waitFor();
   ok('gość: nagłówek ma „Przegląd drzew”, „Stwórz drzewo” i „Zaloguj się”', (await naglowek.getByRole('link').allInnerTexts()).filter((t) => /Przegląd drzew|Stwórz drzewo|Zaloguj się/.test(t)).length === 3);
@@ -28,7 +28,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   await g.p.waitForURL('**/rejestracja/?po=nowe');
   ok('przejście logowanie → rejestracja zachowuje cel „stwórz drzewo”', true);
   await g.p.goto(B + '/');
-  await g.p.getByRole('article', { name: 'Stwórz własne drzewo' }).getByRole('link', { name: 'Zacznij tu' }).click();
+  await g.p.getByRole('article', { name: 'Stwórz drzewo genealogiczne' }).getByRole('link', { name: 'Zacznij tu' }).click();
   await g.p.waitForURL('**/rejestracja/?po=nowe');
   ok('„Zacznij tu” prowadzi do rejestracji', true);
   await g.p.goto(B + '/');
@@ -46,7 +46,7 @@ const { B, AUTH, FS, P, ok, wyniki, bledy, wyczysc, potwierdzEmail, uidPo, nadaj
   ok('po potwierdzeniu e-maila baner znika', true);
   await ala.p.goto(B + '/');
   await ala.p.waitForTimeout(1500);
-  ok('po zalogowaniu karta pokazuje „Moje drzewa” zamiast „Zacznij tu”', (await ala.p.getByRole('article', { name: 'Stwórz własne drzewo' }).getByRole('link', { name: 'Moje drzewa' }).count()) === 1 && (await ala.p.getByRole('link', { name: 'Zacznij tu' }).count()) === 0);
+  ok('po zalogowaniu karta pokazuje „Moje drzewa” zamiast „Zacznij tu”', (await ala.p.getByRole('article', { name: 'Stwórz drzewo genealogiczne' }).getByRole('link', { name: 'Moje drzewa' }).count()) === 1 && (await ala.p.getByRole('link', { name: 'Zacznij tu' }).count()) === 0);
   ok('nagłówek pokazuje profil (menu konta) i nie ma „Zaloguj się”', (await ala.p.getByRole('button', { name: /Ala/ }).isVisible()) && (await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).getByRole('link', { name: 'Zaloguj się' }).count()) === 0);
   const kolejnosc = await ala.p.getByRole('navigation', { name: 'Główna nawigacja' }).locator('a, button').allInnerTexts();
   const iStworz = kolejnosc.findIndex((t) => t.includes('Stwórz drzewo'));

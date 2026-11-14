@@ -28,7 +28,7 @@ Kopie źródłowe w repozytorium:
 
 | adres | zawartość |
 |---|---|
-| `/` | strona główna w stylu miękkim (wzór C): nagłówek-pigułka, wyszukiwarka drzew (po nazwisku, nazwie, regionie), karty „Wyszukiwanie”, „Stwórz własne drzewo” i „O portalu” |
+| `/` | strona główna w stylu miękkim (wzór C): nagłówek-pigułka, wyszukiwarka drzew (po nazwisku, nazwie, regionie), karty „Wyszukiwanie”, „Stwórz drzewo genealogiczne” i „O portalu” |
 | `/drzewa/` | indeks drzew: karty (nazwa, opis, lata, osoby, pokolenia, region, aktualizacja), wyszukiwanie po nazwie/nazwisku/regionie, sortowanie (alfabetycznie, największe, ostatnio zaktualizowane) |
 | `/drzewa/<drzewo>/` | strona drzewa: statystyki, kafelki gałęzi, wyszukiwarka osób, źródło i opiekun |
 | `/drzewa/<drzewo>/galaz/<galaz>/` | **lista gałęzi** (widok główny): zwijana lista z wcięciami, panel osoby; `cale` = „Całe drzewo” |
@@ -297,7 +297,7 @@ plakietka reCAPTCHA jest ukryta, żeby nie zasłaniała paneli). Emulatory i tes
 **„Stwórz drzewo” i logowanie.** „Stwórz drzewo” w nagłówku strony głównej prowadzi zalogowanego prosto do profilu z otwartym formularzem nowego
 drzewa (`/profil/?nowe=1`), a niezalogowanego do logowania z wyjaśnieniem (`/logowanie/?po=nowe`; rejestracja tak samo). Po zalogowaniu lub
 rejestracji użytkownik trafia do tego formularza (przy niepotwierdzonym e-mailu formularz otwiera się, gdy adres zostanie potwierdzony).
-Karta „Stwórz własne drzewo” ma przycisk „Zacznij tu” (rejestracja) albo, po zalogowaniu, „Moje drzewa”; profil jest w nagłówku obok „Stwórz drzewo”.
+Karta „Stwórz drzewo genealogiczne” ma przycisk „Zacznij tu” (rejestracja) albo, po zalogowaniu, „Moje drzewa”; profil jest w nagłówku obok „Stwórz drzewo”.
 
 **Oszczędność odczytów.** Każdy dokument zwrócony przez zapytanie to jeden odczyt z dziennego limitu. Dlatego strona główna nie pobiera
 żadnych drzew: lista publicznych drzew (limit 100) ładuje się dopiero, gdy ktoś kliknie w wyszukiwarkę albo wejdzie do katalogu, a wynik jest

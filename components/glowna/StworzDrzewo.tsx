@@ -22,7 +22,7 @@ export function LinkStworzDrzewo({ className }: { className?: string }) {
   );
 }
 
-/** Przycisk w karcie „Stwórz własne drzewo”: gość – „Zacznij tu” (rejestracja), zalogowany – „Moje drzewa”. */
+/** Przycisk w karcie „Stwórz drzewo genealogiczne”: gość – „Zacznij tu” (rejestracja), zalogowany – „Moje drzewa”. */
 export function PrzyciskZacznijTu({ className }: { className?: string }) {
   const { status } = useKonto();
   if (status === "wylaczone") return null;

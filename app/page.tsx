@@ -6,7 +6,8 @@ import { pobierzDrzewa } from "@/lib/dane";
 import { sciezkaIndeksuDrzew } from "@/lib/sciezki";
 
 const KARTA = "g-szklo flex flex-col gap-4 rounded-[32px] p-8";
-const IKONA = "flex size-12 items-center justify-center rounded-[20px]";
+const IKONA = "flex size-12 flex-none items-center justify-center rounded-[20px]";
+const NAGLOWEK_RZAD = "flex items-center gap-4";
 const NAGLOWEK_KARTY = "g-display text-[23px] font-semibold leading-snug tracking-[-0.02em]";
 
 /** Strona główna w stylu miękkim (wzór C): nagłówek-pigułka, hasło z wyszukiwarką i trzy karty (wyszukiwanie, stwórz drzewo, o portalu). */
@@ -41,29 +42,29 @@ export default async function StronaGlowna() {
         <section id="jak-zaczac" className="mx-auto max-w-[1160px] px-4 pb-[clamp(48px,7vw,88px)] sm:px-8">
           <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))]">
             <article className={KARTA}>
-              <div aria-hidden="true" className={`${IKONA} g-chip`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g-akcent-tekst)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
+              <div className={NAGLOWEK_RZAD}>
+                <div aria-hidden="true" className={`${IKONA} g-chip`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g-akcent-tekst)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-3.5-3.5" />
+                  </svg>
+                </div>
+                <h2 className={NAGLOWEK_KARTY}>Wyszukiwanie</h2>
               </div>
-              <h2 className={NAGLOWEK_KARTY}>Wyszukiwanie</h2>
               <p className="g-t2 text-[15.5px] leading-relaxed">
                 Wpisz nazwisko, nazwę rodziny albo region, a sprawdzisz, czy w publicznych drzewach ktoś już je nosi. W samym drzewie szukasz też po imieniu i roku, a wybrany wynik przenosi Cię prosto do osoby i jej gałęzi.
               </p>
-              <p className="g-t3 mt-auto flex items-center gap-2 text-sm">
-                Skrót na stronie głównej:
-                <kbd className="g-chip g-t2 rounded-[10px] px-2.5 py-0.5 text-[13px]">/</kbd>
-              </p>
             </article>
 
-            <article className={KARTA} aria-label="Stwórz własne drzewo">
-              <div aria-hidden="true" className={`${IKONA} g-przycisk`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--akcent-tekst)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
+            <article className={KARTA} aria-label="Stwórz drzewo genealogiczne">
+              <div className={NAGLOWEK_RZAD}>
+                <div aria-hidden="true" className={`${IKONA} g-przycisk`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--akcent-tekst)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </div>
+                <h2 className={NAGLOWEK_KARTY}>Stwórz drzewo genealogiczne</h2>
               </div>
-              <h2 className={NAGLOWEK_KARTY}>Stwórz własne drzewo genealogiczne</h2>
               <p className="g-t2 text-[15.5px] leading-relaxed">
                 Stworzenie drzewa to pierwszy krok, aby poznać swoich przodków. Możesz tworzyć je samodzielnie lub wspólnie z członkami rodziny przez opcje kolaboracji. Możesz również zaimportować swoje istniejące drzewo z innych portali. Zacznij od założenia konta.
               </p>
@@ -71,13 +72,15 @@ export default async function StronaGlowna() {
             </article>
 
             <article id="o-portalu" className={KARTA}>
-              <div aria-hidden="true" className={`${IKONA} g-chip`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g-akcent-tekst)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3 4 6v6c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3Z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
+              <div className={NAGLOWEK_RZAD}>
+                <div aria-hidden="true" className={`${IKONA} g-chip`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--g-akcent-tekst)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 3 4 6v6c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </div>
+                <h2 className={NAGLOWEK_KARTY}>O portalu</h2>
               </div>
-              <h2 className={NAGLOWEK_KARTY}>O portalu</h2>
               <p className="g-t2 text-[15.5px] leading-relaxed">
                 Przodkowie to darmowy i otwarty serwis do tworzenia drzew genealogicznych. Drzewo rodowe może być prywatne, czyli dostępne tylko dla Ciebie i najbliższych, lub publiczne.
               </p>
